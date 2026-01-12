@@ -26,7 +26,15 @@ const Layout = () => {
         name="feed"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({
+            color,
+            size,
+            focused,
+          }: {
+            color: string;
+            size: number;
+            focused: boolean;
+          }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
               size={size}
@@ -38,14 +46,21 @@ const Layout = () => {
               <Text style={styles.logoutText}>Log out</Text>
             </TouchableOpacity>
           ),
-          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "Search",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({
+            color,
+            size,
+            focused,
+          }: {
+            color: string;
+            size: number;
+            focused: boolean;
+          }) => (
             <Ionicons
               name={focused ? "search" : "search-outline"}
               size={size}
@@ -59,7 +74,7 @@ const Layout = () => {
         name="create"
         options={{
           title: "Create",
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, size }: { color: string; size: number }) => (
             <CreateTabIcon color={color} size={size} />
           ),
         }}
@@ -68,7 +83,15 @@ const Layout = () => {
         name="favorites"
         options={{
           title: "Favorites",
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({
+            color,
+            size,
+            focused,
+          }: {
+            color: string;
+            size: number;
+            focused: boolean;
+          }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}
               size={size}
@@ -82,7 +105,15 @@ const Layout = () => {
         options={{
           title: "Profile",
           headerShown: false,
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({
+            color,
+            size,
+            focused,
+          }: {
+            color: string;
+            size: number;
+            focused: boolean;
+          }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
               size={size}

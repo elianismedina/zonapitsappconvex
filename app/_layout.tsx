@@ -1,3 +1,17 @@
+// --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
+if (typeof globalThis.window === "undefined") {
+  // @ts-ignore
+  globalThis.window = {};
+}
+
+// @ts-ignore
+if (typeof window.addEventListener !== "function") {
+  // @ts-ignore
+  window.addEventListener = () => {};
+  // @ts-ignore
+  window.removeEventListener = () => {};
+}
+
 import {
   ClerkLoaded,
   ClerkProvider,
