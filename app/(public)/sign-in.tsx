@@ -11,7 +11,7 @@ export default function Page() {
 
   React.useEffect(() => {
     if (isSignedIn) {
-      router.replace("(auth)/(tabs)");
+      router.replace("/feed");
     }
   }, [isSignedIn, router]);
 
@@ -31,10 +31,10 @@ export default function Page() {
 
       // If sign-in process is complete, set the created session as active
       // and redirect the user
-      if (signInAttempt.status === "complete") {
+       if (signInAttempt.status === "complete") {
         if (setActive) {
           await setActive!({ session: signInAttempt.createdSessionId });
-           router.replace("(auth)/(tabs)");
+          router.replace("/feed");
         }
       } else {
         // If the status isn't complete, check why. User might need to
@@ -54,13 +54,13 @@ export default function Page() {
       const { createdSessionId, setActive } = await startOAuthFlow();
       if (createdSessionId && setActive) {
         setActive!({ session: createdSessionId });
-        router.replace("(auth)/(tabs)");
+        router.replace("/feed");
       } else {
         // Handle other cases
       }
     } catch (err: any) {
       if (err.message?.includes("already signed in")) {
-        router.replace("(auth)/(tabs)");
+        router.replace("/feed");
       } else {
         console.error("OAuth error", err);
       }
