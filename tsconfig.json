@@ -5,13 +5,15 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "tailwind.config": [
+        "./tailwind.config.js"
       ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "nativewind-env.d.ts"
   ]
 }
