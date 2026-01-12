@@ -3,16 +3,16 @@ import React from 'react';
 import { createCheckbox } from '@gluestack-ui/core/checkbox/creator';
 import { View, Pressable, Text, Platform } from 'react-native';
 import type { TextProps, ViewProps } from 'react-native';
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
+import { tva ,
+  withStyleContext,
+  useStyleContext,
+} from '@gluestack-ui/utils/nativewind-utils';
 import {
   PrimitiveIcon,
   IPrimitiveIcon,
   UIIcon,
 } from '@gluestack-ui/core/icon/creator';
-import {
-  withStyleContext,
-  useStyleContext,
-} from '@gluestack-ui/utils/nativewind-utils';
+
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 

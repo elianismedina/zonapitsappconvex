@@ -18,7 +18,7 @@ const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-  const user = useUser();
+
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -30,7 +30,7 @@ const InitialLayout = () => {
     } else if (!isSignedIn && inTabsGroup) {
       router.replace("/(public)");
     }
-  }, [isSignedIn]);
+   }, [isSignedIn, isLoaded, router, segments]);
 
   return <Slot />;
 };

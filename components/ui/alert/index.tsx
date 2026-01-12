@@ -1,11 +1,11 @@
 'use client';
 import { createAlert } from '@gluestack-ui/core/alert/creator';
 import { View, Text } from 'react-native';
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
-import {
+import { tva ,
   withStyleContext,
   useStyleContext,
 } from '@gluestack-ui/utils/nativewind-utils';
+
 import React from 'react';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';

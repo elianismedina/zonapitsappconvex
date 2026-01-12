@@ -3,8 +3,8 @@ import React from 'react';
 import { createPressable } from '@gluestack-ui/core/pressable/creator';
 import { Pressable as RNPressable } from 'react-native';
 
-import { tva } from '@gluestack-ui/utils/nativewind-utils';
-import { withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
+import { tva , withStyleContext } from '@gluestack-ui/utils/nativewind-utils';
+
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 
 const UIPressable = createPressable({
