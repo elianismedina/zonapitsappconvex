@@ -1,43 +1,57 @@
-import { ClerkProvider, ClerkLoaded, useAuth } from "@clerk/clerk-expo";
-import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { ConvexReactClient } from 'convex/react';
-import { ConvexProviderWithClerk } from 'convex/react-clerk';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { css } from '@emotion/native';
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/use-color-scheme";
+  ClerkLoaded,
+  ClerkProvider,
+  useAuth,
+  useUser,
+} from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
+import {
+  Slot,
+  useNavigationContainerRef,
+  useRouter,
+  useSegments,
+} from "expo-router";
+import { useEffect } from "react";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
 
-export const unstable_settings = {
-  initialRouteName: "(tabs)",
+const InitialLayout = () => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+  const user = useUser();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inTabsGroup = segments[0] === "(auth)";
+
+    if (isSignedIn && !inTabsGroup) {
+      router.replace("/(auth)/(tabs)/feed");
+    } else if (!isSignedIn && inTabsGroup) {
+      router.replace("/(public)");
+    }
+  }, [isSignedIn]);
+
+  return <Slot />;
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+const RootLayoutNav = () => {
+  const ref = useNavigationContainerRef();
 
   return (
-    <GestureHandlerRootView style={css`flex: 1;`}>
-      <ClerkProvider tokenCache={tokenCache}>
-        <ClerkLoaded>
-          <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-            <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-              <Stack />
-              <StatusBar style="auto" />
-            </ThemeProvider>
-          </ConvexProviderWithClerk>
-        </ClerkLoaded>
-      </ClerkProvider>
-    </GestureHandlerRootView>
+    <ClerkProvider tokenCache={tokenCache}>
+      <ClerkLoaded>
+        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+          <InitialLayout />
+        </ConvexProviderWithClerk>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
-}
+};
+
+export default RootLayoutNav;

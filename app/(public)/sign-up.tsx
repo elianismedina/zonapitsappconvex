@@ -1,12 +1,22 @@
-import { useSignUp, useOAuth } from "@clerk/clerk-expo";
+import { useSignUp, useOAuth, useUser, useAuth } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
+
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { user } = useUser();
+  const { isSignedIn } = useAuth();
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (isSignedIn) {
+      router.replace("(auth)/(tabs)");
+    }
+  }, [isSignedIn, router]);
+  const [error, setError] = React.useState("");
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -16,8 +26,6 @@ export default function SignUpScreen() {
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
     if (!isLoaded) return;
-
-    console.log(emailAddress, password);
 
     // Start sign-up process using email and password provided
     try {
@@ -32,10 +40,11 @@ export default function SignUpScreen() {
       // Set 'pendingVerification' to true to display second form
       // and capture code
       setPendingVerification(true);
-    } catch (err) {
+      setError("");
+    } catch (err: any) {
       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
       // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+      setError(err.errors?.[0]?.message || "An error occurred");
     }
   };
 
@@ -53,23 +62,25 @@ export default function SignUpScreen() {
       // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
-        router.replace("/");
+
+        router.replace("(auth)/(tabs)");
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2));
-      }
-    } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
-    }
+         setError("Verification failed. Please try again.");
+       }
+     } catch (err: any) {
+       // See https://clerk.com/docs/guides/development/custom-flows/error-handling
+       // for more info on error handling
+       setError(err.errors?.[0]?.message || "Verification failed. Please check the code and try again.");
+     }
   };
 
   if (pendingVerification) {
     return (
       <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
         <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 16 }}>Verify your email</Text>
+        {error ? <Text style={{ color: "red", textAlign: "center", marginBottom: 12 }}>{error}</Text> : null}
         <TextInput
           value={code}
           placeholder="Enter your verification code"
@@ -84,22 +95,28 @@ export default function SignUpScreen() {
   }
 
   const onGoogleSignUpPress = async () => {
+    if (isSignedIn) return;
     try {
       const { createdSessionId, setActive } = await startOAuthFlow();
-      if (createdSessionId) {
-        setActive({ session: createdSessionId });
-        router.replace("/");
+      if (createdSessionId && setActive) {
+        setActive!({ session: createdSessionId });
+        router.replace("(auth)/(tabs)");
       } else {
         // Handle other cases
       }
-    } catch (err) {
-      console.error("OAuth error", err);
+    } catch (err: any) {
+      if (err.message?.includes("already signed in")) {
+        router.replace("(auth)/(tabs)");
+      } else {
+        console.error("OAuth error", err);
+      }
     }
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
       <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 16 }}>Sign up</Text>
+      {error ? <Text style={{ color: "red", textAlign: "center", marginBottom: 12 }}>{error}</Text> : null}
       <TextInput
         autoCapitalize="none"
         value={emailAddress}

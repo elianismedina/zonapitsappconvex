@@ -56,14 +56,18 @@ export function GluestackUIProvider({
     }
   }, [mode]);
 
-  useSafeLayoutEffect(() => {
-    if (mode !== 'system') return;
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
+   useSafeLayoutEffect(() => {
+     if (mode !== 'system') return;
+     const media = window.matchMedia('(prefers-color-scheme: dark)');
 
-    media.addListener(handleMediaQuery);
-
-    return () => media.removeListener(handleMediaQuery);
-  }, [handleMediaQuery]);
+     if (typeof media.addEventListener === 'function') {
+       media.addEventListener('change', handleMediaQuery);
+       return () => media.removeEventListener('change', handleMediaQuery);
+     } else if (typeof media.addListener === 'function') {
+       media.addListener(handleMediaQuery);
+       return () => media.removeListener(handleMediaQuery);
+     }
+   }, [handleMediaQuery]);
 
   useSafeLayoutEffect(() => {
     if (typeof window !== 'undefined') {

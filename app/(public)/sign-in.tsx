@@ -1,13 +1,20 @@
-import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useSignIn, useOAuth, useUser, useAuth } from "@clerk/clerk-expo";
 import React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Page() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { user } = useUser();
+  const { isSignedIn } = useAuth();
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (isSignedIn) {
+      router.replace("(auth)/(tabs)");
+    }
+  }, [isSignedIn, router]);
 
   const [emailAddress, setEmailAddress] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -26,8 +33,10 @@ export default function Page() {
       // If sign-in process is complete, set the created session as active
       // and redirect the user
       if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
-        router.replace("/");
+        if (setActive) {
+          await setActive!({ session: signInAttempt.createdSessionId });
+           router.replace("(auth)/(tabs)");
+        }
       } else {
         // If the status isn't complete, check why. User might need to
         // complete further steps.
@@ -41,16 +50,21 @@ export default function Page() {
   };
 
   const onGoogleSignInPress = async () => {
+    if (isSignedIn) return;
     try {
       const { createdSessionId, setActive } = await startOAuthFlow();
-      if (createdSessionId) {
-        setActive({ session: createdSessionId });
-        router.replace("/");
+      if (createdSessionId && setActive) {
+        setActive!({ session: createdSessionId });
+        router.replace("(auth)/(tabs)");
       } else {
         // Handle other cases
       }
-    } catch (err) {
-      console.error("OAuth error", err);
+    } catch (err: any) {
+      if (err.message?.includes("already signed in")) {
+        router.replace("(auth)/(tabs)");
+      } else {
+        console.error("OAuth error", err);
+      }
     }
   };
 
