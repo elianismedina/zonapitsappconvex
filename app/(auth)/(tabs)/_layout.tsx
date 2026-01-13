@@ -43,7 +43,7 @@ const Layout = () => {
           ),
           headerRight: () => (
             <TouchableOpacity onPress={() => signOut()}>
-              <Text style={styles.logoutText}>Log out</Text>
+              <Text style={styles.logoutText}>Cerrar sesión</Text>
             </TouchableOpacity>
           ),
         }}

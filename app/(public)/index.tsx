@@ -47,7 +47,7 @@ const LoginScreen = () => {
         style={styles.loginImage}
       />
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>How would you like to use Threads?</Text>
+        <Text style={styles.title}>¿Cómo te gustaría inciar sesión?</Text>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -60,7 +60,7 @@ const LoginScreen = () => {
                 style={styles.loginButtonImage}
               />
               <Text style={styles.loginButtonText}>
-                Continue with Instagram
+                Continuar con Instagram
               </Text>
               <Ionicons
                 name="chevron-forward"
@@ -69,9 +69,9 @@ const LoginScreen = () => {
               />
             </View>
             <Text style={styles.loginButtonSubtitle}>
-              Log in or create a THreads profile with your Instagram account.
-              With a profile, you can post, interact and get personalised
-              recommendations.
+              Inicia sesión o crea un perfil con tu cuenta de Instagram. Con un
+              perfil puedes registrar vehículos y recibir recomendaciones
+              personalizadas de repuestos, accesorios y servicios.
             </Text>
           </TouchableOpacity>
 
@@ -81,28 +81,13 @@ const LoginScreen = () => {
             onPress={handleGoogleLogin}
           >
             <View style={styles.loginButtonContent}>
-              <Text style={styles.loginButtonText}>Continue with Google</Text>
+              <Text style={styles.loginButtonText}>Continuar con Google</Text>
               <Ionicons
                 name="chevron-forward"
                 size={24}
                 color={Colors.border}
               />
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.loginButton}>
-            <View style={styles.loginButtonContent}>
-              <Text style={styles.loginButtonText}>Use without a profile</Text>
-              <Ionicons
-                name="chevron-forward"
-                size={24}
-                color={Colors.border}
-              />
-            </View>
-            <Text style={styles.loginButtonSubtitle}>
-              You can browse Threads without a profile, but will not be able to
-              post, interact or get personalised recommendations.
-            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
