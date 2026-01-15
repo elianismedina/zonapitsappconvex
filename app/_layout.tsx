@@ -23,6 +23,7 @@ import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Slot, useRouter, useSegments } from "expo-router";
 import { useEffect } from "react";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
@@ -51,16 +52,18 @@ const InitialLayout = () => {
 
 const RootLayoutNav = () => {
   return (
-    <ClerkProvider
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-      tokenCache={tokenCache}
-    >
-      <ClerkLoaded>
-        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-          <InitialLayout />
-        </ConvexProviderWithClerk>
-      </ClerkLoaded>
-    </ClerkProvider>
+    <GluestackUIProvider>
+      <ClerkProvider
+        publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+        tokenCache={tokenCache}
+      >
+        <ClerkLoaded>
+          <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+            <InitialLayout />
+          </ConvexProviderWithClerk>
+        </ClerkLoaded>
+      </ClerkProvider>
+    </GluestackUIProvider>
   );
 };
 

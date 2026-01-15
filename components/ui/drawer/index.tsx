@@ -156,7 +156,7 @@ const drawerFooterStyle = tva({
   base: 'flex-row justify-end items-center',
 });
 
-type IDrawerProps = React.ComponentProps<typeof UIDrawer> &
+type IDrawerProps = React.ComponentProps<typeof UIDrawer> & { show?: boolean } &
   VariantProps<typeof drawerStyle> & { className?: string };
 
 type IDrawerBackdropProps = React.ComponentProps<typeof UIDrawer.Backdrop> &
@@ -182,14 +182,15 @@ type IDrawerCloseButtonProps = React.ComponentProps<
 const Drawer = React.forwardRef<
   React.ComponentRef<typeof UIDrawer>,
   IDrawerProps
->(function Drawer({ className, size = 'sm', anchor = 'left', ...props }, ref) {
+>(function Drawer({ className, size = 'sm', anchor = 'left', isOpen, ...props }, ref) {
   return (
     <UIDrawer
       ref={ref}
+      isOpen={isOpen}
       {...props}
       pointerEvents="box-none"
       className={drawerStyle({ size, anchor, class: className })}
-      context={{ size, anchor }}
+      context={{ size, anchor, show: isOpen }}
     />
   );
 });
@@ -231,22 +232,20 @@ const DrawerContent = React.forwardRef<
   React.ComponentRef<typeof UIDrawer.Content>,
   IDrawerContentProps
 >(function DrawerContent({ className, ...props }, ref) {
-  const { size: parentSize, anchor: parentAnchor } = useStyleContext(SCOPE);
+  const { size: parentSize, anchor: parentAnchor, show } = useStyleContext(SCOPE);
 
   const drawerHeight = screenHeight * (sizes[parentSize] || sizes.md);
   const drawerWidth = screenWidth * (sizes[parentSize] || sizes.md);
 
   const isHorizontal = parentAnchor === 'left' || parentAnchor === 'right';
 
-  const initialObj = isHorizontal
+  const offScreen = isHorizontal
     ? { x: parentAnchor === 'left' ? -drawerWidth : drawerWidth }
     : { y: parentAnchor === 'top' ? -drawerHeight : drawerHeight };
 
-  const animateObj = isHorizontal ? { x: 0 } : { y: 0 };
-
-  const exitObj = isHorizontal
-    ? { x: parentAnchor === 'left' ? -drawerWidth : drawerWidth }
-    : { y: parentAnchor === 'top' ? -drawerHeight : drawerHeight };
+  const initialObj = show ? offScreen : offScreen;
+  const animateObj = show ? (isHorizontal ? { x: 0 } : { y: 0 }) : offScreen;
+  const exitObj = offScreen;
 
   const customClass = isHorizontal
     ? `top-0 ${parentAnchor === 'left' ? 'left-0' : 'right-0'}`
