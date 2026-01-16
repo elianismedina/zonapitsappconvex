@@ -55,6 +55,7 @@
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
     "react-stately": "^3.39.0",
+    "svix": "^1.84.1",
     "tailwind-variants": "^0.1.20"
   },
   "devDependencies": {

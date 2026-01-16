@@ -9,7 +9,7 @@ export const getUserByClerkId = query({
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .withIndex("byClerkId", (q) => q.eq("clerkId", args.clerkId))
       .unique();
 
     if (!user?.imageUrl || user.imageUrl.startsWith("http")) {
@@ -57,7 +57,7 @@ export const createUser = internalMutation({
   handler: async (ctx, args) => {
     const existing = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .withIndex("byClerkId", (q) => q.eq("clerkId", args.clerkId))
       .unique();
 
     if (!existing) {
