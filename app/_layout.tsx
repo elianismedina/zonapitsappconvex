@@ -12,6 +12,7 @@ if (typeof window.addEventListener !== "function") {
   window.removeEventListener = () => {};
 }
 
+import "@/global.css";
 import {
   ClerkLoaded,
   ClerkProvider,
