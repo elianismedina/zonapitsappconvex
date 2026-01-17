@@ -14,10 +14,22 @@ export const User = {
   followersCount: v.number(),
   pushToken: v.optional(v.string()),
 };
+export const Vehiculo = {
+  userId: v.id("users"),
+  marca: v.string(),
+  linea: v.string(),
+  modelo: v.string(),
+  year: v.number(),
+  color: v.string(),
+  combustible: v.string(),
+  cilindrada: v.number(),
+  transmision: v.string(),
+};
 export default defineSchema({
   users: defineTable(User)
     .index("byClerkId", ["clerkId"])
     .searchIndex("searchUsers", {
       searchField: "username",
     }),
+  vehiculos: defineTable(Vehiculo).index("byUserId", ["userId"]),
 });

@@ -1,9 +1,9 @@
-import { useUser, useClerk } from "@clerk/clerk-expo";
 import { Box } from "@/components/ui/box";
-import { VStack } from "@/components/ui/vstack";
-import { Text } from "@/components/ui/text";
-import { Heading } from "@/components/ui/heading";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { useClerk, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
@@ -24,25 +24,21 @@ export default function ProfileScreen() {
     <Box className="flex-1 justify-center p-4">
       <VStack space="md" className="items-center">
         <Heading size="2xl" className="mb-4">
-          Profile
+          Perfil
         </Heading>
         <Box className="w-full">
           <Text size="lg">
-            Name: {user?.firstName} {user?.lastName}
+            Nombre: {user?.firstName} {user?.lastName}
           </Text>
-          <Text size="lg">
-            Email: {user?.emailAddresses[0]?.emailAddress}
-          </Text>
-          <Text size="lg">
-            Username: {user?.username}
-          </Text>
+          <Text size="lg">Correo: {user?.emailAddresses[0]?.emailAddress}</Text>
+          <Text size="lg">Usuario: {user?.username}</Text>
         </Box>
-        <Button 
-          onPress={handleSignOut} 
-          action="negative" 
+        <Button
+          onPress={handleSignOut}
+          action="negative"
           className="mt-6 w-full"
         >
-          <ButtonText>Sign Out</ButtonText>
+          <ButtonText>Salir</ButtonText>
         </Button>
       </VStack>
     </Box>

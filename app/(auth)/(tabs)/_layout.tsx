@@ -23,6 +23,7 @@ const Layout = () => {
         screenOptions={{
           tabBarShowLabel: false,
           tabBarActiveTintColor: "#000",
+          headerTitle: "Zona Pits",
         }}
       >
         <Tabs.Screen
@@ -107,7 +108,6 @@ const Layout = () => {
           name="profile"
           options={{
             title: "Perfil",
-            headerShown: false,
             tabBarIcon: ({
               color,
               size,

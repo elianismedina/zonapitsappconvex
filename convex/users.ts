@@ -7,9 +7,15 @@ export const getUserByClerkId = query({
     clerkId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    if (!args.clerkId) {
+      return null;
+    }
+
+    const clerkId = args.clerkId;
+
     const user = await ctx.db
       .query("users")
-      .withIndex("byClerkId", (q) => q.eq("clerkId", args.clerkId))
+      .withIndex("byClerkId", (q) => q.eq("clerkId", clerkId))
       .unique();
 
     if (!user?.imageUrl || user.imageUrl.startsWith("http")) {
