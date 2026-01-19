@@ -22,9 +22,14 @@ import {
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Slot, useRouter, useSegments } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from 'expo-splash-screen';
+import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 const tokenCache = {
   async getToken(key: string) {
@@ -77,6 +82,8 @@ const InitialLayout = () => {
 };
 
 const RootLayoutNav = () => {
+  const [isSplashFinished, setIsSplashFinished] = useState(false);
+
   return (
     <GluestackUIProvider>
       <ClerkProvider
@@ -87,6 +94,12 @@ const RootLayoutNav = () => {
           <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
             <InitialLayout />
           </ConvexProviderWithClerk>
+          {!isSplashFinished && (
+            <AnimatedSplashScreen
+              onReady={() => SplashScreen.hideAsync()}
+              onAnimationFinish={() => setIsSplashFinished(true)}
+            />
+          )}
         </ClerkLoaded>
       </ClerkProvider>
     </GluestackUIProvider>
