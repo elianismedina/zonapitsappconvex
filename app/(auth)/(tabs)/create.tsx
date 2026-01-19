@@ -35,11 +35,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { AlertCircleIcon } from "@/components/ui/icon";
+import { useToast, Toast, ToastTitle, ToastDescription } from "@/components/ui/toast";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 export default function CreateVehiculoScreen() {
   const router = useRouter();
+  const toast = useToast();
   const createVehiculo = useMutation(api.vehiculos.createVehiculo);
   const generateUploadUrl = useMutation(api.vehiculos.generateUploadUrl);
   
@@ -134,6 +136,25 @@ export default function CreateVehiculoScreen() {
         storageId: storageId,
       });
 
+      // Show success toast
+      toast.show({
+        placement: "top",
+        duration: 3000,
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toast nativeID={uniqueToastId} action="success" variant="solid">
+              <VStack space="xs">
+                <ToastTitle>¡Éxito!</ToastTitle>
+                <ToastDescription>
+                  Vehículo registrado correctamente.
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+
       // Reset form and navigate back or show success
       setFormData({
         marca: "",
@@ -147,11 +168,31 @@ export default function CreateVehiculoScreen() {
       });
       setSelectedImage(null);
       
-      router.push("/(auth)/(tabs)/feed");
+      router.push("/(auth)/(tabs)/garage");
       
     } catch (err: any) {
-      setError(err.message || "Ocurrió un error al registrar el vehículo.");
+      const errorMessage = err.message || "Ocurrió un error al registrar el vehículo.";
+      setError(errorMessage);
       console.error(err);
+      
+      // Show error toast
+      toast.show({
+        placement: "top",
+        duration: 3000,
+        render: ({ id }) => {
+          const uniqueToastId = "toast-error-" + id;
+          return (
+            <Toast nativeID={uniqueToastId} action="error" variant="solid">
+              <VStack space="xs">
+                <ToastTitle>Error</ToastTitle>
+                <ToastDescription>
+                  {errorMessage}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     } finally {
       setIsSubmitting(false);
     }
