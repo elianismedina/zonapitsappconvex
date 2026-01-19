@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Platform } from "react-native";
 import { useMutation } from "convex/react";
 import { useRouter } from "expo-router";
-import { ChevronDown } from "lucide-react-native";
+import { ChevronDown, Camera } from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
 
 import { Box } from "@/components/ui/box";
 import { VStack } from "@/components/ui/vstack";
@@ -10,6 +11,9 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
+import { Pressable } from "@/components/ui/pressable";
+import { Image } from "@/components/ui/image";
+import { Icon } from "@/components/ui/icon";
 import {
   FormControl,
   FormControlLabel,
@@ -32,12 +36,16 @@ import {
 } from "@/components/ui/select";
 import { AlertCircleIcon } from "@/components/ui/icon";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function CreateVehiculoScreen() {
   const router = useRouter();
   const createVehiculo = useMutation(api.vehiculos.createVehiculo);
+  const generateUploadUrl = useMutation(api.vehiculos.generateUploadUrl);
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     marca: "",
@@ -52,6 +60,19 @@ export default function CreateVehiculoScreen() {
 
   const handleChange = (field: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
   };
 
   const handleSubmit = async () => {
@@ -80,6 +101,27 @@ export default function CreateVehiculoScreen() {
         throw new Error("Año y Cilindrada deben ser números válidos.");
       }
 
+      let storageId: Id<"_storage"> | undefined = undefined;
+
+      if (selectedImage) {
+        // 1. Get upload URL
+        const postUrl = await generateUploadUrl();
+
+        // 2. Convert URI to Blob
+        const response = await fetch(selectedImage);
+        const blob = await response.blob();
+
+        // 3. Upload to Convex
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": blob.type },
+          body: blob,
+        });
+
+        const { storageId: id } = await result.json();
+        storageId = id;
+      }
+
       await createVehiculo({
         marca: formData.marca,
         linea: formData.linea,
@@ -89,6 +131,7 @@ export default function CreateVehiculoScreen() {
         combustible: formData.combustible,
         cilindrada: cilindrada,
         transmision: formData.transmision,
+        storageId: storageId,
       });
 
       // Reset form and navigate back or show success
@@ -102,6 +145,7 @@ export default function CreateVehiculoScreen() {
         cilindrada: "",
         transmision: "",
       });
+      setSelectedImage(null);
       
       router.push("/(auth)/(tabs)/feed");
       
@@ -121,6 +165,27 @@ export default function CreateVehiculoScreen() {
           <Text size="sm" className="text-typography-500">
             Ingresa los detalles de tu vehículo para registrarlo en la plataforma.
           </Text>
+
+           {/* Image Picker */}
+           <Box className="items-center justify-center">
+            <Pressable onPress={pickImage} className="w-full aspect-[4/3] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden">
+              {selectedImage ? (
+                <Image
+                  source={{ uri: selectedImage }}
+                  alt="Vehicle Image"
+                  className="w-full h-full"
+                  resizeMode="cover"
+                />
+              ) : (
+                <VStack className="items-center" space="xs">
+                  <Camera size={32} color="#9CA3AF" />
+                  <Text size="sm" className="text-typography-400">
+                    Toca para añadir una foto
+                  </Text>
+                </VStack>
+              )}
+            </Pressable>
+          </Box>
 
           <VStack space="md">
             {/* Marca */}

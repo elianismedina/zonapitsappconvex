@@ -1,7 +1,7 @@
 'use client';
 import { createIcon } from '@gluestack-ui/core/icon/creator';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
-import { Svg, Path, Rect, Circle, Line, Polyline, Polygon } from 'react-native-svg';
+import { Svg, Circle, Line } from 'react-native-svg';
 import React from 'react';
 
 const iconStyle = tva({
@@ -20,12 +20,6 @@ const iconStyle = tva({
 
 export const Icon = createIcon({
   Root: Svg,
-  Path,
-  Rect,
-  Circle,
-  Line,
-  Polyline,
-  Polygon,
 });
 
 export const AlertCircleIcon = (props: any) => (

@@ -33,6 +33,10 @@ export const getVehiculos = query({
   },
 });
 
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
+});
+
 export const createVehiculo = mutation({
   args: {
     marca: v.string(),
@@ -43,6 +47,7 @@ export const createVehiculo = mutation({
     combustible: v.string(),
     cilindrada: v.number(),
     transmision: v.string(),
+    storageId: v.optional(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

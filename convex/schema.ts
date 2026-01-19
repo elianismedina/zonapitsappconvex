@@ -24,6 +24,7 @@ export const Vehiculo = {
   combustible: v.string(),
   cilindrada: v.number(),
   transmision: v.string(),
+  storageId: v.optional(v.id("_storage")),
 };
 export default defineSchema({
   users: defineTable(User)

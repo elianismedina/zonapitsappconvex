@@ -82,9 +82,9 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name="favorites"
+          name="garage"
           options={{
-            title: "Favoritos",
+            title: "Garaje",
             tabBarIcon: ({
               color,
               size,
@@ -96,7 +96,7 @@ const Layout = () => {
             }) => (
               <View style={styles.iconContainer}>
                 <Ionicons
-                  name={focused ? "heart" : "heart-outline"}
+                  name={focused ? "car" : "car-outline"}
                   size={size}
                   color={color}
                 />
