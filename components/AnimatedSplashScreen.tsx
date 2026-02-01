@@ -26,11 +26,6 @@ export const AnimatedSplashScreen = ({
     
     // Play sound
     player.play();
-    
-    // Cleanup
-    return () => {
-      player.pause();
-    };
   }, [player, onReady]);
 
   return (
@@ -39,7 +34,7 @@ export const AnimatedSplashScreen = ({
         source={ANIMATION_SOURCE}
         autoPlay
         loop={false}
-        resizeMode="cover"
+        resizeMode="contain"
         style={styles.lottie}
         onAnimationFinish={onAnimationFinish}
       />
