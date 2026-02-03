@@ -14,6 +14,7 @@ export const User = {
   followersCount: v.number(),
   pushToken: v.optional(v.string()),
 };
+
 export const Vehiculo = {
   userId: v.id("users"),
   marca: v.string(),
@@ -26,6 +27,18 @@ export const Vehiculo = {
   transmision: v.string(),
   storageId: v.optional(v.id("_storage")),
 };
+
+export const Kit = {
+  userId: v.id("users"),
+  name: v.string(),
+  address: v.string(),
+  latitude: v.number(),
+  longitude: v.number(),
+  capacity: v.optional(v.number()),
+  status: v.string(), // e.g., "draft", "pending", "completed"
+  billStorageId: v.optional(v.id("_storage")),
+};
+
 export default defineSchema({
   users: defineTable(User)
     .index("byClerkId", ["clerkId"])
@@ -33,4 +46,5 @@ export default defineSchema({
       searchField: "username",
     }),
   vehiculos: defineTable(Vehiculo).index("byUserId", ["userId"]),
+  kits: defineTable(Kit).index("byUserId", ["userId"]),
 });

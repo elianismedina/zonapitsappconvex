@@ -7,7 +7,7 @@ import { StyleSheet, View } from "react-native";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
   <View style={styles.createIconContainer}>
-    <Ionicons name="add" size={size} color={color} />
+    <Ionicons name="receipt" size={size} color={color} />
   </View>
 );
 
@@ -23,7 +23,7 @@ const Layout = () => {
         screenOptions={{
           tabBarShowLabel: false,
           tabBarActiveTintColor: "#000",
-          headerTitle: "Zona Pits",
+          headerTitle: "EfiKit Solar",
         }}
       >
         <Tabs.Screen
@@ -64,7 +64,7 @@ const Layout = () => {
             }) => (
               <View style={styles.iconContainer}>
                 <Ionicons
-                  name={focused ? "search" : "search-outline"}
+                  name={focused ? "location" : "location-outline"}
                   size={size}
                   color={color}
                 />
@@ -96,7 +96,7 @@ const Layout = () => {
             }) => (
               <View style={styles.iconContainer}>
                 <Ionicons
-                  name={focused ? "car" : "car-outline"}
+                  name={focused ? "flash" : "flash-outline"}
                   size={size}
                   color={color}
                 />

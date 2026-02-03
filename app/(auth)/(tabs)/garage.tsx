@@ -10,11 +10,11 @@ import { HStack } from '@/components/ui/hstack';
 import { Button, ButtonText } from '@/components/ui/button';
 import { useRouter } from 'expo-router';
 
-export default function FavoritesScreen() {
-  const vehiculos = useQuery(api.vehiculos.getVehiculos, {});
+export default function GarageScreen() {
+  const kits = useQuery(api.kits.getKits, {});
   const router = useRouter();
 
-  if (vehiculos === undefined) {
+  if (kits === undefined) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" />
@@ -24,55 +24,45 @@ export default function FavoritesScreen() {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-      <Heading size="xl" className="mb-4">Mi Garaje</Heading>
+      <Heading size="xl" className="mb-4">Mis Kits Solares</Heading>
       
-      {vehiculos.length === 0 ? (
+      {kits.length === 0 ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <VStack space="lg" className="items-center">
-            <Text size="lg" className="text-center">No tienes vehículos registrados.</Text>
+            <Text size="lg" className="text-center">No tienes kits registrados.</Text>
             <Button 
                 size="md" 
                 variant="solid" 
                 action="primary"
-                onPress={() => router.push("/(auth)/(tabs)/create")}
+                onPress={() => router.push("/(auth)/(tabs)/search")}
             >
-                <ButtonText>Registrar Vehículo</ButtonText>
+                <ButtonText>Crear un Kit</ButtonText>
             </Button>
           </VStack>
         </View>
       ) : (
         <FlatList
-          data={vehiculos}
+          data={kits}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <Card size="md" variant="elevated" className="mb-4">
+            <Card size="md" variant="elevated" className="mb-4 p-4">
               <VStack space="md">
-                <Heading size="md">{item.marca} {item.linea}</Heading>
+                <Heading size="md">{item.name}</Heading>
                 <VStack space="xs">
-                    <HStack space="md">
-                        <Text className="font-bold">Modelo:</Text>
-                        <Text>{item.modelo}</Text>
+                    <HStack space="md" className="items-center">
+                        <Text className="font-bold w-24">Dirección:</Text>
+                        <Text className="flex-1">{item.address}</Text>
                     </HStack>
                     <HStack space="md">
-                        <Text className="font-bold">Año:</Text>
-                        <Text>{item.year}</Text>
+                        <Text className="font-bold w-24">Estado:</Text>
+                        <Text className="capitalize">{item.status}</Text>
                     </HStack>
-                    <HStack space="md">
-                        <Text className="font-bold">Color:</Text>
-                        <Text>{item.color}</Text>
-                    </HStack>
-                    <HStack space="md">
-                        <Text className="font-bold">Combustible:</Text>
-                        <Text>{item.combustible}</Text>
-                    </HStack>
-                     <HStack space="md">
-                        <Text className="font-bold">Cilindrada:</Text>
-                        <Text>{item.cilindrada}</Text>
-                    </HStack>
-                     <HStack space="md">
-                        <Text className="font-bold">Transmisión:</Text>
-                        <Text>{item.transmision}</Text>
-                    </HStack>
+                    {item.capacity && (
+                      <HStack space="md">
+                          <Text className="font-bold w-24">Capacidad:</Text>
+                          <Text>{item.capacity} kWp</Text>
+                      </HStack>
+                    )}
                 </VStack>
               </VStack>
             </Card>

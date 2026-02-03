@@ -1,27 +1,19 @@
 import { useState } from "react";
-import { ScrollView, Platform } from "react-native";
-import { useMutation } from "convex/react";
+import { ScrollView, Platform, View } from "react-native";
+import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import { ChevronDown, Camera } from "lucide-react-native";
-import * as ImagePicker from "expo-image-picker";
+import { ChevronDown, FileUp, Image as ImageIcon } from "lucide-react-native";
+import * as DocumentPicker from "expo-document-picker";
 
 import { Box } from "@/components/ui/box";
 import { VStack } from "@/components/ui/vstack";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { Input, InputField } from "@/components/ui/input";
 import { Pressable } from "@/components/ui/pressable";
 import { Image } from "@/components/ui/image";
 import { Icon } from "@/components/ui/icon";
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlError,
-  FormControlErrorText,
-  FormControlErrorIcon,
-} from "@/components/ui/form-control";
+import { FormControl, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control";
 import {
   Select,
   SelectTrigger,
@@ -34,284 +26,130 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from "@/components/ui/select";
-import { AlertCircleIcon } from "@/components/ui/icon";
 import { useToast, Toast, ToastTitle, ToastDescription } from "@/components/ui/toast";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
-export default function CreateVehiculoScreen() {
+export default function UploadBillScreen() {
   const router = useRouter();
   const toast = useToast();
-  const createVehiculo = useMutation(api.vehiculos.createVehiculo);
-  const generateUploadUrl = useMutation(api.vehiculos.generateUploadUrl);
   
+  // Queries & Mutations
+  const kits = useQuery(api.kits.getKits, {});
+  const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
+  const addBillToKit = useMutation(api.kits.addBillToKit);
+
+  // Component State
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{ uri: string; mimeType?: string } | null>(null);
 
-  const [formData, setFormData] = useState({
-    marca: "",
-    linea: "",
-    modelo: "",
-    year: "",
-    color: "",
-    combustible: "",
-    cilindrada: "",
-    transmision: "",
-  });
-
-  const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+  const pickFile = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: ["application/pdf", "image/*"],
+      copyToCacheDirectory: true,
     });
 
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+    if (result.canceled === false && result.assets && result.assets[0]) {
+      const asset = result.assets[0];
+      setSelectedFile({ uri: asset.uri, mimeType: asset.mimeType });
     }
   };
 
   const handleSubmit = async () => {
-    setError(null);
+    if (!selectedKitId || !selectedFile) {
+        toast.show({
+            placement: "top",
+            render: ({ id }) => (
+                <Toast nativeID={`toast-${id}`} action="error">
+                    <ToastTitle>Faltan datos</ToastTitle>
+                    <ToastDescription>Por favor, selecciona un kit y un archivo.</ToastDescription>
+                </Toast>
+            )
+        });
+        return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Basic validation
-      if (
-        !formData.marca ||
-        !formData.linea ||
-        !formData.modelo ||
-        !formData.year ||
-        !formData.color ||
-        !formData.combustible ||
-        !formData.cilindrada ||
-        !formData.transmision
-      ) {
-        throw new Error("Por favor completa todos los campos.");
-      }
+      // 1. Get upload URL from Convex
+      const postUrl = await generateUploadUrl();
 
-      const year = parseInt(formData.year);
-      const cilindrada = parseInt(formData.cilindrada);
+      // 2. Fetch the file from its local URI
+      const response = await fetch(selectedFile.uri);
+      const blob = await response.blob();
 
-      if (isNaN(year) || isNaN(cilindrada)) {
-        throw new Error("Año y Cilindrada deben ser números válidos.");
-      }
+      // 3. Upload the file to the generated URL
+      const uploadResult = await fetch(postUrl, {
+        method: "POST",
+        headers: { "Content-Type": blob.type },
+        body: blob,
+      });
+      
+      const { storageId } = await uploadResult.json();
 
-      let storageId: Id<"_storage"> | undefined = undefined;
-
-      if (selectedImage) {
-        // 1. Get upload URL
-        const postUrl = await generateUploadUrl();
-
-        // 2. Convert URI to Blob
-        const response = await fetch(selectedImage);
-        const blob = await response.blob();
-
-        // 3. Upload to Convex
-        const result = await fetch(postUrl, {
-          method: "POST",
-          headers: { "Content-Type": blob.type },
-          body: blob,
-        });
-
-        const { storageId: id } = await result.json();
-        storageId = id;
-      }
-
-      await createVehiculo({
-        marca: formData.marca,
-        linea: formData.linea,
-        modelo: formData.modelo,
-        year: year,
-        color: formData.color,
-        combustible: formData.combustible,
-        cilindrada: cilindrada,
-        transmision: formData.transmision,
+      // 4. Associate the storageId with the selected kit
+      await addBillToKit({
+        kitId: selectedKitId,
         storageId: storageId,
       });
 
-      // Show success toast
       toast.show({
         placement: "top",
-        duration: 3000,
-        render: ({ id }) => {
-          const uniqueToastId = "toast-" + id;
-          return (
-            <Toast nativeID={uniqueToastId} action="success" variant="solid">
-              <VStack space="xs">
+        render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="success">
                 <ToastTitle>¡Éxito!</ToastTitle>
-                <ToastDescription>
-                  Vehículo registrado correctamente.
-                </ToastDescription>
-              </VStack>
+                <ToastDescription>Factura subida y asociada al kit correctamente.</ToastDescription>
             </Toast>
-          );
-        },
+        )
       });
-
-      // Reset form and navigate back or show success
-      setFormData({
-        marca: "",
-        linea: "",
-        modelo: "",
-        year: "",
-        color: "",
-        combustible: "",
-        cilindrada: "",
-        transmision: "",
-      });
-      setSelectedImage(null);
       
+      // Reset form and navigate
+      setSelectedKitId(null);
+      setSelectedFile(null);
       router.push("/(auth)/(tabs)/garage");
-      
-    } catch (err: any) {
-      const errorMessage = err.message || "Ocurrió un error al registrar el vehículo.";
-      setError(errorMessage);
-      console.error(err);
-      
-      // Show error toast
+
+    } catch (err) {
+      console.error("Error uploading bill:", err);
       toast.show({
         placement: "top",
-        duration: 3000,
-        render: ({ id }) => {
-          const uniqueToastId = "toast-error-" + id;
-          return (
-            <Toast nativeID={uniqueToastId} action="error" variant="solid">
-              <VStack space="xs">
+        render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="error">
                 <ToastTitle>Error</ToastTitle>
-                <ToastDescription>
-                  {errorMessage}
-                </ToastDescription>
-              </VStack>
+                <ToastDescription>No se pudo subir la factura. Inténtalo de nuevo.</ToastDescription>
             </Toast>
-          );
-        },
+        )
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+  
+  const selectedKitName = kits?.find(k => k._id === selectedKitId)?.name;
 
   return (
     <Box className="flex-1 bg-background-0">
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <VStack space="xl">
-          <Heading size="xl">Registrar Vehículo</Heading>
+          <Heading size="xl">Subir Factura de Energía</Heading>
           <Text size="sm" className="text-typography-500">
-            Ingresa los detalles de tu vehículo para registrarlo en la plataforma.
+            Selecciona el kit y sube una foto o PDF de tu factura de energía.
           </Text>
 
-           {/* Image Picker */}
-           <Box className="items-center justify-center">
-            <Pressable onPress={pickImage} className="w-full aspect-[4/3] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden">
-              {selectedImage ? (
-                <Image
-                  source={{ uri: selectedImage }}
-                  alt="Vehicle Image"
-                  className="w-full h-full"
-                  resizeMode="cover"
-                />
-              ) : (
-                <VStack className="items-center" space="xs">
-                  <Camera size={32} color="#9CA3AF" />
-                  <Text size="sm" className="text-typography-400">
-                    Toca para añadir una foto
-                  </Text>
-                </VStack>
-              )}
-            </Pressable>
-          </Box>
-
-          <VStack space="md">
-            {/* Marca */}
+          <VStack space="lg">
+            {/* Kit Selector */}
             <FormControl>
               <FormControlLabel>
-                <FormControlLabelText>Marca</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  placeholder="Ej. Toyota"
-                  value={formData.marca}
-                  onChangeText={(text) => handleChange("marca", text)}
-                />
-              </Input>
-            </FormControl>
-
-            {/* Linea */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Línea</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  placeholder="Ej. Corolla"
-                  value={formData.linea}
-                  onChangeText={(text) => handleChange("linea", text)}
-                />
-              </Input>
-            </FormControl>
-
-            {/* Modelo */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Modelo (Versión)</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  placeholder="Ej. LE"
-                  value={formData.modelo}
-                  onChangeText={(text) => handleChange("modelo", text)}
-                />
-              </Input>
-            </FormControl>
-
-            {/* Año y Color */}
-            <Box className="flex-row gap-4">
-              <FormControl className="flex-1">
-                <FormControlLabel>
-                  <FormControlLabelText>Año</FormControlLabelText>
-                </FormControlLabel>
-                <Input>
-                  <InputField
-                    placeholder="Ej. 2020"
-                    keyboardType="numeric"
-                    value={formData.year}
-                    onChangeText={(text) => handleChange("year", text)}
-                  />
-                </Input>
-              </FormControl>
-
-              <FormControl className="flex-1">
-                <FormControlLabel>
-                  <FormControlLabelText>Color</FormControlLabelText>
-                </FormControlLabel>
-                <Input>
-                  <InputField
-                    placeholder="Ej. Blanco"
-                    value={formData.color}
-                    onChangeText={(text) => handleChange("color", text)}
-                  />
-                </Input>
-              </FormControl>
-            </Box>
-
-            {/* Combustible */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Combustible</FormControlLabelText>
+                <FormControlLabelText>Selecciona un Kit</FormControlLabelText>
               </FormControlLabel>
               <Select
-                selectedValue={formData.combustible}
-                onValueChange={(value) => handleChange("combustible", value)}
+                selectedValue={selectedKitId ?? ""}
+                onValueChange={(value) => setSelectedKitId(value as Id<"kits">)}
+                isDisabled={!kits || kits.length === 0}
               >
                 <SelectTrigger variant="outline" size="md">
-                  <SelectInput placeholder="Selecciona..." />
+                  <SelectInput placeholder={!kits ? "Cargando kits..." : "Selecciona..."} />
                   <SelectIcon as={ChevronDown} className="mr-3" />
                 </SelectTrigger>
                 <SelectPortal>
@@ -320,72 +158,58 @@ export default function CreateVehiculoScreen() {
                     <SelectDragIndicatorWrapper>
                       <SelectDragIndicator />
                     </SelectDragIndicatorWrapper>
-                    <SelectItem label="Gasolina" value="Gasolina" />
-                    <SelectItem label="Diesel" value="Diesel" />
-                    <SelectItem label="Híbrido" value="Híbrido" />
-                    <SelectItem label="Eléctrico" value="Eléctrico" />
-                    <SelectItem label="Gas LP" value="Gas LP" />
+                    {kits?.map((kit) => (
+                      <SelectItem key={kit._id} label={kit.name} value={kit._id} />
+                    ))}
                   </SelectContent>
                 </SelectPortal>
               </Select>
-            </FormControl>
-
-            {/* Cilindrada */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Cilindrada (cc)</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  placeholder="Ej. 1800"
-                  keyboardType="numeric"
-                  value={formData.cilindrada}
-                  onChangeText={(text) => handleChange("cilindrada", text)}
-                />
-              </Input>
-            </FormControl>
-
-             {/* Transmision */}
-             <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Transmisión</FormControlLabelText>
-              </FormControlLabel>
-              <Select
-                selectedValue={formData.transmision}
-                onValueChange={(value) => handleChange("transmision", value)}
-              >
-                <SelectTrigger variant="outline" size="md">
-                  <SelectInput placeholder="Selecciona..." />
-                  <SelectIcon as={ChevronDown} className="mr-3" />
-                </SelectTrigger>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    <SelectItem label="Automática" value="Automática" />
-                    <SelectItem label="Manual" value="Manual" />
-                    <SelectItem label="CVT" value="CVT" />
-                    <SelectItem label="DCT" value="DCT" />
-                  </SelectContent>
-                </SelectPortal>
-              </Select>
-            </FormControl>
-
-            {error && (
-              <FormControlError className="flex flex-row items-center gap-2 mt-2">
-                <FormControlErrorIcon as={AlertCircleIcon} />
-                <FormControlErrorText>{error}</FormControlErrorText>
-              </FormControlError>
+               {kits && kits.length === 0 && (
+                <Text size="sm" className="text-negative-500 mt-2">
+                    No tienes kits. Por favor, crea uno en la pestaña de Búsqueda.
+                </Text>
             )}
+            </FormControl>
 
+            {/* File Picker */}
+            <FormControl>
+                <FormControlLabel>
+                    <FormControlLabelText>Archivo de Factura</FormControlLabelText>
+                </FormControlLabel>
+                <Pressable onPress={pickFile} className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden">
+                {selectedFile ? (
+                    selectedFile.mimeType?.startsWith("image/") ? (
+                        <Image
+                            source={{ uri: selectedFile.uri }}
+                            alt="Energy bill"
+                            className="w-full h-full"
+                            resizeMode="contain"
+                        />
+                    ) : (
+                         <VStack className="items-center" space="xs">
+                            <FileUp size={48} color="#9CA3AF" />
+                            <Text size="sm" className="text-typography-500 mt-2">
+                                Archivo seleccionado
+                            </Text>
+                        </VStack>
+                    )
+                ) : (
+                    <VStack className="items-center" space="xs">
+                    <FileUp size={48} color="#9CA3AF" />
+                    <Text size="sm" className="text-typography-400 mt-2">
+                        Toca para seleccionar una imagen o PDF
+                    </Text>
+                    </VStack>
+                )}
+                </Pressable>
+            </FormControl>
+           
             <Button
               className="mt-4"
               onPress={handleSubmit}
-              isDisabled={isSubmitting}
+              isDisabled={isSubmitting || !selectedKitId || !selectedFile}
             >
-              {isSubmitting ? <ButtonSpinner /> : <ButtonText>Registrar Vehículo</ButtonText>}
+              {isSubmitting ? <ButtonSpinner /> : <ButtonText>Subir Factura</ButtonText>}
             </Button>
           </VStack>
         </VStack>

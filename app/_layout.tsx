@@ -78,6 +78,10 @@ const InitialLayout = () => {
     }
    }, [isSignedIn, isLoaded, router, segments]);
 
+  if (!isLoaded) {
+    return null;
+  }
+
   return <Slot />;
 };
 

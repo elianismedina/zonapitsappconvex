@@ -13,7 +13,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     config: {
-      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
+      googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
     }
   },
   android: {
@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: "com.elianismedina05.zonapitsexpoclerk",
     config: {
       googleMaps: {
-        apiKey: process.env.GOOGLE_MAPS_API_KEY
+        apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
       }
     }
   },
