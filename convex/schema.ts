@@ -15,19 +15,6 @@ export const User = {
   pushToken: v.optional(v.string()),
 };
 
-export const Vehiculo = {
-  userId: v.id("users"),
-  marca: v.string(),
-  linea: v.string(),
-  modelo: v.string(),
-  year: v.number(),
-  color: v.string(),
-  combustible: v.string(),
-  cilindrada: v.number(),
-  transmision: v.string(),
-  storageId: v.optional(v.id("_storage")),
-};
-
 export const Kit = {
   userId: v.id("users"),
   name: v.string(),
@@ -45,6 +32,5 @@ export default defineSchema({
     .searchIndex("searchUsers", {
       searchField: "username",
     }),
-  vehiculos: defineTable(Vehiculo).index("byUserId", ["userId"]),
   kits: defineTable(Kit).index("byUserId", ["userId"]),
 });

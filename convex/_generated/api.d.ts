@@ -11,7 +11,6 @@
 import type * as http from "../http.js";
 import type * as kits from "../kits.js";
 import type * as users from "../users.js";
-import type * as vehiculos from "../vehiculos.js";
 
 import type {
   ApiFromModules,
@@ -23,7 +22,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   kits: typeof kits;
   users: typeof users;
-  vehiculos: typeof vehiculos;
 }>;
 
 /**

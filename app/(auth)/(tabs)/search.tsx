@@ -98,7 +98,7 @@ export default function SearchScreen() {
         render: ({ id }) => {
           return (
             <Toast action="error" variant="outline" nativeID={id}>
-              <ToastTitle>Please select a location and enter a name.</ToastTitle>
+              <ToastTitle>Por favor, selecciona una ubicación y escribe un nombre.</ToastTitle>
             </Toast>
           );
         },
@@ -120,7 +120,7 @@ export default function SearchScreen() {
         render: ({ id }) => {
           return (
             <Toast action="success" variant="outline" nativeID={id}>
-              <ToastTitle>Kit created successfully!</ToastTitle>
+              <ToastTitle>¡Kit creado exitosamente!</ToastTitle>
             </Toast>
           );
         },
@@ -140,7 +140,7 @@ export default function SearchScreen() {
         render: ({ id }) => {
           return (
             <Toast action="error" variant="outline" nativeID={id}>
-              <ToastTitle>Failed to create kit.</ToastTitle>
+              <ToastTitle>Fallo al crear kit.</ToastTitle>
             </Toast>
           );
         },
@@ -152,11 +152,11 @@ export default function SearchScreen() {
     <View style={styles.container}>
       <VStack style={styles.searchContainer}>
         <GooglePlacesAutocomplete
-          placeholder="Search for an address"
+          placeholder="Buscar una dirección"
           onPress={handlePlaceSelect}
           query={{
             key: GOOGLE_MAPS_API_KEY,
-            language: "en",
+            language: "es",
           }}
           fetchDetails={true}
           styles={{
@@ -215,15 +215,15 @@ export default function SearchScreen() {
 
       <View style={styles.formContainer}>
         <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
-            <Heading size="md" className="mb-4">Create New Solar Kit</Heading>
+            <Heading size="md" className="mb-4">Crear Nuevo Kit Solar</Heading>
             <VStack space="md">
             <FormControl>
                 <FormControlLabel>
-                <FormControlLabelText>Kit Name</FormControlLabelText>
+                <FormControlLabelText>Nombre del Kit</FormControlLabelText>
                 </FormControlLabel>
                 <Input>
                 <InputField 
-                    placeholder="e.g. My Cabin Solar" 
+                    placeholder="Ej. Kit Solar Cabaña" 
                     value={kitName}
                     onChangeText={setKitName}
                 />
@@ -231,14 +231,14 @@ export default function SearchScreen() {
             </FormControl>
             
             <View>
-                <Text className="text-gray-500 text-sm mb-1">Location:</Text>
+                <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
                 <Text numberOfLines={1} className="font-medium">
-                    {selectedLocation ? selectedLocation.address : "No location selected"}
+                    {selectedLocation ? selectedLocation.address : "Ninguna ubicación seleccionada"}
                 </Text>
             </View>
 
             <Button onPress={handleCreateKit} isDisabled={!selectedLocation || !kitName}>
-                <ButtonText>Create Kit</ButtonText>
+                <ButtonText>Crear Kit</ButtonText>
             </Button>
             </VStack>
         </Box>
