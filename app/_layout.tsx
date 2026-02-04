@@ -12,21 +12,18 @@ if (typeof window.addEventListener !== "function") {
   window.removeEventListener = () => {};
 }
 
+import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-import {
-  ClerkLoaded,
-  ClerkProvider,
-  useAuth,
-  useUser,
-} from "@clerk/clerk-expo";
+import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { useFonts } from "expo-font";
 import { Slot, useRouter, useSegments } from "expo-router";
-import { useEffect, useState } from "react";
-import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import * as SecureStore from "expo-secure-store";
-import * as SplashScreen from 'expo-splash-screen';
-import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -65,7 +62,6 @@ const InitialLayout = () => {
   const segments = useSegments();
   const router = useRouter();
 
-
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -76,7 +72,7 @@ const InitialLayout = () => {
     } else if (!isSignedIn && inTabsGroup) {
       router.replace("/");
     }
-   }, [isSignedIn, isLoaded, router, segments]);
+  }, [isSignedIn, isLoaded, router, segments]);
 
   if (!isLoaded) {
     return null;
@@ -86,7 +82,18 @@ const InitialLayout = () => {
 };
 
 const RootLayoutNav = () => {
+  const [fontsLoaded, fontError] = useFonts({
+    ...Ionicons.font,
+  });
   const [isSplashFinished, setIsSplashFinished] = useState(false);
+
+  useEffect(() => {
+    if (fontError) throw fontError;
+  }, [fontError]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <GluestackUIProvider>

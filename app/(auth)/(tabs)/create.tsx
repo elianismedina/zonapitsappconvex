@@ -46,6 +46,7 @@ export default function UploadBillScreen() {
   const kits = useQuery(api.kits.getKits, {});
   const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
   const addBillToKit = useMutation(api.kits.addBillToKit);
+  const safeKits = kits ?? [];
 
   // Component State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -177,7 +178,7 @@ export default function UploadBillScreen() {
                     <SelectDragIndicatorWrapper>
                       <SelectDragIndicator />
                     </SelectDragIndicatorWrapper>
-                    {kits?.map((kit) => (
+                    {safeKits.map((kit) => (
                       <SelectItem
                         key={kit._id}
                         label={kit.name}
@@ -187,7 +188,7 @@ export default function UploadBillScreen() {
                   </SelectContent>
                 </SelectPortal>
               </Select>
-              {kits && kits.length === 0 && (
+              {Boolean(safeKits.length === 0) && (
                 <Text size="sm" className="text-negative-500 mt-2">
                   No tienes kits. Por favor, crea uno en la pestaña de Búsqueda.
                 </Text>

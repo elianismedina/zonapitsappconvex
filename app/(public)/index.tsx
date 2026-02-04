@@ -1,7 +1,7 @@
 import { useOAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { Path, Svg } from "react-native-svg";
 import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
+import { Path, Svg } from "react-native-svg";
 
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
@@ -40,9 +40,9 @@ const LoginScreen = () => {
   };
 
   return (
-    <Box className="flex-1"> {/* Removed bg-background-0 to make gradient visible */}
+    <Box className="flex-1">
       <LinearGradient
-        colors={['#A7C7E7', '#E0BBE4']} // Example colors: light blue to light purple
+        colors={["#A7C7E7", "#E0BBE4"]} // Example colors: light blue to light purple
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -60,9 +60,9 @@ const LoginScreen = () => {
           </Text>
 
           <VStack space="lg" className="w-full">
-            {/* Instagram Button*/}
-            <Button 
-              className="bg-white border border-outline-200 h-auto p-5 rounded-lg flex-col items-start" 
+            {/* Instagram Button */}
+            <Button
+              className="bg-white border border-outline-200 h-auto p-5 rounded-lg flex-col items-start"
               onPress={handleFacebookLogin}
               variant="outline"
             >
@@ -76,22 +76,18 @@ const LoginScreen = () => {
                 <Text className="flex-1 ml-2.5 text-black font-medium">
                   Continuar con Instagram
                 </Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={24}
-                  color="#D4D4D4"
-                />
+                <Ionicons name="chevron-forward" size={24} color="#D4D4D4" />
               </Box>
               <Text className="text-xs text-typography-400 mt-2.5 leading-4">
-                Inicia sesión o crea un perfil con tu cuenta de Instagram. Con un
-                perfil puedes registrar vehículos y recibir recomendaciones
+                Inicia sesión o crea un perfil con tu cuenta de Instagram. Con
+                un perfil puedes registrar vehículos y recibir recomendaciones
                 personalizadas de repuestos, accesorios y servicios.
               </Text>
             </Button>
 
-            {/* Google Button*/}
-            <Button 
-              className="bg-white border border-outline-200 h-auto p-5 rounded-lg" 
+            {/* Google Button */}
+            <Button
+              className="bg-white border border-outline-200 h-auto p-5 rounded-lg"
               onPress={handleGoogleLogin}
               variant="outline"
             >
@@ -114,14 +110,20 @@ const LoginScreen = () => {
                     d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                   />
                 </Svg>
-                <Text className="flex-1 ml-2.5 text-black font-medium">Continuar con Google</Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={24}
-                  color="#D4D4D4"
-                />
+                <Text className="flex-1 ml-2.5 text-black font-medium">
+                  Continuar con Google
+                </Text>
+                <Ionicons name="chevron-forward" size={24} color="#D4D4D4" />
               </Box>
             </Button>
+            <Box className="w-full flex items-center justify-center mt-6">
+              <Image
+                source={require("@/assets/images/EfiSolarLight.png")}
+                alt="Efisolar Logo"
+                className="w-64 h-64"
+                resizeMode="contain"
+              />
+            </Box>
           </VStack>
         </VStack>
       </ScrollView>
