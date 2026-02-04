@@ -1,27 +1,27 @@
-import React, { useState, useRef } from "react";
-import { StyleSheet, View, Dimensions, Keyboard, TouchableOpacity } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useRouter } from "expo-router";
-import { Plus, Minus } from "lucide-react-native";
 import {
   Box,
   Button,
   ButtonText,
-  Input,
-  InputField,
-  Text,
-  VStack,
-  Heading,
   FormControl,
   FormControlLabel,
   FormControlLabelText,
+  Heading,
+  Input,
+  InputField,
+  Text,
   Toast,
   ToastTitle,
+  VStack,
   useToast,
 } from "@/components/ui";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { useRouter } from "expo-router";
+import { Minus, Plus } from "lucide-react-native";
+import React, { useRef, useState } from "react";
+import { Keyboard, StyleSheet, TouchableOpacity, View } from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
@@ -32,10 +32,10 @@ export default function SearchScreen() {
     latitude: number;
     longitude: number;
   } | null>(null);
-  
+
   const [region, setRegion] = useState<Region>({
-    latitude: 37.78825,
-    longitude: -122.4324,
+    latitude: 4.651795,
+    longitude: -74.09462,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -49,7 +49,7 @@ export default function SearchScreen() {
     if (details) {
       const { lat, lng } = details.geometry.location;
       const address = data.description;
-      
+
       const newRegion = {
         latitude: lat,
         longitude: lng,
@@ -93,12 +93,14 @@ export default function SearchScreen() {
 
   const handleCreateKit = async () => {
     if (!selectedLocation || !kitName.trim()) {
-       toast.show({
+      toast.show({
         placement: "top",
         render: ({ id }) => {
           return (
             <Toast action="error" variant="outline" nativeID={id}>
-              <ToastTitle>Por favor, selecciona una ubicación y escribe un nombre.</ToastTitle>
+              <ToastTitle>
+                Por favor, selecciona una ubicación y escribe un nombre.
+              </ToastTitle>
             </Toast>
           );
         },
@@ -130,9 +132,9 @@ export default function SearchScreen() {
       setKitName("");
       setSelectedLocation(null);
       Keyboard.dismiss();
-      
+
       // Optional: Navigate to kit details or list
-      // router.push("/(auth)/(tabs)/kits"); 
+      // router.push("/(auth)/(tabs)/kits");
     } catch (error) {
       console.error("Error creating kit:", error);
       toast.show({
@@ -159,6 +161,8 @@ export default function SearchScreen() {
             language: "es",
           }}
           fetchDetails={true}
+          debounce={250}
+          minLength={2}
           styles={{
             container: {
               flex: 0,
@@ -167,8 +171,8 @@ export default function SearchScreen() {
             },
             listView: {
               backgroundColor: "white",
-              zIndex: 1000, 
-              position: 'absolute',
+              zIndex: 1000,
+              position: "absolute",
               top: 45,
               width: "100%",
             },
@@ -178,7 +182,7 @@ export default function SearchScreen() {
               paddingHorizontal: 10,
               backgroundColor: "#f0f0f0",
               fontSize: 16,
-            }
+            },
           }}
           enablePoweredByContainer={false}
         />
@@ -188,7 +192,7 @@ export default function SearchScreen() {
         ref={mapRef}
         style={styles.map}
         provider={PROVIDER_GOOGLE}
-        region={region}
+        initialRegion={region}
         onRegionChangeComplete={setRegion}
         zoomEnabled={true}
         scrollEnabled={true}
@@ -203,7 +207,7 @@ export default function SearchScreen() {
           />
         )}
       </MapView>
-      
+
       <View style={styles.zoomControls}>
         <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
           <Plus size={24} color="#000" />
@@ -215,32 +219,39 @@ export default function SearchScreen() {
 
       <View style={styles.formContainer}>
         <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
-            <Heading size="md" className="mb-4">Crear Nuevo Kit Solar</Heading>
-            <VStack space="md">
+          <Heading size="md" className="mb-4">
+            Crear Nuevo Kit Solar
+          </Heading>
+          <VStack space="md">
             <FormControl>
-                <FormControlLabel>
+              <FormControlLabel>
                 <FormControlLabelText>Nombre del Kit</FormControlLabelText>
-                </FormControlLabel>
-                <Input>
-                <InputField 
-                    placeholder="Ej. Kit Solar Cabaña" 
-                    value={kitName}
-                    onChangeText={setKitName}
+              </FormControlLabel>
+              <Input>
+                <InputField
+                  placeholder="Ej. Kit Solar Cabaña"
+                  value={kitName}
+                  onChangeText={setKitName}
                 />
-                </Input>
+              </Input>
             </FormControl>
-            
+
             <View>
-                <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
-                <Text numberOfLines={1} className="font-medium">
-                    {selectedLocation ? selectedLocation.address : "Ninguna ubicación seleccionada"}
-                </Text>
+              <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
+              <Text numberOfLines={1} className="font-medium">
+                {selectedLocation
+                  ? selectedLocation.address
+                  : "Ninguna ubicación seleccionada"}
+              </Text>
             </View>
 
-            <Button onPress={handleCreateKit} isDisabled={!selectedLocation || !kitName}>
-                <ButtonText>Crear Kit</ButtonText>
+            <Button
+              onPress={handleCreateKit}
+              isDisabled={!selectedLocation || !kitName}
+            >
+              <ButtonText>Crear Kit</ButtonText>
             </Button>
-            </VStack>
+          </VStack>
         </Box>
       </View>
     </View>

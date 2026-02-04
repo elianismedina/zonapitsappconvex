@@ -91,12 +91,13 @@ const RootLayoutNav = () => {
     if (fontError) throw fontError;
   }, [fontError]);
 
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+
   if (!fontsLoaded) {
     return null;
   }
-
   return (
-    <GluestackUIProvider>
+    <GluestackUIProvider mode={colorMode}>
       <ClerkProvider
         publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
         tokenCache={tokenCache}
