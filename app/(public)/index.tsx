@@ -1,6 +1,7 @@
 import { useOAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Path, Svg } from "react-native-svg";
+import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
 
 import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import React from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native"; // Import StyleSheet
 
 const LoginScreen = () => {
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_facebook" });
@@ -39,7 +40,13 @@ const LoginScreen = () => {
   };
 
   return (
-    <Box className="flex-1 bg-background-0">
+    <Box className="flex-1"> {/* Removed bg-background-0 to make gradient visible */}
+      <LinearGradient
+        colors={['#A7C7E7', '#E0BBE4']} // Example colors: light blue to light purple
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Image
           source={require("@/assets/images/login.png")}

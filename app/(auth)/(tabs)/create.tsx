@@ -1,39 +1,47 @@
-import { useState } from "react";
-import { ScrollView, Platform, View } from "react-native";
 import { useMutation, useQuery } from "convex/react";
-import { useRouter } from "expo-router";
-import { ChevronDown, FileUp, Image as ImageIcon } from "lucide-react-native";
 import * as DocumentPicker from "expo-document-picker";
+import { useRouter } from "expo-router";
+import { ChevronDown, FileUp } from "lucide-react-native";
+import { useState } from "react";
+import { ScrollView } from "react-native";
 
 import { Box } from "@/components/ui/box";
-import { VStack } from "@/components/ui/vstack";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+} from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import { Pressable } from "@/components/ui/pressable";
 import { Image } from "@/components/ui/image";
-import { Icon } from "@/components/ui/icon";
-import { FormControl, FormControlLabel, FormControlLabelText } from "@/components/ui/form-control";
+import { Pressable } from "@/components/ui/pressable";
 import {
   Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
   SelectBackdrop,
   SelectContent,
-  SelectDragIndicatorWrapper,
   SelectDragIndicator,
+  SelectDragIndicatorWrapper,
+  SelectIcon,
+  SelectInput,
   SelectItem,
+  SelectPortal,
+  SelectTrigger,
 } from "@/components/ui/select";
-import { useToast, Toast, ToastTitle, ToastDescription } from "@/components/ui/toast";
+import { Text } from "@/components/ui/text";
+import {
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  useToast,
+} from "@/components/ui/toast";
+import { VStack } from "@/components/ui/vstack";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 export default function UploadBillScreen() {
   const router = useRouter();
   const toast = useToast();
-  
+
   // Queries & Mutations
   const kits = useQuery(api.kits.getKits, {});
   const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
@@ -42,9 +50,13 @@ export default function UploadBillScreen() {
   // Component State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(null);
-  const [selectedFile, setSelectedFile] = useState<{ uri: string; mimeType?: string } | null>(null);
+  const [selectedFile, setSelectedFile] = useState<{
+    uri: string;
+    mimeType?: string;
+  } | null>(null);
 
   const pickFile = async () => {
+    alert("Please rebuild dev client to enable DocumentPicker");
     const result = await DocumentPicker.getDocumentAsync({
       type: ["application/pdf", "image/*"],
       copyToCacheDirectory: true,
@@ -58,16 +70,18 @@ export default function UploadBillScreen() {
 
   const handleSubmit = async () => {
     if (!selectedKitId || !selectedFile) {
-        toast.show({
-            placement: "top",
-            render: ({ id }) => (
-                <Toast nativeID={`toast-${id}`} action="error">
-                    <ToastTitle>Faltan datos</ToastTitle>
-                    <ToastDescription>Por favor, selecciona un kit y un archivo.</ToastDescription>
-                </Toast>
-            )
-        });
-        return;
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error">
+            <ToastTitle>Faltan datos</ToastTitle>
+            <ToastDescription>
+              Por favor, selecciona un kit y un archivo.
+            </ToastDescription>
+          </Toast>
+        ),
+      });
+      return;
     }
 
     setIsSubmitting(true);
@@ -86,7 +100,7 @@ export default function UploadBillScreen() {
         headers: { "Content-Type": blob.type },
         body: blob,
       });
-      
+
       const { storageId } = await uploadResult.json();
 
       // 4. Associate the storageId with the selected kit
@@ -98,35 +112,38 @@ export default function UploadBillScreen() {
       toast.show({
         placement: "top",
         render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="success">
-                <ToastTitle>¡Éxito!</ToastTitle>
-                <ToastDescription>Factura subida y asociada al kit correctamente.</ToastDescription>
-            </Toast>
-        )
+          <Toast nativeID={`toast-${id}`} action="success">
+            <ToastTitle>¡Éxito!</ToastTitle>
+            <ToastDescription>
+              Factura subida y asociada al kit correctamente.
+            </ToastDescription>
+          </Toast>
+        ),
       });
-      
+
       // Reset form and navigate
       setSelectedKitId(null);
       setSelectedFile(null);
       router.push("/(auth)/(tabs)/garage");
-
     } catch (err) {
       console.error("Error uploading bill:", err);
       toast.show({
         placement: "top",
         render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="error">
-                <ToastTitle>Error</ToastTitle>
-                <ToastDescription>No se pudo subir la factura. Inténtalo de nuevo.</ToastDescription>
-            </Toast>
-        )
+          <Toast nativeID={`toast-${id}`} action="error">
+            <ToastTitle>Error</ToastTitle>
+            <ToastDescription>
+              No se pudo subir la factura. Inténtalo de nuevo.
+            </ToastDescription>
+          </Toast>
+        ),
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-  
-  const selectedKitName = kits?.find(k => k._id === selectedKitId)?.name;
+
+  const selectedKitName = kits?.find((k) => k._id === selectedKitId)?.name;
 
   return (
     <Box className="flex-1 bg-background-0">
@@ -149,7 +166,9 @@ export default function UploadBillScreen() {
                 isDisabled={!kits || kits.length === 0}
               >
                 <SelectTrigger variant="outline" size="md">
-                  <SelectInput placeholder={!kits ? "Cargando kits..." : "Selecciona..."} />
+                  <SelectInput
+                    placeholder={!kits ? "Cargando kits..." : "Selecciona..."}
+                  />
                   <SelectIcon as={ChevronDown} className="mr-3" />
                 </SelectTrigger>
                 <SelectPortal>
@@ -159,57 +178,68 @@ export default function UploadBillScreen() {
                       <SelectDragIndicator />
                     </SelectDragIndicatorWrapper>
                     {kits?.map((kit) => (
-                      <SelectItem key={kit._id} label={kit.name} value={kit._id} />
+                      <SelectItem
+                        key={kit._id}
+                        label={kit.name}
+                        value={kit._id}
+                      />
                     ))}
                   </SelectContent>
                 </SelectPortal>
               </Select>
-               {kits && kits.length === 0 && (
+              {kits && kits.length === 0 && (
                 <Text size="sm" className="text-negative-500 mt-2">
-                    No tienes kits. Por favor, crea uno en la pestaña de Búsqueda.
+                  No tienes kits. Por favor, crea uno en la pestaña de Búsqueda.
                 </Text>
-            )}
+              )}
             </FormControl>
 
             {/* File Picker */}
             <FormControl>
-                <FormControlLabel>
-                    <FormControlLabelText>Archivo de Factura</FormControlLabelText>
-                </FormControlLabel>
-                <Pressable onPress={pickFile} className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden">
+              <FormControlLabel>
+                <FormControlLabelText>Archivo de Factura</FormControlLabelText>
+              </FormControlLabel>
+              <Pressable
+                onPress={pickFile}
+                className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden"
+              >
                 {selectedFile ? (
-                    selectedFile.mimeType?.startsWith("image/") ? (
-                        <Image
-                            source={{ uri: selectedFile.uri }}
-                            alt="Energy bill"
-                            className="w-full h-full"
-                            resizeMode="contain"
-                        />
-                    ) : (
-                         <VStack className="items-center" space="xs">
-                            <FileUp size={48} color="#9CA3AF" />
-                            <Text size="sm" className="text-typography-500 mt-2">
-                                Archivo seleccionado
-                            </Text>
-                        </VStack>
-                    )
-                ) : (
+                  selectedFile.mimeType?.startsWith("image/") ? (
+                    <Image
+                      source={{ uri: selectedFile.uri }}
+                      alt="Energy bill"
+                      className="w-full h-full"
+                      resizeMode="contain"
+                    />
+                  ) : (
                     <VStack className="items-center" space="xs">
+                      <FileUp size={48} color="#9CA3AF" />
+                      <Text size="sm" className="text-typography-500 mt-2">
+                        Archivo seleccionado
+                      </Text>
+                    </VStack>
+                  )
+                ) : (
+                  <VStack className="items-center" space="xs">
                     <FileUp size={48} color="#9CA3AF" />
                     <Text size="sm" className="text-typography-400 mt-2">
-                        Toca para seleccionar una imagen o PDF
+                      Toca para seleccionar una imagen o PDF
                     </Text>
-                    </VStack>
+                  </VStack>
                 )}
-                </Pressable>
+              </Pressable>
             </FormControl>
-           
+
             <Button
               className="mt-4"
               onPress={handleSubmit}
               isDisabled={isSubmitting || !selectedKitId || !selectedFile}
             >
-              {isSubmitting ? <ButtonSpinner /> : <ButtonText>Subir Factura</ButtonText>}
+              {isSubmitting ? (
+                <ButtonSpinner />
+              ) : (
+                <ButtonText>Subir Factura</ButtonText>
+              )}
             </Button>
           </VStack>
         </VStack>
