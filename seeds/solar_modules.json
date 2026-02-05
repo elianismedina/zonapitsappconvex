@@ -1,0 +1,26 @@
+[
+  {
+    "brand": "Jinko Solar",
+    "model": "Tiger Neo N-type 54HL4R-B",
+    "wattage": 440,
+    "voltage": 32.81,
+    "price": 120,
+    "imageUrl": "https://example.com/jinko-tiger.png"
+  },
+  {
+    "brand": "Canadian Solar",
+    "model": "HiKu6 CS6R-410MS",
+    "wattage": 410,
+    "voltage": 31.4,
+    "price": 105,
+    "imageUrl": "https://example.com/canadian-hiku6.png"
+  },
+  {
+    "brand": "Trina Solar",
+    "model": "Vertex S+ TSM-435NEG9R.28",
+    "wattage": 435,
+    "voltage": 43.6,
+    "price": 115,
+    "imageUrl": "https://example.com/trina-vertex.png"
+  }
+]
