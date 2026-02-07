@@ -1,26 +1,44 @@
 [
   {
-    "brand": "Jinko Solar",
-    "model": "Tiger Neo N-type 54HL4R-B",
-    "wattage": 440,
-    "voltage": 32.81,
-    "price": 120,
-    "imageUrl": "https://example.com/jinko-tiger.png"
+    "brand": "Osda",
+    "model": "ODA630-33V-MHDRz",
+    "price": 420000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1770504510/osda630_dpgsco.webp",
+    "pmax": 630,
+    "vmp": 41.55,
+    "imp": 15.16,
+    "voc": 48.88,
+    "isc": 16.11,
+    "efficiency": 23.32,
+    "weight": 32.4,
+    "dimensions": "2382x1134x30"
   },
   {
     "brand": "Canadian Solar",
     "model": "HiKu6 CS6R-410MS",
-    "wattage": 410,
-    "voltage": 31.4,
     "price": 105,
-    "imageUrl": "https://example.com/canadian-hiku6.png"
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1770504510/osda630_dpgsco.webp",
+    "pmax": 410,
+    "vmp": 31.4,
+    "imp": 13.06,
+    "voc": 37.7,
+    "isc": 13.91,
+    "efficiency": 21.0,
+    "weight": 21.5,
+    "dimensions": "1722x1134x30"
   },
   {
     "brand": "Trina Solar",
     "model": "Vertex S+ TSM-435NEG9R.28",
-    "wattage": 435,
-    "voltage": 43.6,
     "price": 115,
-    "imageUrl": "https://example.com/trina-vertex.png"
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1770504510/osda630_dpgsco.webp",
+    "pmax": 435,
+    "vmp": 43.6,
+    "imp": 9.99,
+    "voc": 51.8,
+    "isc": 10.64,
+    "efficiency": 21.8,
+    "weight": 21.1,
+    "dimensions": "1762x1134x30"
   }
 ]

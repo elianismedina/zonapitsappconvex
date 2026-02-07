@@ -29,10 +29,16 @@ export const Kit = {
 export const SolarModule = {
   brand: v.string(),
   model: v.string(),
-  wattage: v.number(),
-  voltage: v.optional(v.number()), // Voc
   price: v.number(),
   imageUrl: v.optional(v.string()),
+  pmax: v.number(),
+  vmp: v.number(),
+  imp: v.number(),
+  voc: v.number(),
+  isc: v.number(),
+  efficiency: v.number(),
+  weight: v.number(),
+  dimensions: v.string(),
 };
 
 export const Inverter = {

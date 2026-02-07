@@ -1,6 +1,7 @@
 import React from 'react';
 import { createImage } from '@gluestack-ui/core/image/creator';
-import { Platform, Image as RNImage } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
+import { Platform } from 'react-native';
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
 
@@ -21,7 +22,7 @@ const imageStyle = tva({
   },
 });
 
-const UIImage = createImage({ Root: RNImage });
+const UIImage = createImage({ Root: ExpoImage });
 
 type ImageProps = VariantProps<typeof imageStyle> &
   React.ComponentProps<typeof UIImage>;
