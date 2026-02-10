@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
-import { internalMutation, mutation, query } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 
 export const getUserByClerkId = query({
   args: {
@@ -72,10 +72,11 @@ export const createUser = internalMutation({
         email: args.email,
         followersCount: 0,
       };
-      if (args.first_name !== undefined) insertData.first_name = args.first_name;
+      if (args.first_name !== undefined)
+        insertData.first_name = args.first_name;
       if (args.last_name !== undefined) insertData.last_name = args.last_name;
       if (args.imageUrl !== undefined) insertData.imageUrl = args.imageUrl;
-      if (args.username !== undefined) insertData.username = args.username;
+      insertData.username = args.username ?? null;
       const userId = await ctx.db.insert("users", insertData);
       return userId;
     }
