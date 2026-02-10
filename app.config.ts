@@ -52,6 +52,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     "expo-web-browser",
     "expo-asset",
+    [
+      "@sentry/react-native/expo",
+      {
+        url: "https://sentry.io/",
+        project: "efisolar-kit",
+        organization: "eficiencia-solar-del-caribe",
+      },
+    ],
   ],
   experiments: {
     typedRoutes: false,
