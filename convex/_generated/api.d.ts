@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as actions from "../actions.js";
 import type * as batteries from "../batteries.js";
 import type * as cables from "../cables.js";
 import type * as http from "../http.js";
@@ -16,6 +17,7 @@ import type * as kit_components from "../kit_components.js";
 import type * as kits from "../kits.js";
 import type * as modules from "../modules.js";
 import type * as protections from "../protections.js";
+import type * as sizing from "../sizing.js";
 import type * as structures from "../structures.js";
 import type * as users from "../users.js";
 
@@ -26,6 +28,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  actions: typeof actions;
   batteries: typeof batteries;
   cables: typeof cables;
   http: typeof http;
@@ -34,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   kits: typeof kits;
   modules: typeof modules;
   protections: typeof protections;
+  sizing: typeof sizing;
   structures: typeof structures;
   users: typeof users;
 }>;

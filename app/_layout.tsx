@@ -20,7 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { useFonts } from "expo-font";
-import { Slot, useRouter, useSegments } from "expo-router";
+import { Slot, useRouter, useSegments, useRootNavigationState } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
@@ -61,18 +61,19 @@ const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const rootNavigationState = useRootNavigationState();
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || !rootNavigationState?.key) return;
 
     const inTabsGroup = segments[0] === "(auth)";
 
     if (isSignedIn && !inTabsGroup) {
-      router.replace("/feed");
+      router.replace("/(auth)/(tabs)/feed");
     } else if (!isSignedIn && inTabsGroup) {
-      router.replace("/");
+      router.replace("/(public)");
     }
-  }, [isSignedIn, isLoaded, router, segments]);
+  }, [isSignedIn, isLoaded, router, segments, rootNavigationState]);
 
   if (!isLoaded) {
     return null;

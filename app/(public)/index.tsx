@@ -116,7 +116,7 @@ const LoginScreen = () => {
                 <Ionicons name="chevron-forward" size={24} color="#D4D4D4" />
               </Box>
             </Button>
-            <Box className="w-full flex items-center justify-center mt-6">
+            <Box className="w-full flex items-center justify-center -mt-8">
               <Image
                 source={require("@/assets/images/EfiSolarLight.png")}
                 alt="Efisolar Logo"

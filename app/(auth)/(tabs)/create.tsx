@@ -1,12 +1,13 @@
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
-import { useRouter } from "expo-router";
-import { ChevronDown, FileUp } from "lucide-react-native";
-import { useState } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { ChevronDown, FileUp, CheckCircle, AlertCircle } from "lucide-react-native";
+import { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
 
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   FormControl,
   FormControlLabel,
@@ -35,37 +36,86 @@ import {
   useToast,
 } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { HStack } from "@/components/ui/hstack";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
 export default function UploadBillScreen() {
   const router = useRouter();
+  const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
   const toast = useToast();
-
-  // Queries & Mutations
-  const kits = useQuery(api.kits.getKits, {});
-  const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
-  const addBillToKit = useMutation(api.kits.addBillToKit);
-  const safeKits = kits ?? [];
 
   // Component State
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(
+    kitId || null
+  );
   const [selectedFile, setSelectedFile] = useState<{
     uri: string;
     mimeType?: string;
+    name?: string;
   } | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+
+  // Queries, Mutations & Actions
+  const kits = useQuery(api.kits.getKits, {});
+  const kit = useQuery(
+    api.kits.getKitById,
+    selectedKitId ? { id: selectedKitId } : "skip"
+  );
+  const billUrl = useQuery(
+    api.kits.getBillUrl,
+    kit?.billStorageId ? { storageId: kit.billStorageId } : "skip"
+  );
+  const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
+  const addBillToKit = useMutation(api.kits.addBillToKit);
+  const saveBillAnalysis = useMutation(api.kits.saveBillAnalysis);
+  const analyzeBill = useAction(api.actions.analyzeBill);
+  
+  const safeKits = kits ?? [];
+  const selectedKitObject = safeKits.find((k) => k._id === selectedKitId);
+
+  // While the selected kit's data is loading, show a spinner.
+  const isKitLoading = selectedKitId && kit === undefined;
+
+  // Effect 1: Reset form state whenever the selected kit ID changes.
+  // This ensures we start with a clean slate for each kit.
+  useEffect(() => {
+    setAnalysisResult(null);
+    setSelectedFile(null);
+  }, [selectedKitId]);
+
+  // Effect 2: When the kit data has loaded, populate the form if there are existing bill details.
+  useEffect(() => {
+    if (kit && kit.provider && kit.monthlyConsumptionKwh) {
+      setAnalysisResult({
+        provider: kit.provider,
+        billingPeriod: kit.billingPeriod,
+        monthlyConsumptionKwh: kit.monthlyConsumptionKwh,
+        totalAmount: kit.totalAmount,
+        currency: kit.currency,
+        energyRate: kit.energyRate,
+      });
+
+      // Set a placeholder for the file if a bill is linked to show the preview
+      if (kit.billStorageId) {
+        setSelectedFile({ uri: "existing", name: "Factura Guardada" });
+      }
+    }
+  }, [kit]);
 
   const pickFile = async () => {
-    alert("Please rebuild dev client to enable DocumentPicker");
     const result = await DocumentPicker.getDocumentAsync({
       type: ["application/pdf", "image/*"],
       copyToCacheDirectory: true,
     });
+    console.log("DocumentPicker result:", JSON.stringify(result, null, 2));
 
     if (result.canceled === false && result.assets && result.assets[0]) {
       const asset = result.assets[0];
-      setSelectedFile({ uri: asset.uri, mimeType: asset.mimeType });
+      setSelectedFile({ uri: asset.uri, mimeType: asset.mimeType, name: asset.name });
+      setAnalysisResult(null); // Reset analysis if new file picked
     }
   };
 
@@ -110,41 +160,61 @@ export default function UploadBillScreen() {
         storageId: storageId,
       });
 
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="success">
-            <ToastTitle>¡Éxito!</ToastTitle>
-            <ToastDescription>
-              Factura subida y asociada al kit correctamente.
-            </ToastDescription>
-          </Toast>
-        ),
-      });
+      // 5. Trigger AI Analysis
+      setIsAnalyzing(true);
+      const analysis = await analyzeBill({ storageId });
+      
+      if (analysis.success) {
+        setAnalysisResult(analysis.data);
+        
+        // 6. Save extracted data to the database
+        await saveBillAnalysis({
+          kitId: selectedKitId,
+          monthlyConsumptionKwh: analysis.data.monthlyConsumptionKwh ?? undefined,
+          energyRate: analysis.data.energyRate ?? undefined,
+          totalAmount: analysis.data.totalAmount ?? undefined,
+          currency: analysis.data.currency ?? undefined,
+          billingPeriod: analysis.data.billingPeriod ?? undefined,
+          provider: analysis.data.provider ?? undefined,
+        });
 
-      // Reset form and navigate
-      setSelectedKitId(null);
-      setSelectedFile(null);
-      router.push("/(auth)/(tabs)/garage");
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="success">
+              <ToastTitle>Análisis completado</ToastTitle>
+              <ToastDescription>
+                Hemos extraído los datos de tu factura.
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+      } else {
+        throw new Error(analysis.error || "Error en el análisis");
+      }
+
     } catch (err) {
-      console.error("Error uploading bill:", err);
+      console.error("Error processing bill:", err);
       toast.show({
         placement: "top",
         render: ({ id }) => (
           <Toast nativeID={`toast-${id}`} action="error">
             <ToastTitle>Error</ToastTitle>
             <ToastDescription>
-              No se pudo subir la factura. Inténtalo de nuevo.
+              No se pudo procesar la factura. Inténtalo de nuevo.
             </ToastDescription>
           </Toast>
         ),
       });
     } finally {
       setIsSubmitting(false);
+      setIsAnalyzing(false);
     }
   };
 
-  const selectedKitName = kits?.find((k) => k._id === selectedKitId)?.name;
+  const handleFinish = () => {
+    router.push("/(auth)/(tabs)/garage");
+  };
 
   return (
     <Box className="flex-1 bg-background-0">
@@ -152,97 +222,188 @@ export default function UploadBillScreen() {
         <VStack space="xl">
           <Heading size="xl">Subir Factura de Energía</Heading>
           <Text size="sm" className="text-typography-500">
-            Selecciona el kit y sube una foto o PDF de tu factura de energía.
+            Sube tu factura para que la IA extraiga tu consumo y tarifas automáticamente.
           </Text>
 
-          <VStack space="lg">
-            {/* Kit Selector */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Selecciona un Kit</FormControlLabelText>
-              </FormControlLabel>
-              <Select
-                selectedValue={selectedKitId ?? ""}
-                onValueChange={(value) => setSelectedKitId(value as Id<"kits">)}
-                isDisabled={!kits || kits.length === 0}
-              >
-                <SelectTrigger variant="outline" size="md">
-                  <SelectInput
-                    placeholder={!kits ? "Cargando kits..." : "Selecciona..."}
-                  />
-                  <SelectIcon as={ChevronDown} className="mr-3" />
-                </SelectTrigger>
-                <SelectPortal>
-                  <SelectBackdrop />
-                  <SelectContent>
-                    <SelectDragIndicatorWrapper>
-                      <SelectDragIndicator />
-                    </SelectDragIndicatorWrapper>
-                    {safeKits.map((kit) => (
-                      <SelectItem
-                        key={kit._id}
-                        label={kit.name}
-                        value={kit._id}
-                      />
-                    ))}
-                  </SelectContent>
-                </SelectPortal>
-              </Select>
-              {Boolean(safeKits.length === 0) && (
-                <Text size="sm" className="text-negative-500 mt-2">
-                  No tienes kits. Por favor, crea uno en la pestaña de Búsqueda.
-                </Text>
-              )}
-            </FormControl>
+          {isKitLoading ? (
+            <Box className="h-96 w-full items-center justify-center">
+              <ButtonSpinner />
+            </Box>
+          ) : !analysisResult ? (
+            <VStack space="lg">
+              {/* Kit Selector */}
+              <FormControl>
+                <FormControlLabel>
+                  <FormControlLabelText>Selecciona un Kit</FormControlLabelText>
+                </FormControlLabel>
+                <Select
+                  selectedValue={selectedKitId ?? ""}
+                  onValueChange={(value) => setSelectedKitId(value as Id<"kits">)}
+                  isDisabled={!kits || kits.length === 0 || isSubmitting}
+                >
+                  <SelectTrigger variant="outline" size="md">
+                    <SelectInput
+                      placeholder={!kits ? "Cargando kits..." : "Selecciona..."}
+                      value={selectedKitObject?.name}
+                    />
+                    <SelectIcon as={ChevronDown} className="mr-3" />
+                  </SelectTrigger>
+                  <SelectPortal>
+                    <SelectBackdrop />
+                    <SelectContent>
+                      <SelectDragIndicatorWrapper>
+                        <SelectDragIndicator />
+                      </SelectDragIndicatorWrapper>
+                      {safeKits.map((kit) => (
+                        <SelectItem
+                          key={kit._id}
+                          label={kit.name}
+                          value={kit._id}
+                        />
+                      ))}
+                    </SelectContent>
+                  </SelectPortal>
+                </Select>
+              </FormControl>
 
-            {/* File Picker */}
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Archivo de Factura</FormControlLabelText>
-              </FormControlLabel>
-              <Pressable
-                onPress={pickFile}
-                className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden"
-              >
-                {selectedFile ? (
-                  selectedFile.mimeType?.startsWith("image/") ? (
+              {/* File Picker */}
+              <FormControl>
+                <FormControlLabel>
+                  <FormControlLabelText>Archivo de Factura</FormControlLabelText>
+                </FormControlLabel>
+                <Pressable
+                  onPress={pickFile}
+                  disabled={isSubmitting}
+                  className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden"
+                >
+                  {selectedFile ? (
+                    selectedFile.mimeType?.startsWith("image/") ? (
+                      <Image
+                        source={{ uri: selectedFile.uri }}
+                        alt="Energy bill"
+                        className="w-full h-full"
+                        resizeMode="contain"
+                      />
+                    ) : (
+                      <VStack className="items-center p-4" space="xs">
+                        <FileUp size={48} color="#9CA3AF" />
+                        <Text size="sm" className="text-typography-500 mt-2 text-center" isTruncated>
+                          {selectedFile.name || 'Archivo seleccionado'}
+                        </Text>
+                      </VStack>
+                    )
+                  ) : (
+                    <VStack className="items-center" space="xs">
+                      <FileUp size={48} color="#9CA3AF" />
+                      <Text size="sm" className="text-typography-400 mt-2">
+                        Toca para seleccionar una imagen o PDF
+                      </Text>
+                    </VStack>
+                  )}
+                </Pressable>
+              </FormControl>
+
+              <HStack space="md" className="mt-4 w-full">
+                <Button
+                  variant="outline"
+                  action="secondary"
+                  onPress={() => router.push("/(auth)/(tabs)/garage")}
+                  className="flex-1"
+                >
+                  <ButtonText>Cancelar</ButtonText>
+                </Button>
+                <Button
+                  onPress={handleSubmit}
+                  isDisabled={isSubmitting || !selectedKitId || !selectedFile}
+                  className="flex-1"
+                >
+                  {isSubmitting ? (
+                    <HStack space="sm" className="items-center justify-center">
+                      <ButtonSpinner />
+                      <ButtonText>{isAnalyzing ? "Analizando..." : "Subiendo..."}</ButtonText>
+                    </HStack>
+                  ) : (
+                    <ButtonText>Subir y Analizar</ButtonText>
+                  )}
+                </Button>
+              </HStack>
+            </VStack>
+          ) : (
+            /* Analysis Results Card */
+            <VStack space="lg">
+              {/* Only show the file preview box right after a file has been picked, not when viewing existing data. */}
+              {selectedFile && selectedFile.uri !== 'existing' && (
+                <Box className="w-full aspect-[16/9] bg-background-50 rounded-lg overflow-hidden border border-outline-200">
+                  {(billUrl || selectedFile?.mimeType?.startsWith("image/")) ? (
                     <Image
-                      source={{ uri: selectedFile.uri }}
-                      alt="Energy bill"
+                      source={{ uri: billUrl || selectedFile!.uri }}
+                      alt="Uploaded bill"
                       className="w-full h-full"
                       resizeMode="contain"
                     />
                   ) : (
-                    <VStack className="items-center" space="xs">
+                    <VStack className="items-center justify-center flex-1" space="xs">
                       <FileUp size={48} color="#9CA3AF" />
                       <Text size="sm" className="text-typography-500 mt-2">
-                        Archivo seleccionado
+                        Documento PDF subido
                       </Text>
                     </VStack>
-                  )
-                ) : (
-                  <VStack className="items-center" space="xs">
-                    <FileUp size={48} color="#9CA3AF" />
-                    <Text size="sm" className="text-typography-400 mt-2">
-                      Toca para seleccionar una imagen o PDF
-                    </Text>
-                  </VStack>
-                )}
-              </Pressable>
-            </FormControl>
-
-            <Button
-              className="mt-4"
-              onPress={handleSubmit}
-              isDisabled={isSubmitting || !selectedKitId || !selectedFile}
-            >
-              {isSubmitting ? (
-                <ButtonSpinner />
-              ) : (
-                <ButtonText>Subir Factura</ButtonText>
+                  )}
+                </Box>
               )}
-            </Button>
-          </VStack>
+
+              <Card variant="outline" className="p-4 border-success-300 bg-success-50">
+                <HStack space="md" className="items-center mb-4">
+                  <CheckCircle size={24} color="#10B981" />
+                  <Heading size="md" className="text-success-800">Datos Extraídos</Heading>
+                </HStack>
+                
+                <VStack space="md">
+                  <HStack className="justify-between">
+                    <Text className="text-typography-500">Proveedor:</Text>
+                    <Text className="font-bold">{analysisResult.provider || "N/A"}</Text>
+                  </HStack>
+                  <HStack className="justify-between">
+                    <Text className="text-typography-500">Periodo:</Text>
+                    <Text className="font-bold">{analysisResult.billingPeriod || "N/A"}</Text>
+                  </HStack>
+                  <HStack className="justify-between border-t border-success-200 pt-2">
+                    <Text className="text-typography-500">Consumo:</Text>
+                    <Text className="font-bold text-lg">{analysisResult.monthlyConsumptionKwh} kWh</Text>
+                  </HStack>
+                  <HStack className="justify-between">
+                    <Text className="text-typography-500">Tarifa:</Text>
+                    <Text className="font-bold">{analysisResult.currency} ${analysisResult.energyRate}</Text>
+                  </HStack>
+                  <HStack className="justify-between">
+                    <Text className="text-typography-500">Total:</Text>
+                    <Text className="font-bold">{analysisResult.currency} ${analysisResult.totalAmount}</Text>
+                  </HStack>
+                </VStack>
+              </Card>
+
+              <Text size="xs" className="text-typography-400 text-center italic">
+                Estos datos se han extraído automáticamente. En el siguiente paso podrás ajustar tu configuración solar.
+              </Text>
+
+              <Button onPress={handleFinish} className="bg-success-600">
+                <ButtonText>Arma tu Efikit Solar</ButtonText>
+              </Button>
+              
+              {safeKits.length > 1 && (
+                <Button 
+                  variant="outline" 
+                  action="secondary" 
+                  onPress={() => {
+                    setAnalysisResult(null);
+                    setSelectedFile(null);
+                  }}
+                >
+                  <ButtonText>Elegir otro Kit</ButtonText>
+                </Button>
+              )}
+            </VStack>
+          )}
         </VStack>
       </ScrollView>
     </Box>

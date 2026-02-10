@@ -24,6 +24,12 @@ export const Kit = {
   capacity: v.optional(v.number()),
   status: v.string(), // e.g., "draft", "pending", "completed"
   billStorageId: v.optional(v.id("_storage")),
+  monthlyConsumptionKwh: v.optional(v.number()),
+  energyRate: v.optional(v.number()),
+  totalAmount: v.optional(v.number()),
+  currency: v.optional(v.string()),
+  billingPeriod: v.optional(v.string()),
+  provider: v.optional(v.string()),
 };
 
 export const SolarModule = {

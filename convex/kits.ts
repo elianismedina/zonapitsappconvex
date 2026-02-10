@@ -214,14 +214,246 @@ export const deleteKit = mutation({
 
     
 
-        await ctx.db.patch(args.kitId, {
+                await ctx.db.patch(args.kitId, {
 
-          billStorageId: args.storageId,
+    
 
-        });
+                  billStorageId: args.storageId,
 
-      },
+    
 
-    });
+                });
+
+    
+
+              },
+
+    
+
+            });
+
+    
+
+        
+
+    
+
+                export const saveBillAnalysis = mutation({
+
+    
+
+        
+
+    
+
+                  args: {
+
+    
+
+        
+
+    
+
+                    kitId: v.id("kits"),
+
+    
+
+        
+
+    
+
+                    monthlyConsumptionKwh: v.optional(v.number()),
+
+    
+
+        
+
+    
+
+                    energyRate: v.optional(v.number()),
+
+    
+
+        
+
+    
+
+                    totalAmount: v.optional(v.number()),
+
+    
+
+        
+
+    
+
+                    currency: v.optional(v.string()),
+
+    
+
+        
+
+    
+
+                    billingPeriod: v.optional(v.string()),
+
+    
+
+        
+
+    
+
+                    provider: v.optional(v.string()),
+
+    
+
+        
+
+    
+
+                  },
+
+    
+
+              handler: async (ctx, args) => {
+
+    
+
+                const identity = await ctx.auth.getUserIdentity();
+
+    
+
+                if (!identity) throw new Error("Not authenticated");
+
+    
+
+        
+
+    
+
+                const user = await ctx.db
+
+    
+
+                  .query("users")
+
+    
+
+                  .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+
+    
+
+                  .unique();
+
+    
+
+                if (!user) throw new Error("User not found");
+
+    
+
+        
+
+    
+
+                const kit = await ctx.db.get(args.kitId);
+
+    
+
+                if (!kit) throw new Error("Kit not found");
+
+    
+
+                if (kit.userId !== user._id) throw new Error("Unauthorized");
+
+    
+
+        
+
+    
+
+                        const { kitId, ...analysisData } = args;
+
+    
+
+        
+
+    
+
+                        await ctx.db.patch(kitId, analysisData);
+
+    
+
+        
+
+    
+
+                      },
+
+    
+
+        
+
+    
+
+                    });
+
+    
+
+        
+
+    
+
+                
+
+    
+
+        
+
+    
+
+                    export const getBillUrl = query({
+
+    
+
+        
+
+    
+
+                      args: { storageId: v.id("_storage") },
+
+    
+
+        
+
+    
+
+                      handler: async (ctx, args) => {
+
+    
+
+        
+
+    
+
+                        return await ctx.storage.getUrl(args.storageId);
+
+    
+
+        
+
+    
+
+                      },
+
+    
+
+        
+
+    
+
+                    });
+
+    
+
+        
 
     

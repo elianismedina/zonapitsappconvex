@@ -4,6 +4,9 @@ import { createAvatar } from '@gluestack-ui/core/avatar/creator';
 
 import { View, Text, Platform } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
+import { cssInterop } from 'nativewind';
+
+cssInterop(ExpoImage, { className: 'style' });
 
 import { tva ,
   withStyleContext,

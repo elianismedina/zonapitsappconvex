@@ -18,8 +18,8 @@ import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useRouter } from "expo-router";
 import { Minus, Plus } from "lucide-react-native";
-import React, { useRef, useState } from "react";
-import { Keyboard, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { Keyboard, StyleSheet, TouchableOpacity, View, Platform, TouchableWithoutFeedback, Animated } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
@@ -39,6 +39,31 @@ export default function SearchScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+
+  const keyboardOffset = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSubscription = Keyboard.addListener(showEvent, (e) => {
+      Animated.spring(keyboardOffset, {
+        toValue: e.endCoordinates.height - (Platform.OS === "ios" ? 80 : 0),
+        useNativeDriver: false,
+      }).start();
+    });
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      Animated.spring(keyboardOffset, {
+        toValue: 0,
+        useNativeDriver: false,
+      }).start();
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const createKit = useMutation(api.kits.createKit);
   const router = useRouter();
@@ -109,7 +134,7 @@ export default function SearchScreen() {
     }
 
     try {
-      await createKit({
+      const newKitId = await createKit({
         name: kitName,
         address: selectedLocation.address,
         latitude: selectedLocation.latitude,
@@ -128,13 +153,16 @@ export default function SearchScreen() {
         },
       });
 
-      // Reset form or navigate
+      // Reset form
       setKitName("");
       setSelectedLocation(null);
       Keyboard.dismiss();
 
-      // Optional: Navigate to kit details or list
-      // router.push("/(auth)/(tabs)/kits");
+      // Navigate to bill upload screen (create tab)
+      router.push({
+        pathname: "/(auth)/(tabs)/create",
+        params: { kitId: newKitId }
+      });
     } catch (error) {
       console.error("Error creating kit:", error);
       toast.show({
@@ -151,110 +179,117 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <VStack style={styles.searchContainer}>
-        <GooglePlacesAutocomplete
-          placeholder="Buscar una dirección"
-          onPress={handlePlaceSelect}
-          query={{
-            key: GOOGLE_MAPS_API_KEY,
-            language: "es",
-          }}
-          fetchDetails={true}
-          debounce={250}
-          minLength={2}
-          styles={{
-            container: {
-              flex: 0,
-              width: "100%",
-              zIndex: 1,
-            },
-            listView: {
-              backgroundColor: "white",
-              zIndex: 1000,
-              position: "absolute",
-              top: 45,
-              width: "100%",
-            },
-            textInput: {
-              height: 44,
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              backgroundColor: "#f0f0f0",
-              fontSize: 16,
-            },
-          }}
-          enablePoweredByContainer={false}
-        />
-      </VStack>
-
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={region}
-        onRegionChangeComplete={setRegion}
-        zoomEnabled={true}
-        scrollEnabled={true}
-      >
-        {selectedLocation && (
-          <Marker
-            coordinate={{
-              latitude: selectedLocation.latitude,
-              longitude: selectedLocation.longitude,
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <VStack style={styles.searchContainer}>
+          <GooglePlacesAutocomplete
+            placeholder="Buscar una dirección"
+            onPress={handlePlaceSelect}
+            query={{
+              key: GOOGLE_MAPS_API_KEY,
+              language: "es",
             }}
-            title={selectedLocation.address}
+            fetchDetails={true}
+            debounce={250}
+            minLength={2}
+            styles={{
+              container: {
+                flex: 0,
+                width: "100%",
+                zIndex: 1,
+              },
+              listView: {
+                backgroundColor: "white",
+                zIndex: 1000,
+                position: "absolute",
+                top: 45,
+                width: "100%",
+              },
+              textInput: {
+                height: 44,
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                backgroundColor: "#f0f0f0",
+                fontSize: 16,
+              },
+            }}
+            enablePoweredByContainer={false}
           />
-        )}
-      </MapView>
+        </VStack>
 
-      <View style={styles.zoomControls}>
-        <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
-          <Plus size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.zoomButton} onPress={handleZoomOut}>
-          <Minus size={24} color="#000" />
-        </TouchableOpacity>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={region}
+          onRegionChangeComplete={setRegion}
+          zoomEnabled={true}
+          scrollEnabled={true}
+        >
+          {selectedLocation && (
+            <Marker
+              coordinate={{
+                latitude: selectedLocation.latitude,
+                longitude: selectedLocation.longitude,
+              }}
+              title={selectedLocation.address}
+            />
+          )}
+        </MapView>
+
+        <View style={styles.zoomControls}>
+          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
+            <Plus size={24} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomOut}>
+            <Minus size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+
+        <Animated.View
+          style={[
+            styles.formContainer,
+            { bottom: keyboardOffset }
+          ]}
+        >
+          <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
+            <Heading size="md" className="mb-4">
+              Crear Nuevo Kit Solar
+            </Heading>
+            <VStack space="md">
+              <FormControl>
+                <FormControlLabel>
+                  <FormControlLabelText>Nombre del Kit</FormControlLabelText>
+                </FormControlLabel>
+                <Input>
+                  <InputField
+                    placeholder="Ej. Kit Solar Cabaña"
+                    value={kitName}
+                    onChangeText={setKitName}
+                  />
+                </Input>
+              </FormControl>
+
+              <View>
+                <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
+                <Text numberOfLines={1} className="font-medium">
+                  {selectedLocation
+                    ? selectedLocation.address
+                    : "Ninguna ubicación seleccionada"}
+                </Text>
+              </View>
+
+              <Button
+                onPress={handleCreateKit}
+                isDisabled={!selectedLocation || !kitName}
+              >
+                <ButtonText>Crear Kit</ButtonText>
+              </Button>
+            </VStack>
+          </Box>
+        </Animated.View>
       </View>
-
-      <View style={styles.formContainer}>
-        <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
-          <Heading size="md" className="mb-4">
-            Crear Nuevo Kit Solar
-          </Heading>
-          <VStack space="md">
-            <FormControl>
-              <FormControlLabel>
-                <FormControlLabelText>Nombre del Kit</FormControlLabelText>
-              </FormControlLabel>
-              <Input>
-                <InputField
-                  placeholder="Ej. Kit Solar Cabaña"
-                  value={kitName}
-                  onChangeText={setKitName}
-                />
-              </Input>
-            </FormControl>
-
-            <View>
-              <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
-              <Text numberOfLines={1} className="font-medium">
-                {selectedLocation
-                  ? selectedLocation.address
-                  : "Ninguna ubicación seleccionada"}
-              </Text>
-            </View>
-
-            <Button
-              onPress={handleCreateKit}
-              isDisabled={!selectedLocation || !kitName}
-            >
-              <ButtonText>Crear Kit</ButtonText>
-            </Button>
-          </VStack>
-        </Box>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
