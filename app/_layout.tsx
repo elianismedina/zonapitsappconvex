@@ -17,29 +17,52 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import * as Sentry from "@sentry/react-native";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
+import { isRunningInExpoGo } from "expo";
 import { useFonts } from "expo-font";
-import { Slot, useRouter, useSegments, useRootNavigationState } from "expo-router";
+import {
+  Slot,
+  useNavigationContainerRef,
+  useRootNavigationState,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import * as Sentry from '@sentry/react-native';
+
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+});
 
 Sentry.init({
-  dsn: 'https://894b24504a7f28eca0337b206f56b0ed@o4510687339610112.ingest.us.sentry.io/4510863412690944',
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
 
   // Adds more context data to events (IP address, cookies, user, etc.)
   // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
   sendDefaultPii: true,
+  attachScreenshot: true,
+  debug: false,
 
   // Enable Logs
   enableLogs: true,
+  tracesSampleRate: 1.0,
+  _experiments: {
+    profilesSampleRate: 1.0,
+    replaysSessionSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1.0,
+  },
 
   // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
-  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+  integrations: [
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+    navigationIntegration,
+  ],
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: __DEV__,
@@ -82,6 +105,14 @@ const InitialLayout = () => {
   const segments = useSegments();
   const router = useRouter();
   const rootNavigationState = useRootNavigationState();
+  const navigationRef = useNavigationContainerRef();
+
+  // Register navigation container with Sentry
+  useEffect(() => {
+    if (navigationRef) {
+      navigationIntegration.registerNavigationContainer(navigationRef);
+    }
+  }, [navigationRef]);
 
   useEffect(() => {
     if (!isLoaded || !rootNavigationState?.key) return;

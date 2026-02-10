@@ -1,3 +1,4 @@
+import { Button, ButtonText } from "@/components/ui/button";
 import { Text, View } from "react-native";
 
 export default function FeedScreen() {
@@ -6,7 +7,16 @@ export default function FeedScreen() {
       <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 16 }}>
         Feed
       </Text>
-      <Text>Latest posts and updates will appear here.</Text>
+      <Text style={{ textAlign: "center", marginBottom: 24 }}>
+        Latest posts and updates will appear here.
+      </Text>
+      <Button
+        onPress={() => {
+          throw new Error("My first Sentry error!");
+        }}
+      >
+        <ButtonText>Throw Error</ButtonText>
+      </Button>
     </View>
   );
 }
