@@ -1,17 +1,3 @@
-// --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
-if (typeof globalThis.window === "undefined") {
-  // @ts-ignore
-  globalThis.window = {};
-}
-
-// @ts-ignore
-if (typeof window.addEventListener !== "function") {
-  // @ts-ignore
-  window.addEventListener = () => {};
-  // @ts-ignore
-  window.removeEventListener = () => {};
-}
-
 import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
@@ -32,6 +18,20 @@ import {
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
+
+// --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
+if (typeof globalThis.window === "undefined") {
+  // @ts-ignore
+  globalThis.window = {};
+}
+
+// @ts-ignore
+if (typeof window.addEventListener !== "function") {
+  // @ts-ignore
+  window.addEventListener = () => {};
+  // @ts-ignore
+  window.removeEventListener = () => {};
+}
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
@@ -90,7 +90,7 @@ const tokenCache = {
   async saveToken(key: string, value: string) {
     try {
       return SecureStore.setItemAsync(key, value);
-    } catch (err) {
+    } catch {
       return;
     }
   },
@@ -143,6 +143,7 @@ const RootLayoutNav = () => {
     if (fontError) throw fontError;
   }, [fontError]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   if (!fontsLoaded) {

@@ -1,8 +1,7 @@
 import { Colors } from "@/constants/Colors";
-import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
 const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
@@ -12,11 +11,6 @@ const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
 );
 
 const Layout = () => {
-  const { signOut } = useAuth();
-  const { user } = useUser();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <>
       <Tabs

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Minus, Plus } from "lucide-react-native";
 import React, { useRef, useState, useEffect } from "react";
 import { Keyboard, StyleSheet, TouchableOpacity, View, Platform, TouchableWithoutFeedback, Animated } from "react-native";
@@ -26,6 +26,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export default function SearchScreen() {
+  const { kitType } = useLocalSearchParams<{ kitType: string }>();
   const [kitName, setKitName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<{
     address: string;
@@ -139,6 +140,7 @@ export default function SearchScreen() {
         address: selectedLocation.address,
         latitude: selectedLocation.latitude,
         longitude: selectedLocation.longitude,
+        type: kitType as "off-grid" | "on-grid" | "hybrid" | undefined,
         status: "draft",
       });
 
@@ -254,7 +256,7 @@ export default function SearchScreen() {
         >
           <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
             <Heading size="md" className="mb-4">
-              Crear Nuevo Kit Solar
+              Crear Nuevo Kit Solar {kitType ? `(${kitType})` : ""}
             </Heading>
             <VStack space="md">
               <FormControl>

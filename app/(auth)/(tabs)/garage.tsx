@@ -31,16 +31,16 @@ import {
 type SizingResults = {
   peakSunHours: number;
   dailyDemandKwh: number;
+  version?: number;
   sizingOptions: {
-    module: {
-      brand: string;
-      model: string;
-      pmax: number;
-      price: number; // Price per panel
-    };
+    moduleId: Id<"solar_modules">;
+    brand: string;
+    model: string;
+    pmax: number;
+    price: number;
     panelsNeeded: number;
     totalCapacityKw: number;
-    totalPrice: number; // Total price for this option
+    totalPrice: number;
   }[];
 } | null;
 
@@ -48,6 +48,7 @@ export default function GarageScreen() {
   const kits = useQuery(api.kits.getKits, {});
   const deleteKit = useMutation(api.kits.deleteKit);
   const updateKit = useMutation(api.kits.updateKit);
+  const addComponent = useMutation(api.kit_components.addComponent);
   const calculateSizing = useAction(api.sizing.calculateSizing);
   const router = useRouter();
 
@@ -63,6 +64,7 @@ export default function GarageScreen() {
   const [showSizingModal, setShowSizingModal] = useState(false);
   const [isSizing, setIsSizing] = useState(false);
   const [sizingResults, setSizingResults] = useState<SizingResults>(null);
+  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(null);
   const [selectedKitName, setSelectedKitName] = useState("");
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
     null,
@@ -120,6 +122,7 @@ export default function GarageScreen() {
       );
       return;
     }
+    setSelectedKitId(kit._id);
     setSelectedKitName(kit.name);
     setShowSizingModal(true);
     setIsSizing(true);
@@ -128,6 +131,7 @@ export default function GarageScreen() {
     setSelectedOptionIndex(null);
     try {
       const results = await calculateSizing({ kitId: kit._id });
+      console.log("Sizing Results received:", JSON.stringify(results, null, 2));
       setSizingResults(results as SizingResults);
     } catch (error: any) {
       console.error("Error calculating sizing:", error);
@@ -135,6 +139,36 @@ export default function GarageScreen() {
       setShowSizingModal(false);
     } finally {
       setIsSizing(false);
+    }
+  };
+
+  const handleSelectModule = async () => {
+    if (!sizingResults || selectedOptionIndex === null || !selectedKitId) return;
+
+    const selectedOption = sizingResults.sizingOptions[selectedOptionIndex];
+    const moduleId = selectedOption.moduleId;
+    
+    if (!moduleId) {
+      Alert.alert("Error", "No se encontró el ID del módulo solar. Intenta dimensionar de nuevo.");
+      return;
+    }
+
+    try {
+      await addComponent({
+        kitId: selectedKitId,
+        type: "solar_module",
+        solarModuleId: moduleId,
+        quantity: selectedOption.panelsNeeded,
+      });
+
+      setShowSizingModal(false);
+      Alert.alert(
+        "¡Éxito!",
+        `Se han añadido ${selectedOption.panelsNeeded} paneles ${selectedOption.brand} a tu kit.`,
+      );
+    } catch (error) {
+      console.error("Error adding component:", error);
+      Alert.alert("Error", "No se pudo añadir el módulo al kit.");
     }
   };
 
@@ -372,27 +406,22 @@ export default function GarageScreen() {
                         : "bg-white border-transparent"
                     }`}
                   >
-                    {/* Replaced Card with View */}
                     <View className="flex-row justify-between items-center">
                       <View className="flex-1 flex-shrink min-w-0">
-                        {/* Allow text to wrap/shrink */}
                         <Text className="font-bold">
-                          {String(option.module.brand)}{" "}
-                          {String(option.module.model)}
+                          {option.brand} {option.model}
                         </Text>
                         <Text size="sm" className="text-typography-500">
-                          {String(option.module.pmax)} Wp @ $
-                          {String(option.module.price)}/panel
+                          {option.pmax} Wp @ ${option.price}/panel
                         </Text>
                       </View>
                       <View className="items-end ml-2">
-                        {/* Add some left margin */}
                         <Text className="text-lg font-bold text-primary-600">
-                          {String(option.panelsNeeded)}
+                          {option.panelsNeeded}
                         </Text>
                         <Text size="sm">paneles</Text>
                         <Text className="text-sm font-bold mt-1">
-                          ${String(option.totalPrice.toLocaleString())}
+                          ${option.totalPrice.toLocaleString()}
                         </Text>
                       </View>
                     </View>
@@ -411,17 +440,8 @@ export default function GarageScreen() {
             </Button>
             <Button
               action="primary"
-              onPress={() => {
-                if (selectedOptionIndex !== null && sizingResults) {
-                  // TODO: Implement continuation logic here
-                  console.log(
-                    "Selected option:",
-                    sizingResults.sizingOptions[selectedOptionIndex],
-                  );
-                  setShowSizingModal(false);
-                }
-              }}
-              isDisabled={selectedOptionIndex === null}
+              onPress={handleSelectModule}
+              isDisabled={selectedOptionIndex === null || isSizing}
             >
               <ButtonText>Continuar</ButtonText>
             </Button>

@@ -21,6 +21,7 @@ export const Kit = {
   address: v.string(),
   latitude: v.number(),
   longitude: v.number(),
+  type: v.optional(v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid"))),
   capacity: v.optional(v.number()),
   status: v.string(), // e.g., "draft", "pending", "completed"
   billStorageId: v.optional(v.id("_storage")),

@@ -45,7 +45,9 @@ export const addComponent = mutation({
     }
 
     // Validate that the correct ID is provided for the selected type
-    if (args.type === "solar_module" && !args.solarModuleId) throw new Error("solarModuleId is required");
+    if (args.type === "solar_module" && !args.solarModuleId) {
+      throw new Error("solarModuleId is required");
+    }
     if (args.type === "inverter" && !args.inverterId) throw new Error("inverterId is required");
     if (args.type === "battery" && !args.batteryId) throw new Error("batteryId is required");
     if (args.type === "structure" && !args.structureId) throw new Error("structureId is required");
