@@ -22,6 +22,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { Keyboard, StyleSheet, TouchableOpacity, View, Platform, TouchableWithoutFeedback, Animated } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import * as Location from 'expo-location';
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
@@ -35,7 +36,7 @@ export default function SearchScreen() {
   } | null>(null);
 
   const [region, setRegion] = useState<Region>({
-    latitude: 4.651795,
+    latitude: 4.651795, // Default to Bogotá, Colombia
     longitude: -74.09462,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
@@ -43,6 +44,7 @@ export default function SearchScreen() {
 
   const keyboardOffset = useRef(new Animated.Value(0)).current;
 
+  // Effect for keyboard handling
   useEffect(() => {
     const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
     const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
@@ -65,6 +67,53 @@ export default function SearchScreen() {
       hideSubscription.remove();
     };
   }, [keyboardOffset]);
+
+  // Effect for fetching user location
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="error">
+              <ToastTitle>Permiso de ubicación denegado</ToastTitle>
+              <ToastDescription>
+                No podemos centrar el mapa en tu ubicación actual sin permiso.
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+        return;
+      }
+
+      try {
+        let location = await Location.getCurrentPositionAsync({});
+        const newRegion = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+        setRegion(newRegion);
+        // Animate map to user's location if mapRef is available
+        mapRef.current?.animateToRegion(newRegion, 1000);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="error">
+              <ToastTitle>Error al obtener ubicación</ToastTitle>
+              <ToastDescription>
+                No se pudo obtener tu ubicación actual.
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+      }
+    })();
+  }, []); // Run once on mount
 
   const createKit = useMutation(api.kits.createKit);
   const router = useRouter();
