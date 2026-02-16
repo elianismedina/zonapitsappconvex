@@ -64,7 +64,7 @@ export default function SearchScreen() {
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, []);
+  }, [keyboardOffset]);
 
   const createKit = useMutation(api.kits.createKit);
   const router = useRouter();
@@ -160,9 +160,9 @@ export default function SearchScreen() {
       setSelectedLocation(null);
       Keyboard.dismiss();
 
-      // Navigate to bill upload screen (create tab)
+      // Navigate to bill upload screen
       router.push({
-        pathname: "/(auth)/(tabs)/create",
+        pathname: "/(auth)/(tabs)/billupload",
         params: { kitId: newKitId }
       });
     } catch (error) {

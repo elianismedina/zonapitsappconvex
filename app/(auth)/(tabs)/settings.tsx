@@ -1,8 +1,4 @@
-import { Box } from "@/components/ui/box";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
+import { Box, Button, ButtonText, Heading, Text, VStack } from "@/components/ui";
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 

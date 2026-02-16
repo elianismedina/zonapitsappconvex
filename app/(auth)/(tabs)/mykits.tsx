@@ -1,9 +1,12 @@
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Heading } from "@/components/ui/heading";
-import { HStack } from "@/components/ui/hstack";
-import { Input, InputField } from "@/components/ui/input";
 import {
+  Button,
+  ButtonIcon,
+  ButtonText,
+  Card,
+  Heading,
+  HStack,
+  Input,
+  InputField,
   Modal,
   ModalBackdrop,
   ModalBody,
@@ -11,9 +14,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@/components/ui/modal";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
+  Text,
+  VStack,
+  Box,
+  Pressable,
+  Spinner,
+} from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -21,12 +27,10 @@ import { useRouter } from "expo-router";
 import { Edit, FileText, Trash, X } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   FlatList,
-  TouchableOpacity,
-  View,
 } from "react-native";
+import { KitBillDetails } from "@/components/KitBillDetails";
 
 type SizingResults = {
   peakSunHours: number;
@@ -174,22 +178,20 @@ export default function GarageScreen() {
 
   if (kits === undefined) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <Box className="flex-1 justify-center items-center">
+        <Spinner size="large" />
+      </Box>
     );
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <Box className="flex-1 p-4 bg-background-0">
       <Heading size="xl" className="mb-4">
         Mis Kits Solares
       </Heading>
 
       {kits.length === 0 ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <Box className="flex-1 justify-center items-center">
           <VStack space="lg" className="items-center">
             <Text size="lg" className="text-center">
               No tienes kits registrados.
@@ -198,12 +200,12 @@ export default function GarageScreen() {
               size="md"
               variant="solid"
               action="primary"
-              onPress={() => router.push("/(auth)/(tabs)/search")}
+              onPress={() => router.push("/(auth)/(tabs)/location")}
             >
               <ButtonText>Crear un Kit</ButtonText>
             </Button>
           </VStack>
-        </View>
+        </Box>
       ) : (
         <FlatList
           data={kits}
@@ -242,50 +244,33 @@ export default function GarageScreen() {
 
                 <VStack space="xs">
                   <HStack space="md" className="items-center">
-                    <Text className="font-bold w-24">Dirección:</Text>
-                    <Text className="flex-1">{item.address}</Text>
+                    <Text size="sm" className="font-bold w-24">Dirección:</Text>
+                    <Text size="sm" className="flex-1">{item.address}</Text>
                   </HStack>
                   <HStack space="md">
-                    <Text className="font-bold w-24">Estado:</Text>
-                    <Text className="capitalize">{item.status}</Text>
+                    <Text size="sm" className="font-bold w-24">Estado:</Text>
+                    <Text size="sm" className="capitalize">{item.status}</Text>
                   </HStack>
                   {item.capacity && (
                     <HStack space="md">
-                      <Text className="font-bold w-24">Capacidad:</Text>
-                      <Text>{item.capacity} kWp</Text>
+                      <Text size="sm" className="font-bold w-24">Capacidad:</Text>
+                      <Text size="sm">{item.capacity} kWp</Text>
                     </HStack>
                   )}
                 </VStack>
 
                 {item.provider && (
-                  <VStack
-                    space="sm"
-                    className="mt-2 pt-2 border-t border-outline-200"
-                  >
-                    <Heading size="sm" className="mb-1">
-                      Detalles de Factura
-                    </Heading>
-                    <HStack space="md">
-                      <Text className="font-bold w-32">Proveedor:</Text>
-                      <Text className="flex-1">{item.provider}</Text>
-                    </HStack>
-                    <HStack space="md">
-                      <Text className="font-bold w-32">Periodo:</Text>
-                      <Text className="flex-1">{item.billingPeriod}</Text>
-                    </HStack>
-                    <HStack space="md">
-                      <Text className="font-bold w-32">Consumo Mensual:</Text>
-                      <Text className="flex-1">
-                        {item.monthlyConsumptionKwh} kWh
-                      </Text>
-                    </HStack>
-                    <HStack space="md">
-                      <Text className="font-bold w-32">Costo Total:</Text>
-                      <Text className="flex-1">
-                        {item.currency} ${item.totalAmount}
-                      </Text>
-                    </HStack>
-                  </VStack>
+                  <Box className="mt-2 pt-2 border-t border-outline-200">
+                    <KitBillDetails 
+                      provider={item.provider}
+                      billingPeriod={item.billingPeriod}
+                      monthlyConsumptionKwh={item.monthlyConsumptionKwh}
+                      totalAmount={item.totalAmount}
+                      currency={item.currency}
+                      showTitle
+                      variant="compact"
+                    />
+                  </Box>
                 )}
 
                 {item.billStorageId && (
@@ -371,24 +356,24 @@ export default function GarageScreen() {
           </ModalHeader>
           <ModalBody>
             {isSizing && (
-              <View className="h-64 items-center justify-center">
-                <ActivityIndicator size="large" />
+              <Box className="h-64 items-center justify-center">
+                <Spinner size="large" />
                 <Text className="mt-4">
                   Calculando... Estamos contactando a la NASA...
                 </Text>
-              </View>
+              </Box>
             )}
             {sizingResults && (
               <VStack space="md">
-                <HStack className="justify-between p-2 bg-background-100 rounded-md">
-                  <Text>Horas Pico Solar (HSP):</Text>
-                  <Text className="font-bold">
+                <HStack className="justify-between p-2 bg-background-50 rounded-md">
+                  <Text size="sm">Horas Pico Solar (HSP):</Text>
+                  <Text size="sm" className="font-bold">
                     {sizingResults.peakSunHours}
                   </Text>
                 </HStack>
-                <HStack className="justify-between p-2 bg-background-100 rounded-md">
-                  <Text>Demanda Diaria (con margen):</Text>
-                  <Text className="font-bold">
+                <HStack className="justify-between p-2 bg-background-50 rounded-md">
+                  <Text size="sm">Demanda Diaria (con margen):</Text>
+                  <Text size="sm" className="font-bold">
                     {sizingResults.dailyDemandKwh} kWh
                   </Text>
                 </HStack>
@@ -397,35 +382,35 @@ export default function GarageScreen() {
                   Opciones de Paneles
                 </Heading>
                 {sizingResults.sizingOptions.map((option, index) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={index}
                     onPress={() => setSelectedOptionIndex(index)}
-                    className={`p-3 rounded-lg shadow-md mb-3 border-2 ${
+                    className={`p-3 rounded-lg shadow-soft-1 mb-3 border-2 ${
                       selectedOptionIndex === index
                         ? "bg-primary-50 border-primary-500"
                         : "bg-white border-transparent"
                     }`}
                   >
-                    <View className="flex-row justify-between items-center">
-                      <View className="flex-1 flex-shrink min-w-0">
+                    <HStack className="justify-between items-center">
+                      <VStack className="flex-1 flex-shrink min-w-0">
                         <Text className="font-bold">
                           {option.brand} {option.model}
                         </Text>
-                        <Text size="sm" className="text-typography-500">
+                        <Text size="xs" className="text-typography-500">
                           {option.pmax} Wp @ ${option.price}/panel
                         </Text>
-                      </View>
-                      <View className="items-end ml-2">
-                        <Text className="text-lg font-bold text-primary-600">
+                      </VStack>
+                      <VStack className="items-end ml-2">
+                        <Text size="lg" className="font-bold text-primary-600">
                           {option.panelsNeeded}
                         </Text>
-                        <Text size="sm">paneles</Text>
-                        <Text className="text-sm font-bold mt-1">
+                        <Text size="xs">paneles</Text>
+                        <Text size="sm" className="font-bold mt-1">
                           ${option.totalPrice.toLocaleString()}
                         </Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
+                      </VStack>
+                    </HStack>
+                  </Pressable>
                 ))}
               </VStack>
             )}
@@ -448,6 +433,6 @@ export default function GarageScreen() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </View>
+    </Box>
   );
 }

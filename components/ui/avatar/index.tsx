@@ -1,19 +1,17 @@
 'use client';
 import React from 'react';
 import { createAvatar } from '@gluestack-ui/core/avatar/creator';
-
 import { View, Text, Platform } from 'react-native';
 import { Image as ExpoImage } from 'expo-image';
 import { cssInterop } from 'nativewind';
-
-cssInterop(ExpoImage, { className: 'style' });
-
-import { tva ,
+import {
+  tva,
   withStyleContext,
   useStyleContext,
 } from '@gluestack-ui/utils/nativewind-utils';
-
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
+
+cssInterop(ExpoImage, { className: 'style' });
 const SCOPE = 'AVATAR';
 
 const UIAvatar = createAvatar({

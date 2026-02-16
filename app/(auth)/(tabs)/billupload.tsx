@@ -1,22 +1,22 @@
 import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ChevronDown, FileUp, CheckCircle, AlertCircle } from "lucide-react-native";
+import { ChevronDown, FileUp, CheckCircle } from "lucide-react-native";
 import { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
 
-import { Box } from "@/components/ui/box";
-import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
+  Box,
+  Button,
+  ButtonSpinner,
+  ButtonText,
+  Card,
   FormControl,
   FormControlLabel,
   FormControlLabelText,
-} from "@/components/ui/form-control";
-import { Heading } from "@/components/ui/heading";
-import { Image } from "@/components/ui/image";
-import { Pressable } from "@/components/ui/pressable";
-import {
+  Heading,
+  Image,
+  Pressable,
   Select,
   SelectBackdrop,
   SelectContent,
@@ -27,18 +27,17 @@ import {
   SelectItem,
   SelectPortal,
   SelectTrigger,
-} from "@/components/ui/select";
-import { Text } from "@/components/ui/text";
-import {
+  Text,
   Toast,
   ToastDescription,
   ToastTitle,
   useToast,
-} from "@/components/ui/toast";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
+  VStack,
+  HStack,
+} from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { KitBillDetails } from "@/components/KitBillDetails";
 
 export default function UploadBillScreen() {
   const router = useRouter();
@@ -213,7 +212,7 @@ export default function UploadBillScreen() {
   };
 
   const handleFinish = () => {
-    router.push("/(auth)/(tabs)/garage");
+    router.push("/(auth)/(tabs)/mykits");
   };
 
   return (
@@ -307,7 +306,7 @@ export default function UploadBillScreen() {
                 <Button
                   variant="outline"
                   action="secondary"
-                  onPress={() => router.push("/(auth)/(tabs)/garage")}
+                  onPress={() => router.push("/(auth)/(tabs)/mykits")}
                   className="flex-1"
                 >
                   <ButtonText>Cancelar</ButtonText>
@@ -358,28 +357,14 @@ export default function UploadBillScreen() {
                   <Heading size="md" className="text-success-800">Datos Extraídos</Heading>
                 </HStack>
                 
-                <VStack space="md">
-                  <HStack className="justify-between">
-                    <Text className="text-typography-500">Proveedor:</Text>
-                    <Text className="font-bold">{analysisResult.provider || "N/A"}</Text>
-                  </HStack>
-                  <HStack className="justify-between">
-                    <Text className="text-typography-500">Periodo:</Text>
-                    <Text className="font-bold">{analysisResult.billingPeriod || "N/A"}</Text>
-                  </HStack>
-                  <HStack className="justify-between border-t border-success-200 pt-2">
-                    <Text className="text-typography-500">Consumo:</Text>
-                    <Text className="font-bold text-lg">{analysisResult.monthlyConsumptionKwh} kWh</Text>
-                  </HStack>
-                  <HStack className="justify-between">
-                    <Text className="text-typography-500">Tarifa:</Text>
-                    <Text className="font-bold">{analysisResult.currency} ${analysisResult.energyRate}</Text>
-                  </HStack>
-                  <HStack className="justify-between">
-                    <Text className="text-typography-500">Total:</Text>
-                    <Text className="font-bold">{analysisResult.currency} ${analysisResult.totalAmount}</Text>
-                  </HStack>
-                </VStack>
+                <KitBillDetails 
+                  provider={analysisResult.provider}
+                  billingPeriod={analysisResult.billingPeriod}
+                  monthlyConsumptionKwh={analysisResult.monthlyConsumptionKwh}
+                  energyRate={analysisResult.energyRate}
+                  totalAmount={analysisResult.totalAmount}
+                  currency={analysisResult.currency}
+                />
               </Card>
 
               <Text size="xs" className="text-typography-400 text-center italic">

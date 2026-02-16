@@ -21,7 +21,7 @@ const Layout = () => {
         }}
       >
         <Tabs.Screen
-          name="feed"
+          name="home"
           options={{
             title: "Inicio",
             tabBarIcon: ({
@@ -44,9 +44,9 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name="search"
+          name="location"
           options={{
-            title: "Buscar",
+            title: "Ubicación",
             tabBarIcon: ({
               color,
               size,
@@ -67,18 +67,18 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name="create"
+          name="billupload"
           options={{
-            title: "Crear",
+            title: "Factura",
             tabBarIcon: ({ color, size }: { color: string; size: number }) => (
               <CreateTabIcon color={color} size={size} />
             ),
           }}
         />
         <Tabs.Screen
-          name="garage"
+          name="mykits"
           options={{
-            title: "Garaje",
+            title: "Mis Kits",
             tabBarIcon: ({
               color,
               size,
@@ -99,9 +99,9 @@ const Layout = () => {
           }}
         />
         <Tabs.Screen
-          name="profile"
+          name="settings"
           options={{
-            title: "Perfil",
+            title: "Ajustes",
             tabBarIcon: ({
               color,
               size,
@@ -113,7 +113,7 @@ const Layout = () => {
             }) => (
               <View style={styles.iconContainer}>
                 <Ionicons
-                  name={focused ? "person" : "person-outline"}
+                  name={focused ? "settings" : "settings-outline"}
                   size={size}
                   color={color}
                 />

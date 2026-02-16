@@ -27,7 +27,7 @@ Este archivo sirve como guía de contexto para el asistente de IA (Gemini) sobre
 - **/app**: Rutas de la aplicación (Expo Router).
   - `(auth)`: Grupo de rutas protegidas o relacionadas con autenticación.
   - `(public)`: Rutas públicas.
-  - `(tabs)`: Navegación por pestañas principal.
+  - `(tabs)`: Navegación por pestañas principal (home, location, billupload, mykits, settings).
   - `_layout.tsx`: Layouts raíz y anidados.
 - **/components**: Componentes de React reutilizables.
   - `/ui`: Componentes de Gluestack UI.

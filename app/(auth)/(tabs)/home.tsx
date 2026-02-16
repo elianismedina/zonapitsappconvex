@@ -43,7 +43,7 @@ export default function FeedScreen() {
 
   const handleSelectType = (type: string) => {
     router.push({
-      pathname: "/(auth)/(tabs)/search",
+      pathname: "/(auth)/(tabs)/location",
       params: { kitType: type },
     });
   };

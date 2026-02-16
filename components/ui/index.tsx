@@ -23,6 +23,7 @@ export * from './modal';
 export * from './popover';
 export * from './pressable';
 export * from './select';
+export * from './spinner';
 export * from './text';
 export * from './textarea';
 export * from './toast';

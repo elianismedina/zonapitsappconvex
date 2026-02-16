@@ -50,7 +50,7 @@ npx convex dev
   - `index.tsx` - Landing/sign-in page
   - `_layout.tsx` - Layout for public routes
 - `app/(auth)/` - Authenticated routes (protected)
-  - `(tabs)/` - Tab navigation (feed, create, garage, profile, search)
+  - `(tabs)/` - Tab navigation (home, location, billupload, mykits, settings)
   - `_layout.tsx` - Layout with authentication check
 - `app/oauth-native-callback.tsx` - OAuth callback for native authentication
 
