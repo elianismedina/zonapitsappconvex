@@ -54,20 +54,36 @@ export const addComponent = mutation({
     if (args.type === "cable" && !args.cableId) throw new Error("cableId is required");
     if (args.type === "protection" && !args.protectionId) throw new Error("protectionId is required");
 
-    // Check if component already exists in kit (optional, depends on logic. usually we merge or add new row. let's add new row or update quantity if same component?)
-    // For simplicity, we'll allow multiple entries or let the client handle it. 
-    // But typically you'd check if this exact component is already added and just update quantity.
-    // Let's implement "upsert" logic: find existing component of same type and ID, update quantity if found.
-    
-    let existing = null;
+    // For sizing/solar_module, we want to replace any existing solar module, not add multiple
+    // For other component types, we allow multiple entries of the same type (e.g., different batteries)
     const components = await ctx.db
       .query("kit_components")
       .withIndex("byKitId", (q) => q.eq("kitId", args.kitId))
       .filter((q) => q.eq(q.field("type"), args.type))
       .collect();
 
-    // Manual filtering for the specific ID field
-    if (args.type === "solar_module") existing = components.find(c => c.solarModuleId === args.solarModuleId);
+    // For solar_module: replace any existing solar module with the new one
+    if (args.type === "solar_module") {
+      // Delete ALL existing solar module components for this kit
+      for (const component of components) {
+        await ctx.db.delete(component._id);
+      }
+      // Insert new solar module
+      return await ctx.db.insert("kit_components", {
+          kitId: args.kitId,
+          type: args.type,
+          quantity: args.quantity,
+          solarModuleId: args.solarModuleId,
+          inverterId: args.inverterId,
+          batteryId: args.batteryId,
+          structureId: args.structureId,
+          cableId: args.cableId,
+          protectionId: args.protectionId,
+      });
+    }
+
+    // For other component types: use upsert logic (update if same ID, otherwise insert new)
+    let existing = null;
     if (args.type === "inverter") existing = components.find(c => c.inverterId === args.inverterId);
     if (args.type === "battery") existing = components.find(c => c.batteryId === args.batteryId);
     if (args.type === "structure") existing = components.find(c => c.structureId === args.structureId);
@@ -158,6 +174,61 @@ export const getKitComponents = query({
       .query("kit_components")
       .withIndex("byKitId", (q) => q.eq("kitId", args.kitId))
       .collect();
+
+    // Populate details
+    const populatedComponents = await Promise.all(
+      components.map(async (comp) => {
+        let details = null;
+        if (comp.type === "solar_module" && comp.solarModuleId) details = await ctx.db.get(comp.solarModuleId);
+        if (comp.type === "inverter" && comp.inverterId) details = await ctx.db.get(comp.inverterId);
+        if (comp.type === "battery" && comp.batteryId) details = await ctx.db.get(comp.batteryId);
+        if (comp.type === "structure" && comp.structureId) details = await ctx.db.get(comp.structureId);
+        if (comp.type === "cable" && comp.cableId) details = await ctx.db.get(comp.cableId);
+        if (comp.type === "protection" && comp.protectionId) details = await ctx.db.get(comp.protectionId);
+
+        return {
+          ...comp,
+          details,
+        };
+      })
+    );
+
+    return populatedComponents;
+  },
+});
+
+export const getAllComponents = query({
+  args: {},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    const kits = await ctx.db
+      .query("kits")
+      .withIndex("byUserId", (q) => q.eq("userId", user._id))
+      .collect();
+
+    const allComponentsNested = await Promise.all(
+      kits.map(async (kit) => {
+        return await ctx.db
+          .query("kit_components")
+          .withIndex("byKitId", (q) => q.eq("kitId", kit._id))
+          .collect();
+      })
+    );
+
+    const components = allComponentsNested.flat();
 
     // Populate details
     const populatedComponents = await Promise.all(

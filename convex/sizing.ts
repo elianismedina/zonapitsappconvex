@@ -16,6 +16,7 @@ type SizingResult = {
     panelsNeeded: number;
     totalCapacityKw: number;
     totalPrice: number;
+    imageUrl?: string; // Add imageUrl
   }[];
 };
 
@@ -73,6 +74,7 @@ export const calculateSizing = action({
         panelsNeeded,
         totalCapacityKw: parseFloat(((panelsNeeded * module.pmax) / 1000).toFixed(2)),
         totalPrice: parseFloat((panelsNeeded * module.price).toFixed(2)),
+        imageUrl: module.imageUrl, // Pass the imageUrl
       };
     });
 

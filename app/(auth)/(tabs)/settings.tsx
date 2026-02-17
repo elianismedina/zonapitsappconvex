@@ -1,4 +1,5 @@
 import { Box, Button, ButtonText, Heading, Text, VStack } from "@/components/ui";
+import { resetOnboarding } from "@/components/Onboarding"; // Import resetOnboarding
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 
@@ -14,6 +15,12 @@ export default function ProfileScreen() {
     } catch (err) {
       console.error("Error signing out:", err);
     }
+  };
+
+  const handleResetOnboarding = async () => {
+    await resetOnboarding();
+    alert("Onboarding has been reset! Please restart the app to see the onboarding flow again.");
+    router.replace("/"); // Optionally redirect to trigger onboarding re-display
   };
 
   return (
@@ -35,6 +42,13 @@ export default function ProfileScreen() {
           className="mt-6 w-full"
         >
           <ButtonText>Salir</ButtonText>
+        </Button>
+        <Button
+          onPress={handleResetOnboarding}
+          action="secondary"
+          className="mt-4 w-full"
+        >
+          <ButtonText>Reset Onboarding</ButtonText>
         </Button>
       </VStack>
     </Box>

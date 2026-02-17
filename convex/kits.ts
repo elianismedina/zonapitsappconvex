@@ -134,19 +134,24 @@ export const deleteKit = mutation({
       throw new Error("Kit not found");
     }
 
-        if (kit.userId !== user._id) {
+    if (kit.userId !== user._id) {
+      throw new Error("Unauthorized");
+    }
 
-            throw new Error("Unauthorized");
+    // Find all components associated with this kit
+    const componentsToDelete = await ctx.db
+      .query("kit_components")
+      .withIndex("byKitId", (q) => q.eq("kitId", args.id))
+      .collect();
 
-        }
+    // Delete each component
+    await Promise.all(componentsToDelete.map(comp => ctx.db.delete(comp._id)));
 
-    
+    // Finally, delete the kit
+    await ctx.db.delete(args.id);
+  },
+});
 
-        await ctx.db.delete(args.id);
-
-      },
-
-    });
 
     
 

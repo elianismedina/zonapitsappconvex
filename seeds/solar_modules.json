@@ -16,7 +16,7 @@
   {
     "brand": "Canadian Solar",
     "model": "HiKu6 CS6R-410MS",
-    "price": 105,
+    "price": 105000,
     "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1770504510/osda630_dpgsco.webp",
     "pmax": 410,
     "vmp": 31.4,
@@ -30,7 +30,7 @@
   {
     "brand": "Trina Solar",
     "model": "Vertex S+ TSM-435NEG9R.28",
-    "price": 115,
+    "price": 115000,
     "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1770504510/osda630_dpgsco.webp",
     "pmax": 435,
     "vmp": 43.6,

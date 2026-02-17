@@ -1,10 +1,12 @@
+import { KitComponentCard } from "@/components/KitComponentCard";
 import {
+  Box,
   Button,
   ButtonIcon,
   ButtonText,
   Card,
-  Heading,
   HStack,
+  Heading,
   Input,
   InputField,
   Modal,
@@ -14,23 +16,19 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Text,
-  VStack,
-  Box,
   Pressable,
   Spinner,
+  Text,
+  VStack,
 } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import { Edit, FileText, Trash, X } from "lucide-react-native";
-import React, { useState } from "react";
-import {
-  Alert,
-  FlatList,
-} from "react-native";
-import { KitBillDetails } from "@/components/KitBillDetails";
+import { Edit, Trash, X } from "lucide-react-native";
+import React, { useMemo, useState } from "react";
+import { Alert, FlatList } from "react-native";
+import { Image } from "expo-image";
 
 type SizingResults = {
   peakSunHours: number;
@@ -45,6 +43,7 @@ type SizingResults = {
     panelsNeeded: number;
     totalCapacityKw: number;
     totalPrice: number;
+    imageUrl?: string;
   }[];
 } | null;
 
@@ -55,6 +54,22 @@ export default function GarageScreen() {
   const addComponent = useMutation(api.kit_components.addComponent);
   const calculateSizing = useAction(api.sizing.calculateSizing);
   const router = useRouter();
+
+  // Query all kit components for all of user's kits
+  const allKitComponents = useQuery(api.kit_components.getAllComponents);
+
+  // Create a map of kitId to components for efficient lookup
+  const kitComponentsMap = useMemo(() => {
+    const map = new Map<string, any[]>();
+    if (allKitComponents) {
+      allKitComponents.forEach((comp) => {
+        const kitIdStr = String(comp.kitId);
+        const existing = map.get(kitIdStr) || [];
+        map.set(kitIdStr, [...existing, comp]);
+      });
+    }
+    return map;
+  }, [allKitComponents]);
 
   // State for Edit Modal
   const [showEditModal, setShowEditModal] = useState(false);
@@ -147,13 +162,17 @@ export default function GarageScreen() {
   };
 
   const handleSelectModule = async () => {
-    if (!sizingResults || selectedOptionIndex === null || !selectedKitId) return;
+    if (!sizingResults || selectedOptionIndex === null || !selectedKitId)
+      return;
 
     const selectedOption = sizingResults.sizingOptions[selectedOptionIndex];
     const moduleId = selectedOption.moduleId;
-    
+
     if (!moduleId) {
-      Alert.alert("Error", "No se encontró el ID del módulo solar. Intenta dimensionar de nuevo.");
+      Alert.alert(
+        "Error",
+        "No se encontró el ID del módulo solar. Intenta dimensionar de nuevo.",
+      );
       return;
     }
 
@@ -187,7 +206,7 @@ export default function GarageScreen() {
   return (
     <Box className="flex-1 p-4 bg-background-0">
       <Heading size="xl" className="mb-4">
-        Mis Kits Solares
+        Mis Kits
       </Heading>
 
       {kits.length === 0 ? (
@@ -210,7 +229,11 @@ export default function GarageScreen() {
         <FlatList
           data={kits}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+            const components = kitComponentsMap.get(String(item._id));
+            const hasSolarModule = components ? components.some(comp => comp.type === "solar_module") : false;
+            
+            return (
             <Card size="md" variant="elevated" className="mb-4 p-4">
               <VStack space="md">
                 <HStack className="justify-between items-center">
@@ -218,9 +241,6 @@ export default function GarageScreen() {
                     <Heading size="md" className="flex-shrink-0">
                       {item.name}
                     </Heading>
-                    {item.billStorageId && (
-                      <FileText size={16} color="#6B7280" />
-                    )}
                   </HStack>
                   <HStack space="sm">
                     <Button
@@ -243,34 +263,51 @@ export default function GarageScreen() {
                 </HStack>
 
                 <VStack space="xs">
-                  <HStack space="md" className="items-center">
-                    <Text size="sm" className="font-bold w-24">Dirección:</Text>
-                    <Text size="sm" className="flex-1">{item.address}</Text>
-                  </HStack>
-                  <HStack space="md">
-                    <Text size="sm" className="font-bold w-24">Estado:</Text>
-                    <Text size="sm" className="capitalize">{item.status}</Text>
-                  </HStack>
                   {item.capacity && (
                     <HStack space="md">
-                      <Text size="sm" className="font-bold w-24">Capacidad:</Text>
+                      <Text size="sm" className="font-bold w-24">
+                        Capacidad:
+                      </Text>
                       <Text size="sm">{item.capacity} kWp</Text>
                     </HStack>
                   )}
                 </VStack>
 
-                {item.provider && (
-                  <Box className="mt-2 pt-2 border-t border-outline-200">
-                    <KitBillDetails 
-                      provider={item.provider}
-                      billingPeriod={item.billingPeriod}
-                      monthlyConsumptionKwh={item.monthlyConsumptionKwh}
-                      totalAmount={item.totalAmount}
-                      currency={item.currency}
-                      showTitle
-                      variant="compact"
+                {/* Display kit components */}
+                {kitComponentsMap.get(String(item._id))?.map((component) => (
+                  <Box key={component._id} className="mt-2">
+                    <KitComponentCard
+                      type={component.type}
+                      brand={component.details?.brand}
+                      model={component.details?.model}
+                      quantity={component.quantity}
+                      pmax={component.details?.pmax}
+                      price={component.details?.price}
+                      power={component.details?.power}
+                      capacity={component.details?.capacity}
+                      imageUrl={component.details?.imageUrl}
                     />
                   </Box>
+                ))}
+
+                {(!kitComponentsMap.has(String(item._id)) ||
+                  kitComponentsMap.get(String(item._id))?.length === 0) &&
+                  !item.billStorageId && (
+                    <Text size="xs" className="text-typography-400 italic mt-2">
+                      Sin componentes añadidos aún.
+                    </Text>
+                  )}
+
+                {hasSolarModule && (
+                  <Button
+                    className="mt-4"
+                    onPress={() => {
+                      // TODO: Navigate to inverter selection screen/modal
+                      console.log("Add Inverter for kit:", item._id);
+                    }}
+                  >
+                    <ButtonText>Añadir inversor</ButtonText>
+                  </Button>
                 )}
 
                 {item.billStorageId && (
@@ -284,7 +321,8 @@ export default function GarageScreen() {
                 )}
               </VStack>
             </Card>
-          )}
+            ); // Closing return statement
+          }}
         />
       )}
 
@@ -385,13 +423,22 @@ export default function GarageScreen() {
                   <Pressable
                     key={index}
                     onPress={() => setSelectedOptionIndex(index)}
-                    className={`p-3 rounded-lg shadow-soft-1 mb-3 border-2 ${
+                    className={`p-3 rounded-lg shadow-soft-1 mb-3 border-2 flex-row items-center ${
                       selectedOptionIndex === index
                         ? "bg-primary-50 border-primary-500"
                         : "bg-white border-transparent"
                     }`}
                   >
-                    <HStack className="justify-between items-center">
+                    {option.imageUrl && (
+                      <Image
+                        source={{ uri: option.imageUrl }}
+                        style={{ width: 64, height: 64 }}
+                        contentFit="contain"
+                        transition={200}
+                        className="mr-3 rounded-md border border-outline-100 bg-background-50"
+                      />
+                    )}
+                    <HStack className="justify-between items-center flex-1">
                       <VStack className="flex-1 flex-shrink min-w-0">
                         <Text className="font-bold">
                           {option.brand} {option.model}

@@ -1,3 +1,4 @@
+import { hasSeenOnboarding } from "@/components/Onboarding";
 import { useOAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
@@ -8,10 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Import StyleSheet
+import { useRouter } from "expo-router";
 
 const LoginScreen = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if user has seen onboarding, redirect if not
+    hasSeenOnboarding().then((seen) => {
+      if (!seen) {
+        router.replace("/onboarding");
+      }
+    });
+  }, [router]);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_facebook" });
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: "oauth_google" });
 
