@@ -1,7 +1,6 @@
 import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { ChevronDown, FileUp, CheckCircle } from "lucide-react-native";
 import { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
 
@@ -10,23 +9,7 @@ import {
   Button,
   ButtonSpinner,
   ButtonText,
-  Card,
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
   Heading,
-  Image,
-  Pressable,
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectIcon,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
   Text,
   Toast,
   ToastDescription,
@@ -37,7 +20,9 @@ import {
 } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { KitBillDetails } from "@/components/KitBillDetails";
+import { KitSelector } from "@/components/billupload/KitSelector";
+import { FilePicker } from "@/components/billupload/FilePicker";
+import { AnalysisResults } from "@/components/billupload/AnalysisResults";
 
 export default function UploadBillScreen() {
   const router = useRouter();
@@ -73,13 +58,11 @@ export default function UploadBillScreen() {
   const analyzeBill = useAction(api.actions.analyzeBill);
   
   const safeKits = kits ?? [];
-  const selectedKitObject = safeKits.find((k) => k._id === selectedKitId);
 
   // While the selected kit's data is loading, show a spinner.
   const isKitLoading = selectedKitId && kit === undefined;
 
   // Effect 1: Reset form state whenever the selected kit ID changes.
-  // This ensures we start with a clean slate for each kit.
   useEffect(() => {
     setAnalysisResult(null);
     setSelectedFile(null);
@@ -97,7 +80,6 @@ export default function UploadBillScreen() {
         energyRate: kit.energyRate,
       });
 
-      // Set a placeholder for the file if a bill is linked to show the preview
       if (kit.billStorageId) {
         setSelectedFile({ uri: "existing", name: "Factura Guardada" });
       }
@@ -109,12 +91,11 @@ export default function UploadBillScreen() {
       type: ["application/pdf", "image/*"],
       copyToCacheDirectory: true,
     });
-    console.log("DocumentPicker result:", JSON.stringify(result, null, 2));
 
     if (result.canceled === false && result.assets && result.assets[0]) {
       const asset = result.assets[0];
       setSelectedFile({ uri: asset.uri, mimeType: asset.mimeType, name: asset.name });
-      setAnalysisResult(null); // Reset analysis if new file picked
+      setAnalysisResult(null);
     }
   };
 
@@ -137,14 +118,10 @@ export default function UploadBillScreen() {
     setIsSubmitting(true);
 
     try {
-      // 1. Get upload URL from Convex
       const postUrl = await generateUploadUrl();
-
-      // 2. Fetch the file from its local URI
       const response = await fetch(selectedFile.uri);
       const blob = await response.blob();
 
-      // 3. Upload the file to the generated URL
       const uploadResult = await fetch(postUrl, {
         method: "POST",
         headers: { "Content-Type": blob.type },
@@ -153,20 +130,17 @@ export default function UploadBillScreen() {
 
       const { storageId } = await uploadResult.json();
 
-      // 4. Associate the storageId with the selected kit
       await addBillToKit({
         kitId: selectedKitId,
         storageId: storageId,
       });
 
-      // 5. Trigger AI Analysis
       setIsAnalyzing(true);
       const analysis = await analyzeBill({ storageId });
       
       if (analysis.success) {
         setAnalysisResult(analysis.data);
         
-        // 6. Save extracted data to the database
         await saveBillAnalysis({
           kitId: selectedKitId,
           monthlyConsumptionKwh: analysis.data.monthlyConsumptionKwh ?? undefined,
@@ -230,77 +204,18 @@ export default function UploadBillScreen() {
             </Box>
           ) : !analysisResult ? (
             <VStack space="lg">
-              {/* Kit Selector */}
-              <FormControl>
-                <FormControlLabel>
-                  <FormControlLabelText>Selecciona un Kit</FormControlLabelText>
-                </FormControlLabel>
-                <Select
-                  selectedValue={selectedKitId ?? ""}
-                  onValueChange={(value) => setSelectedKitId(value as Id<"kits">)}
-                  isDisabled={!kits || kits.length === 0 || isSubmitting}
-                >
-                  <SelectTrigger variant="outline" size="md">
-                    <SelectInput
-                      placeholder={!kits ? "Cargando kits..." : "Selecciona..."}
-                      value={selectedKitObject?.name}
-                    />
-                    <SelectIcon as={ChevronDown} className="mr-3" />
-                  </SelectTrigger>
-                  <SelectPortal>
-                    <SelectBackdrop />
-                    <SelectContent>
-                      <SelectDragIndicatorWrapper>
-                        <SelectDragIndicator />
-                      </SelectDragIndicatorWrapper>
-                      {safeKits.map((kit) => (
-                        <SelectItem
-                          key={kit._id}
-                          label={kit.name}
-                          value={kit._id}
-                        />
-                      ))}
-                    </SelectContent>
-                  </SelectPortal>
-                </Select>
-              </FormControl>
+              <KitSelector 
+                kits={kits}
+                selectedKitId={selectedKitId}
+                onValueChange={setSelectedKitId}
+                isDisabled={!kits || kits.length === 0 || isSubmitting}
+              />
 
-              {/* File Picker */}
-              <FormControl>
-                <FormControlLabel>
-                  <FormControlLabelText>Archivo de Factura</FormControlLabelText>
-                </FormControlLabel>
-                <Pressable
-                  onPress={pickFile}
-                  disabled={isSubmitting}
-                  className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden"
-                >
-                  {selectedFile ? (
-                    selectedFile.mimeType?.startsWith("image/") ? (
-                      <Image
-                        source={{ uri: selectedFile.uri }}
-                        alt="Energy bill"
-                        className="w-full h-full"
-                        resizeMode="contain"
-                      />
-                    ) : (
-                      <VStack className="items-center p-4" space="xs">
-                        <FileUp size={48} color="#9CA3AF" />
-                        <Text size="sm" className="text-typography-500 mt-2 text-center" isTruncated>
-                          {selectedFile.name || 'Archivo seleccionado'}
-                        </Text>
-                      </VStack>
-                    )
-                  ) : (
-                    <VStack className="items-center" space="xs">
-                      <FileUp size={48} color="#9CA3AF" />
-                      <Text size="sm" className="text-typography-400 mt-2">
-                        Toca para seleccionar una imagen o PDF
-                      </Text>
-                    </VStack>
-                  )}
-                </Pressable>
-              </FormControl>
+              <FilePicker 
+                onPress={pickFile}
+                selectedFile={selectedFile}
+                isDisabled={isSubmitting}
+              />
 
               <HStack space="md" className="mt-4 w-full">
                 <Button
@@ -328,48 +243,12 @@ export default function UploadBillScreen() {
               </HStack>
             </VStack>
           ) : (
-            /* Analysis Results Card */
             <VStack space="lg">
-              {/* Only show the file preview box right after a file has been picked, not when viewing existing data. */}
-              {selectedFile && selectedFile.uri !== 'existing' && (
-                <Box className="w-full aspect-[16/9] bg-background-50 rounded-lg overflow-hidden border border-outline-200">
-                  {(billUrl || selectedFile?.mimeType?.startsWith("image/")) ? (
-                    <Image
-                      source={{ uri: billUrl || selectedFile!.uri }}
-                      alt="Uploaded bill"
-                      className="w-full h-full"
-                      resizeMode="contain"
-                    />
-                  ) : (
-                    <VStack className="items-center justify-center flex-1" space="xs">
-                      <FileUp size={48} color="#9CA3AF" />
-                      <Text size="sm" className="text-typography-500 mt-2">
-                        Documento PDF subido
-                      </Text>
-                    </VStack>
-                  )}
-                </Box>
-              )}
-
-              <Card variant="outline" className="p-4 border-success-300 bg-success-50">
-                <HStack space="md" className="items-center mb-4">
-                  <CheckCircle size={24} color="#10B981" />
-                  <Heading size="md" className="text-success-800">Datos Extraídos</Heading>
-                </HStack>
-                
-                <KitBillDetails 
-                  provider={analysisResult.provider}
-                  billingPeriod={analysisResult.billingPeriod}
-                  monthlyConsumptionKwh={analysisResult.monthlyConsumptionKwh}
-                  energyRate={analysisResult.energyRate}
-                  totalAmount={analysisResult.totalAmount}
-                  currency={analysisResult.currency}
-                />
-              </Card>
-
-              <Text size="xs" className="text-typography-400 text-center italic">
-                Estos datos se han extraído automáticamente. En el siguiente paso podrás ajustar tu configuración solar.
-              </Text>
+              <AnalysisResults 
+                selectedFile={selectedFile}
+                billUrl={billUrl ?? null}
+                analysisResult={analysisResult}
+              />
 
               <Button onPress={handleFinish} className="bg-success-600">
                 <ButtonText>Arma tu Efikit Solar</ButtonText>
