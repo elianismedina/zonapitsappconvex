@@ -1,5 +1,4 @@
-import { hasSeenOnboarding } from "@/components/Onboarding";
-import { Onboarding } from "@/components/Onboarding";
+import { hasSeenOnboarding, Onboarding } from "@/components/Onboarding";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 

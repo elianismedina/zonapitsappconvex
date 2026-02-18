@@ -10,6 +10,7 @@ import {
   InputField,
   Text,
   Toast,
+  ToastDescription,
   ToastTitle,
   VStack,
   useToast,
@@ -28,6 +29,11 @@ const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export default function SearchScreen() {
   const { kitType } = useLocalSearchParams<{ kitType: string }>();
+  const createKit = useMutation(api.kits.createKit);
+  const router = useRouter();
+  const mapRef = useRef<MapView>(null);
+  const toast = useToast();
+
   const [kitName, setKitName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<{
     address: string;
@@ -113,12 +119,7 @@ export default function SearchScreen() {
         });
       }
     })();
-  }, []); // Run once on mount
-
-  const createKit = useMutation(api.kits.createKit);
-  const router = useRouter();
-  const mapRef = useRef<MapView>(null);
-  const toast = useToast();
+  }, [toast]); // Run once on mount or when toast changes
 
   const handlePlaceSelect = (data: any, details: any = null) => {
     if (details) {
