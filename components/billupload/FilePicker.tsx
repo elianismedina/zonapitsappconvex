@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormControl,
   FormControlLabel,
@@ -9,6 +8,14 @@ import {
   VStack,
 } from "@/components/ui";
 import { FileUp } from "lucide-react-native";
+import React, { useEffect } from "react";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 interface FilePickerProps {
   onPress: () => void;
@@ -20,7 +27,32 @@ interface FilePickerProps {
   isDisabled: boolean;
 }
 
-export const FilePicker = ({ onPress, selectedFile, isDisabled }: FilePickerProps) => {
+export const FilePicker = ({
+  onPress,
+  selectedFile,
+  isDisabled,
+}: FilePickerProps) => {
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      scale.value = withRepeat(
+        withSequence(
+          withTiming(1.1, { duration: 800 }),
+          withTiming(1, { duration: 800 }),
+        ),
+        -1,
+        true,
+      );
+    } else {
+      scale.value = withTiming(1);
+    }
+  }, [selectedFile]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   return (
     <FormControl>
       <FormControlLabel>
@@ -42,15 +74,21 @@ export const FilePicker = ({ onPress, selectedFile, isDisabled }: FilePickerProp
           ) : (
             <VStack className="items-center p-4" space="xs">
               <FileUp size={48} color="#9CA3AF" />
-              <Text size="sm" className="text-typography-500 mt-2 text-center" isTruncated>
-                {selectedFile.name || 'Archivo seleccionado'}
+              <Text
+                size="sm"
+                className="text-typography-500 mt-2 text-center"
+                isTruncated
+              >
+                {selectedFile.name || "Archivo seleccionado"}
               </Text>
             </VStack>
           )
         ) : (
           <VStack className="items-center" space="xs">
-            <FileUp size={48} color="#9CA3AF" />
-            <Text size="sm" className="text-typography-400 mt-2">
+            <Animated.View style={animatedStyle}>
+              <FileUp size={56} color="#0066FF" />
+            </Animated.View>
+            <Text size="sm" className="font-medium text-primary-600 mt-2">
               Toca para seleccionar una imagen o PDF
             </Text>
           </VStack>

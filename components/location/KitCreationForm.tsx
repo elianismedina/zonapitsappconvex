@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -6,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
+  HStack,
   Heading,
   Input,
   InputField,
@@ -20,6 +20,7 @@ interface KitCreationFormProps {
   setKitName: (name: string) => void;
   selectedLocation: { address: string } | null;
   onConfirm: () => void;
+  onCancel: () => void;
   keyboardOffset: Animated.Value | any;
 }
 
@@ -29,15 +30,11 @@ export const KitCreationForm = ({
   setKitName,
   selectedLocation,
   onConfirm,
+  onCancel,
   keyboardOffset,
 }: KitCreationFormProps) => {
   return (
-    <Animated.View
-      style={[
-        styles.formContainer,
-        { bottom: keyboardOffset }
-      ]}
-    >
+    <Animated.View style={[styles.formContainer, { bottom: keyboardOffset }]}>
       <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
         <Heading size="md" className="mb-4">
           Crear Nuevo Kit Solar {kitType ? `(${kitType})` : ""}
@@ -65,12 +62,23 @@ export const KitCreationForm = ({
             </Text>
           </View>
 
-          <Button
-            onPress={onConfirm}
-            isDisabled={!selectedLocation || !kitName}
-          >
-            <ButtonText>Crear Kit</ButtonText>
-          </Button>
+          <HStack space="md" className="w-full">
+            <Button
+              variant="outline"
+              action="secondary"
+              onPress={onCancel}
+              className="flex-1"
+            >
+              <ButtonText>Cancelar</ButtonText>
+            </Button>
+            <Button
+              onPress={onConfirm}
+              isDisabled={!selectedLocation || !kitName}
+              className="flex-1"
+            >
+              <ButtonText>Crear Kit</ButtonText>
+            </Button>
+          </HStack>
         </VStack>
       </Box>
     </Animated.View>

@@ -60,6 +60,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         organization: "eficiencia-solar-del-caribe",
       },
     ],
+    [
+      "expo-location",
+      {
+        locationWhenInUsePermission:
+          "Permitir que Efisolar Kit acceda a tu ubicación para facilitar la selección del lugar de instalación.",
+      },
+    ],
   ],
   experiments: {
     typedRoutes: false,

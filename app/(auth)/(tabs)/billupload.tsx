@@ -1,28 +1,28 @@
 import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useState, useEffect } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 
+import { AnalysisResults } from "@/components/billupload/AnalysisResults";
+import { FilePicker } from "@/components/billupload/FilePicker";
+import { KitSelector } from "@/components/billupload/KitSelector";
 import {
   Box,
   Button,
   ButtonSpinner,
   ButtonText,
+  HStack,
   Heading,
   Text,
   Toast,
   ToastDescription,
   ToastTitle,
-  useToast,
   VStack,
-  HStack,
+  useToast,
 } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { KitSelector } from "@/components/billupload/KitSelector";
-import { FilePicker } from "@/components/billupload/FilePicker";
-import { AnalysisResults } from "@/components/billupload/AnalysisResults";
 
 export default function UploadBillScreen() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function UploadBillScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(
-    kitId || null
+    kitId || null,
   );
   const [selectedFile, setSelectedFile] = useState<{
     uri: string;
@@ -46,29 +46,36 @@ export default function UploadBillScreen() {
   const kits = useQuery(api.kits.getKits, {});
   const kit = useQuery(
     api.kits.getKitById,
-    selectedKitId ? { id: selectedKitId } : "skip"
+    selectedKitId ? { id: selectedKitId } : "skip",
   );
   const billUrl = useQuery(
     api.kits.getBillUrl,
-    kit?.billStorageId ? { storageId: kit.billStorageId } : "skip"
+    kit?.billStorageId ? { storageId: kit.billStorageId } : "skip",
   );
   const generateUploadUrl = useMutation(api.kits.generateUploadUrl);
   const addBillToKit = useMutation(api.kits.addBillToKit);
   const saveBillAnalysis = useMutation(api.kits.saveBillAnalysis);
   const analyzeBill = useAction(api.actions.analyzeBill);
-  
+
   const safeKits = kits ?? [];
 
   // While the selected kit's data is loading, show a spinner.
   const isKitLoading = selectedKitId && kit === undefined;
 
-  // Effect 1: Reset form state whenever the selected kit ID changes.
+  // Effect 1: Auto-select kit if only one exists.
+  useEffect(() => {
+    if (safeKits.length === 1 && !selectedKitId) {
+      setSelectedKitId(safeKits[0]._id);
+    }
+  }, [safeKits, selectedKitId]);
+
+  // Effect 2: Reset form state whenever the selected kit ID changes.
   useEffect(() => {
     setAnalysisResult(null);
     setSelectedFile(null);
   }, [selectedKitId]);
 
-  // Effect 2: When the kit data has loaded, populate the form if there are existing bill details.
+  // Effect 3: When the kit data has loaded, populate the form if there are existing bill details.
   useEffect(() => {
     if (kit && kit.provider && kit.monthlyConsumptionKwh) {
       setAnalysisResult({
@@ -94,7 +101,11 @@ export default function UploadBillScreen() {
 
     if (result.canceled === false && result.assets && result.assets[0]) {
       const asset = result.assets[0];
-      setSelectedFile({ uri: asset.uri, mimeType: asset.mimeType, name: asset.name });
+      setSelectedFile({
+        uri: asset.uri,
+        mimeType: asset.mimeType,
+        name: asset.name,
+      });
       setAnalysisResult(null);
     }
   };
@@ -137,13 +148,14 @@ export default function UploadBillScreen() {
 
       setIsAnalyzing(true);
       const analysis = await analyzeBill({ storageId });
-      
+
       if (analysis.success) {
         setAnalysisResult(analysis.data);
-        
+
         await saveBillAnalysis({
           kitId: selectedKitId,
-          monthlyConsumptionKwh: analysis.data.monthlyConsumptionKwh ?? undefined,
+          monthlyConsumptionKwh:
+            analysis.data.monthlyConsumptionKwh ?? undefined,
           energyRate: analysis.data.energyRate ?? undefined,
           totalAmount: analysis.data.totalAmount ?? undefined,
           currency: analysis.data.currency ?? undefined,
@@ -165,7 +177,6 @@ export default function UploadBillScreen() {
       } else {
         throw new Error(analysis.error || "Error en el análisis");
       }
-
     } catch (err) {
       console.error("Error processing bill:", err);
       toast.show({
@@ -195,7 +206,8 @@ export default function UploadBillScreen() {
         <VStack space="xl">
           <Heading size="xl">Subir Factura de Energía</Heading>
           <Text size="sm" className="text-typography-500">
-            Sube tu factura para que la IA extraiga tu consumo y tarifas automáticamente.
+            Sube tu factura para que la IA extraiga tu consumo y tarifas
+            automáticamente.
           </Text>
 
           {isKitLoading ? (
@@ -204,47 +216,90 @@ export default function UploadBillScreen() {
             </Box>
           ) : !analysisResult ? (
             <VStack space="lg">
-              <KitSelector 
-                kits={kits}
-                selectedKitId={selectedKitId}
-                onValueChange={setSelectedKitId}
-                isDisabled={!kits || kits.length === 0 || isSubmitting}
-              />
+              {safeKits.length > 1 ? (
+                <KitSelector
+                  kits={kits}
+                  selectedKitId={selectedKitId}
+                  onValueChange={setSelectedKitId}
+                  isDisabled={isSubmitting}
+                />
+              ) : safeKits.length === 1 ? (
+                <Box className="p-4 bg-background-50 rounded-lg border border-outline-300">
+                  <VStack space="xs">
+                    <Text
+                      size="xs"
+                      className="text-typography-500 uppercase font-bold"
+                    >
+                      Kit Seleccionado
+                    </Text>
+                    <Text size="md" className="font-medium text-typography-900">
+                      {safeKits[0].name}
+                    </Text>
+                  </VStack>
+                </Box>
+              ) : (
+                <Box className="p-4 bg-background-50 rounded-lg border border-outline-300">
+                  <VStack space="sm" className="items-center">
+                    <Text className="text-center text-typography-500">
+                      No tienes kits creados aún para vincular una factura.
+                    </Text>
+                    <Button
+                      variant="solid"
+                      action="primary"
+                      onPress={() => router.push("/(auth)/(tabs)/location")}
+                      className="mt-2"
+                    >
+                      <ButtonText>Armar kit</ButtonText>
+                    </Button>
+                  </VStack>
+                </Box>
+              )}
 
-              <FilePicker 
-                onPress={pickFile}
-                selectedFile={selectedFile}
-                isDisabled={isSubmitting}
-              />
+              {safeKits.length > 0 && (
+                <>
+                  <FilePicker
+                    onPress={pickFile}
+                    selectedFile={selectedFile}
+                    isDisabled={isSubmitting}
+                  />
 
-              <HStack space="md" className="mt-4 w-full">
-                <Button
-                  variant="outline"
-                  action="secondary"
-                  onPress={() => router.push("/(auth)/(tabs)/mykits")}
-                  className="flex-1"
-                >
-                  <ButtonText>Cancelar</ButtonText>
-                </Button>
-                <Button
-                  onPress={handleSubmit}
-                  isDisabled={isSubmitting || !selectedKitId || !selectedFile}
-                  className="flex-1"
-                >
-                  {isSubmitting ? (
-                    <HStack space="sm" className="items-center justify-center">
-                      <ButtonSpinner />
-                      <ButtonText>{isAnalyzing ? "Analizando..." : "Subiendo..."}</ButtonText>
-                    </HStack>
-                  ) : (
-                    <ButtonText>Subir y Analizar</ButtonText>
-                  )}
-                </Button>
-              </HStack>
+                  <HStack space="md" className="mt-4 w-full">
+                    <Button
+                      variant="outline"
+                      action="secondary"
+                      onPress={() => router.push("/(auth)/(tabs)/mykits")}
+                      className="flex-1"
+                    >
+                      <ButtonText>Cancelar</ButtonText>
+                    </Button>
+                    <Button
+                      onPress={handleSubmit}
+                      isDisabled={
+                        isSubmitting || !selectedKitId || !selectedFile
+                      }
+                      className="flex-1"
+                    >
+                      {isSubmitting ? (
+                        <HStack
+                          space="sm"
+                          className="items-center justify-center"
+                        >
+                          <ButtonSpinner />
+                          <ButtonText>
+                            {isAnalyzing ? "Analizando..." : "Subiendo..."}
+                          </ButtonText>
+                        </HStack>
+                      ) : (
+                        <ButtonText>Subir y Analizar</ButtonText>
+                      )}
+                    </Button>
+                  </HStack>
+                </>
+              )}
             </VStack>
           ) : (
             <VStack space="lg">
-              <AnalysisResults 
+              <AnalysisResults
                 selectedFile={selectedFile}
                 billUrl={billUrl ?? null}
                 analysisResult={analysisResult}
@@ -253,11 +308,11 @@ export default function UploadBillScreen() {
               <Button onPress={handleFinish} className="bg-success-600">
                 <ButtonText>Arma tu Efikit Solar</ButtonText>
               </Button>
-              
+
               {safeKits.length > 1 && (
-                <Button 
-                  variant="outline" 
-                  action="secondary" 
+                <Button
+                  variant="outline"
+                  action="secondary"
                   onPress={() => {
                     setAnalysisResult(null);
                     setSelectedFile(null);

@@ -1,20 +1,20 @@
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-} from "@/components/ui";
-import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Keyboard, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
-import * as Location from 'expo-location';
-import { useKeyboardOffset } from "@/hooks/use-keyboard-offset";
 import { AddressSearch } from "@/components/location/AddressSearch";
-import { ZoomControls } from "@/components/location/ZoomControls";
 import { KitCreationForm } from "@/components/location/KitCreationForm";
+import { ZoomControls } from "@/components/location/ZoomControls";
+import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui";
+import { api } from "@/convex/_generated/api";
+import { useKeyboardOffset } from "@/hooks/use-keyboard-offset";
+import { useMutation } from "convex/react";
+import * as Location from "expo-location";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
@@ -44,7 +44,7 @@ export default function SearchScreen() {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      if (status !== "granted") {
         toast.show({
           placement: "top",
           render: ({ id }) => (
@@ -108,18 +108,84 @@ export default function SearchScreen() {
     }
   }, []);
 
-  const handleZoom = useCallback((direction: 'in' | 'out') => {
-    if (mapRef.current && region) {
-      const multiplier = direction === 'in' ? 0.5 : 2;
-      const newRegion = {
-        ...region,
-        latitudeDelta: region.latitudeDelta * multiplier,
-        longitudeDelta: region.longitudeDelta * multiplier,
-      };
-      setRegion(newRegion);
-      mapRef.current.animateToRegion(newRegion, 500);
+  const handleUseCurrentLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => (
+            <Toast nativeID={`toast-${id}`} action="error">
+              <ToastTitle>Permiso denegado</ToastTitle>
+              <ToastDescription>
+                Necesitamos permiso para usar tu ubicación.
+              </ToastDescription>
+            </Toast>
+          ),
+        });
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      // Reverse geocode to get address
+      const reverseGeocode = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      if (reverseGeocode.length > 0) {
+        const place = reverseGeocode[0];
+        const address =
+          `${place.street || ""} ${place.name || ""}, ${place.city || ""}, ${place.region || ""}`.trim();
+
+        const newRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        };
+
+        setSelectedLocation({
+          address: address || "Ubicación actual",
+          latitude,
+          longitude,
+        });
+        setRegion(newRegion);
+        mapRef.current?.animateToRegion(newRegion, 1000);
+      }
+    } catch (error) {
+      console.error("Error using current location:", error);
+      toast.show({
+        placement: "top",
+        render: ({ id }) => (
+          <Toast nativeID={`toast-${id}`} action="error">
+            <ToastTitle>Error</ToastTitle>
+            <ToastDescription>
+              No se pudo determinar la dirección.
+            </ToastDescription>
+          </Toast>
+        ),
+      });
     }
-  }, [region]);
+  };
+
+  const handleZoom = useCallback(
+    (direction: "in" | "out") => {
+      if (mapRef.current && region) {
+        const multiplier = direction === "in" ? 0.5 : 2;
+        const newRegion = {
+          ...region,
+          latitudeDelta: region.latitudeDelta * multiplier,
+          longitudeDelta: region.longitudeDelta * multiplier,
+        };
+        setRegion(newRegion);
+        mapRef.current.animateToRegion(newRegion, 500);
+      }
+    },
+    [region],
+  );
 
   const handleCreateKit = async () => {
     if (!selectedLocation || !kitName.trim()) {
@@ -161,7 +227,7 @@ export default function SearchScreen() {
 
       router.push({
         pathname: "/(auth)/(tabs)/billupload",
-        params: { kitId: newKitId }
+        params: { kitId: newKitId },
       });
     } catch (error) {
       console.error("Error creating kit:", error);
@@ -179,7 +245,10 @@ export default function SearchScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <AddressSearch apiKey={GOOGLE_MAPS_API_KEY} onPlaceSelect={handlePlaceSelect} />
+        <AddressSearch
+          apiKey={GOOGLE_MAPS_API_KEY}
+          onPlaceSelect={handlePlaceSelect}
+        />
 
         <MapView
           ref={mapRef}
@@ -189,6 +258,8 @@ export default function SearchScreen() {
           onRegionChangeComplete={setRegion}
           zoomEnabled={true}
           scrollEnabled={true}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
         >
           {selectedLocation && (
             <Marker
@@ -201,9 +272,10 @@ export default function SearchScreen() {
           )}
         </MapView>
 
-        <ZoomControls 
-          onZoomIn={() => handleZoom('in')} 
-          onZoomOut={() => handleZoom('out')} 
+        <ZoomControls
+          onZoomIn={() => handleZoom("in")}
+          onZoomOut={() => handleZoom("out")}
+          onLocate={handleUseCurrentLocation}
         />
 
         <KitCreationForm
@@ -212,6 +284,11 @@ export default function SearchScreen() {
           setKitName={setKitName}
           selectedLocation={selectedLocation}
           onConfirm={handleCreateKit}
+          onCancel={() => {
+            setSelectedLocation(null);
+            setKitName("");
+            Keyboard.dismiss();
+          }}
           keyboardOffset={keyboardOffset}
         />
       </View>

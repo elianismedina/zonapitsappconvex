@@ -1,15 +1,24 @@
+import { MapPin, Minus, Plus } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Minus, Plus } from "lucide-react-native";
 
 interface ZoomControlsProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onLocate: () => void;
 }
 
-export const ZoomControls = ({ onZoomIn, onZoomOut }: ZoomControlsProps) => {
+export const ZoomControls = ({
+  onZoomIn,
+  onZoomOut,
+  onLocate,
+}: ZoomControlsProps) => {
   return (
     <View style={styles.zoomControls}>
+      <TouchableOpacity style={styles.zoomButton} onPress={onLocate}>
+        <MapPin size={24} color="#0066FF" />
+      </TouchableOpacity>
+      <View style={styles.separator} />
       <TouchableOpacity style={styles.zoomButton} onPress={onZoomIn}>
         <Plus size={24} color="#000" />
       </TouchableOpacity>
@@ -40,5 +49,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  separator: {
+    height: 4,
   },
 });
