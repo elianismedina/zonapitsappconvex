@@ -47,7 +47,7 @@ export const FilePicker = ({
     } else {
       scale.value = withTiming(1);
     }
-  }, [selectedFile]);
+  }, [selectedFile, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

@@ -1,7 +1,7 @@
 import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 
 import { AnalysisResults } from "@/components/billupload/AnalysisResults";
@@ -57,7 +57,7 @@ export default function UploadBillScreen() {
   const saveBillAnalysis = useMutation(api.kits.saveBillAnalysis);
   const analyzeBill = useAction(api.actions.analyzeBill);
 
-  const safeKits = kits ?? [];
+  const safeKits = useMemo(() => kits ?? [], [kits]);
 
   // While the selected kit's data is loading, show a spinner.
   const isKitLoading = selectedKitId && kit === undefined;
