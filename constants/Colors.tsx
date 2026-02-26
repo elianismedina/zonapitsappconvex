@@ -1,9 +1,11 @@
 import { Platform, PlatformColor } from "react-native";
 
 export const Colors = {
-  background: "#FDF8FF",
-  border: "#acacac",
-  itemBackground: "#f5f5f5",
+  background: "#FFFFFF",
+  border: "#E5E7EB",
+  itemBackground: "#FAFAFA",
+  primary: "#EAB308",
+  black: "#11181C",
 
   ...Platform.select({
     ios: {

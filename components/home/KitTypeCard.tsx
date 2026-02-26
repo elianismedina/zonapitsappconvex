@@ -1,20 +1,21 @@
-import React from "react";
 import {
   Box,
   Card,
-  Heading,
+  Image as GUIImage,
   HStack,
+  Heading,
   Pressable,
   Text,
   VStack,
 } from "@/components/ui";
-import { ChevronRight, LucideIcon } from "lucide-react-native";
+import { ChevronRight } from "lucide-react-native";
+import React from "react";
 
 interface KitTypeCardProps {
   id: string;
   title: string;
   description: string;
-  icon: LucideIcon;
+  image: any;
   color: string;
   bgColor: string;
   onPress: (id: string) => void;
@@ -24,20 +25,22 @@ export const KitTypeCard = ({
   id,
   title,
   description,
-  icon: Icon,
+  image,
   color,
   bgColor,
   onPress,
 }: KitTypeCardProps) => {
   return (
-    <Pressable
-      onPress={() => onPress(id)}
-      className="active:opacity-80"
-    >
+    <Pressable onPress={() => onPress(id)} className="active:opacity-80">
       <Card variant="outline" className="p-4 border-outline-200">
         <HStack space="lg" className="items-center">
-          <Box className={`p-3 rounded-full ${bgColor}`}>
-            <Icon size={32} color={color} />
+          <Box className={`rounded-xl ${bgColor} p-1`}>
+            <GUIImage
+              source={image}
+              alt={title}
+              className="w-16 h-16"
+              contentFit="contain"
+            />
           </Box>
           <VStack className="flex-1">
             <Heading size="md" className="text-typography-900">

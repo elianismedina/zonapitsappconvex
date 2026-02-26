@@ -1,8 +1,9 @@
+import { LoadingAnimation } from "@/components/LoadingAnimation";
 import { EditKitModal } from "@/components/mykits/EditKitModal";
 import { EmptyKitsView } from "@/components/mykits/EmptyKitsView";
 import { KitCard } from "@/components/mykits/KitCard";
 import { SizingModal, SizingResults } from "@/components/mykits/SizingModal";
-import { Box, Heading, Spinner } from "@/components/ui";
+import { Box, Heading } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -156,7 +157,7 @@ export default function GarageScreen() {
   if (kits === undefined) {
     return (
       <Box className="flex-1 justify-center items-center">
-        <Spinner size="large" />
+        <LoadingAnimation />
       </Box>
     );
   }

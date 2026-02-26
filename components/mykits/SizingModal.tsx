@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -13,13 +12,14 @@ import {
   ModalFooter,
   ModalHeader,
   Pressable,
-  Spinner,
   Text,
   VStack,
 } from "@/components/ui";
-import { X } from "lucide-react-native";
-import { Image } from "expo-image";
 import { Id } from "@/convex/_generated/dataModel";
+import { Image } from "expo-image";
+import { X } from "lucide-react-native";
+import React from "react";
+import { LoadingAnimation } from "../LoadingAnimation";
 
 export type SizingResults = {
   peakSunHours: number;
@@ -74,7 +74,7 @@ export const SizingModal = ({
         <ModalBody>
           {isSizing && (
             <Box className="h-64 items-center justify-center">
-              <Spinner size="large" />
+              <LoadingAnimation size={140} />
               <Text className="mt-4">
                 Calculando... Estamos contactando a la NASA...
               </Text>
@@ -142,11 +142,7 @@ export const SizingModal = ({
           )}
         </ModalBody>
         <ModalFooter className="flex-row justify-between w-full">
-          <Button
-            variant="outline"
-            action="secondary"
-            onPress={onClose}
-          >
+          <Button variant="outline" action="secondary" onPress={onClose}>
             <ButtonText>Volver</ButtonText>
           </Button>
           <Button

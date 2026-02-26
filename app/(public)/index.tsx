@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Import StyleSheet
-import { useRouter } from "expo-router";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -67,7 +67,10 @@ const LoginScreen = () => {
           alt="Login illustration"
         />
         <VStack space="xl" className="p-5 items-center">
-          <Text size="lg" className="font-medium text-center">
+          <Text
+            size="lg"
+            className="font-medium text-center text-typography-900"
+          >
             ¿Cómo te gustaría empezar?
           </Text>
 

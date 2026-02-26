@@ -10,6 +10,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
+  Platform,
   StyleSheet,
   TouchableWithoutFeedback,
   View,
@@ -60,7 +61,24 @@ export default function SearchScreen() {
       }
 
       try {
-        let location = await Location.getCurrentPositionAsync({});
+        // First try to get last known position for immediate snap
+        const lastKnown = await Location.getLastKnownPositionAsync({});
+        if (lastKnown) {
+          const lastRegion = {
+            latitude: lastKnown.coords.latitude,
+            longitude: lastKnown.coords.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          };
+          setRegion(lastRegion);
+          mapRef.current?.animateToRegion(lastRegion, 500);
+        }
+
+        // Then get fresh position with balanced accuracy (much faster than High)
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
         const newRegion = {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
@@ -253,7 +271,7 @@ export default function SearchScreen() {
         <MapView
           ref={mapRef}
           style={styles.map}
-          provider={PROVIDER_GOOGLE}
+          provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
           initialRegion={region}
           onRegionChangeComplete={setRegion}
           zoomEnabled={true}

@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 
+import { LoadingAnimation } from "@/components/LoadingAnimation";
 import { AnalysisResults } from "@/components/billupload/AnalysisResults";
 import { FilePicker } from "@/components/billupload/FilePicker";
 import { KitSelector } from "@/components/billupload/KitSelector";
@@ -212,7 +213,7 @@ export default function UploadBillScreen() {
 
           {isKitLoading ? (
             <Box className="h-96 w-full items-center justify-center">
-              <ButtonSpinner />
+              <LoadingAnimation size={120} />
             </Box>
           ) : !analysisResult ? (
             <VStack space="lg">

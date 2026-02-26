@@ -1,4 +1,5 @@
 import { AnimatedSplashScreen } from "@/components/AnimatedSplashScreen";
+import { LoadingAnimation } from "@/components/LoadingAnimation";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
@@ -19,6 +20,7 @@ import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
 if (typeof globalThis.window === "undefined") {
@@ -128,7 +130,7 @@ const InitialLayout = () => {
   }, [isSignedIn, isLoaded, router, segments, rootNavigationState]);
 
   if (!isLoaded) {
-    return null;
+    return <LoadingAnimation />;
   }
 
   return <Slot />;
@@ -148,28 +150,30 @@ const RootLayoutNav = () => {
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   if (!fontsLoaded) {
-    return null;
+    return <LoadingAnimation />;
   }
   return (
-    <GluestackUIProvider mode={colorMode}>
-      <StatusBar style="auto" />
-      <ClerkProvider
-        publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-        tokenCache={tokenCache}
-      >
-        <ClerkLoaded>
-          <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-            <InitialLayout />
-          </ConvexProviderWithClerk>
-          {!isSplashFinished && (
-            <AnimatedSplashScreen
-              onReady={() => SplashScreen.hideAsync()}
-              onAnimationFinish={() => setIsSplashFinished(true)}
-            />
-          )}
-        </ClerkLoaded>
-      </ClerkProvider>
-    </GluestackUIProvider>
+    <SafeAreaProvider>
+      <GluestackUIProvider mode={colorMode}>
+        <StatusBar style="auto" />
+        <ClerkProvider
+          publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+          tokenCache={tokenCache}
+        >
+          <ClerkLoaded>
+            <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+              <InitialLayout />
+            </ConvexProviderWithClerk>
+            {!isSplashFinished && (
+              <AnimatedSplashScreen
+                onReady={() => SplashScreen.hideAsync()}
+                onAnimationFinish={() => setIsSplashFinished(true)}
+              />
+            )}
+          </ClerkLoaded>
+        </ClerkProvider>
+      </GluestackUIProvider>
+    </SafeAreaProvider>
   );
 };
 

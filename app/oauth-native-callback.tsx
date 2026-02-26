@@ -1,22 +1,5 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { LoadingAnimation } from "@/components/LoadingAnimation";
 
 export default function OAuthCallback() {
-  return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" />
-      <Text style={styles.text}>Inciando sesión…</Text>
-    </View>
-  );
+  return <LoadingAnimation text="Iniciando sesión…" />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-  },
-  text: {
-    fontSize: 16,
-  },
-});
