@@ -9,7 +9,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: "./assets/images/icon.png",
   scheme: "zonapitsexpoclerk",
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
   ios: {
     supportsTablet: true,
     config: {
@@ -23,7 +22,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: "com.elianismedina05.zonapitsexpoclerk",
     config: {
@@ -37,7 +35,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/images/favicon.png",
   },
   plugins: [
+    "expo-audio",
+    "expo-font",
+    "expo-image",
     "expo-router",
+    "expo-secure-store",
     [
       "expo-splash-screen",
       {
@@ -52,6 +54,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     "expo-web-browser",
     "expo-asset",
+    "expo-audio",
+    "expo-font",
+    "expo-image",
+    "expo-secure-store",
     [
       "@sentry/react-native/expo",
       {
