@@ -4,7 +4,7 @@ import LottieView from 'lottie-react-native';
 import { useAudioPlayer } from 'expo-audio';
 
 const ANIMATION_SOURCE = require('@/assets/lotties/ZonaPitsLottie.json');
-const SOUND_SOURCE = require('@/assets/sounds/LamborginiSound.mp4');
+const SOUND_SOURCE = require('@/assets/sounds/LamborginiSound.m4a');
 
 type AnimatedSplashScreenProps = {
   onAnimationFinish: () => void;
@@ -16,6 +16,17 @@ export const AnimatedSplashScreen = ({
   onReady,
 }: AnimatedSplashScreenProps) => {
   const player = useAudioPlayer(SOUND_SOURCE);
+  // Timeout to force animation finish after 5 seconds (5000ms)
+  const SPLASH_TIMEOUT_MS = 5000;
+  // Track if we've already finished to prevent duplicate calls
+  const [hasFinished, setHasFinished] = React.useState(false);
+
+  const handleAnimationFinish = React.useCallback(() => {
+    if (!hasFinished) {
+      setHasFinished(true);
+      onAnimationFinish();
+    }
+  }, [hasFinished, onAnimationFinish]);
 
   useEffect(() => {
     // Notify parent that the component is mounted and ready to be shown
@@ -23,10 +34,25 @@ export const AnimatedSplashScreen = ({
     if (onReady) {
       onReady();
     }
-    
-    // Play sound
-    player.play();
-  }, [player, onReady]);
+
+    // Play sound with error handling
+    try {
+      player.play();
+    } catch (error) {
+      console.warn('Failed to play splash sound:', error);
+      // Don't block animation if sound fails
+    }
+
+    // Set timeout to force splash screen to finish after SPLASH_TIMEOUT_MS
+    const timeoutId = setTimeout(() => {
+      console.warn('Splash screen timed out, forcing finish');
+      handleAnimationFinish();
+    }, SPLASH_TIMEOUT_MS);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [player, onReady, handleAnimationFinish]);
 
   return (
     <View style={styles.container}>
@@ -36,7 +62,11 @@ export const AnimatedSplashScreen = ({
         loop={false}
         resizeMode="contain"
         style={styles.lottie}
-        onAnimationFinish={onAnimationFinish}
+        onAnimationFinish={handleAnimationFinish}
+        onError={(error) => {
+          console.error('Lottie animation error:', error);
+          handleAnimationFinish();
+        }}
       />
     </View>
   );

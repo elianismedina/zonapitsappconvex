@@ -17,7 +17,7 @@ export const EmptyKitsView = () => {
             action="primary"
             onPress={() => router.push("/(auth)/(tabs)/location")}
           >
-            <ButtonText>Armar kit</ButtonText>
+            <ButtonText>Crear kit</ButtonText>
           </Button>
         </VStack>
       </Box>

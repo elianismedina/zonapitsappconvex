@@ -9,12 +9,14 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "seed": "node ./scripts/seed-db.js"
+    "seed": "node ./scripts/seed-db.js",
+    "analyze:android": "npx expo export:embed --platform android --dev false --bundle-output android.bundle --sourcemap-output android.bundle.map && npx source-map-explorer android.bundle android.bundle.map --no-border-checks --html report.html"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.19.17",
     "@emotion/native": "^11.11.0",
     "@emotion/react": "^11.14.0",
+    "@expo-google-fonts/sora": "^0.4.2",
     "@expo/html-elements": "^0.12.5",
     "@expo/vector-icons": "^15.0.3",
     "@gluestack-ui/core": "^3.0.10",
@@ -27,7 +29,7 @@
     "@sentry/react-native": "~7.11.0",
     "convex": "^1.31.7",
     "dotenv": "^17.2.4",
-    "expo": "^55.0.2",
+    "expo": "~55.0.3",
     "expo-asset": "~55.0.7",
     "expo-audio": "~55.0.8",
     "expo-auth-session": "~55.0.6",

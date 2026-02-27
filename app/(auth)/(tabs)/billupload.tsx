@@ -248,7 +248,7 @@ export default function UploadBillScreen() {
                       onPress={() => router.push("/(auth)/(tabs)/location")}
                       className="mt-2"
                     >
-                      <ButtonText>Armar kit</ButtonText>
+                      <ButtonText>Crear kit</ButtonText>
                     </Button>
                   </VStack>
                 </Box>

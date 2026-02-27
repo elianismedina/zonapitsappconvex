@@ -9,6 +9,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: "./assets/images/icon.png",
   scheme: "zonapitsexpoclerk",
   userInterfaceStyle: "automatic",
+  jsEngine: "hermes",
   ios: {
     supportsTablet: true,
     config: {
@@ -36,7 +37,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-audio",
-    "expo-font",
+    [
+      "expo-font",
+      {
+        fonts: [
+          "./assets/fonts/sora/Sora-Thin.ttf",
+          "./assets/fonts/sora/Sora-ExtraLight.ttf",
+          "./assets/fonts/sora/Sora-Light.ttf",
+          "./assets/fonts/sora/Sora-Regular.ttf",
+          "./assets/fonts/sora/Sora-Medium.ttf",
+          "./assets/fonts/sora/Sora-SemiBold.ttf",
+          "./assets/fonts/sora/Sora-Bold.ttf",
+          "./assets/fonts/sora/Sora-ExtraBold.ttf",
+        ],
+      },
+    ],
     "expo-image",
     "expo-router",
     "expo-secure-store",
