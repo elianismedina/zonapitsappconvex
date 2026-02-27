@@ -1,18 +1,14 @@
-import React from "react";
-import {
-  Box,
-  Button,
-  ButtonIcon,
-  ButtonText,
-  Card,
-  HStack,
-  Heading,
-  Text,
-  VStack,
-} from "@/components/ui";
-import { Edit, Trash } from "lucide-react-native";
 import { KitComponentCard } from "@/components/KitComponentCard";
+import { Box } from "@/components/ui/box";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
 import { Id } from "@/convex/_generated/dataModel";
+import { Edit, Trash } from "lucide-react-native";
+import React from "react";
 
 interface KitCardProps {
   item: any;
@@ -31,7 +27,9 @@ export const KitCard = ({
   onSizing,
   onAddInverter,
 }: KitCardProps) => {
-  const hasSolarModule = components ? components.some(comp => comp.type === "solar_module") : false;
+  const hasSolarModule = components
+    ? components.some((comp) => comp.type === "solar_module")
+    : false;
 
   return (
     <Card size="md" variant="elevated" className="mb-4 p-4">
@@ -97,10 +95,7 @@ export const KitCard = ({
         )}
 
         {hasSolarModule && (
-          <Button
-            className="mt-4"
-            onPress={() => onAddInverter(item._id)}
-          >
+          <Button className="mt-4" onPress={() => onAddInverter(item._id)}>
             <ButtonText>Añadir inversor</ButtonText>
           </Button>
         )}

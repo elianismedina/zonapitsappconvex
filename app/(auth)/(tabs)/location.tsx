@@ -1,7 +1,12 @@
 import { AddressSearch } from "@/components/location/AddressSearch";
 import { KitCreationForm } from "@/components/location/KitCreationForm";
 import { ZoomControls } from "@/components/location/ZoomControls";
-import { Toast, ToastDescription, ToastTitle, useToast } from "@/components/ui";
+import {
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  useToast,
+} from "@/components/ui/toast";
 import { api } from "@/convex/_generated/api";
 import { useKeyboardOffset } from "@/hooks/use-keyboard-offset";
 import { useMutation } from "convex/react";

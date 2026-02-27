@@ -1,9 +1,8 @@
+import { Box } from "@/components/ui/box";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
 import {
-  Box,
-  Button,
-  ButtonText,
-  Heading,
-  HStack,
   Modal,
   ModalBackdrop,
   ModalBody,
@@ -11,10 +10,10 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Pressable,
-  Text,
-  VStack,
-} from "@/components/ui";
+} from "@/components/ui/modal";
+import { Pressable } from "@/components/ui/pressable";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
 import { Id } from "@/convex/_generated/dataModel";
 import { Image } from "expo-image";
 import { X } from "lucide-react-native";

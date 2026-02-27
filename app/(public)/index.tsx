@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Import StyleSheet
 
 const LoginScreen = () => {
@@ -24,12 +25,17 @@ const LoginScreen = () => {
       }
     });
   }, [router]);
+
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_facebook" });
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: "oauth_google" });
 
-  const handleFacebookLogin = async () => {
+  const handleFacebookLogin = useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow();
+      const { createdSessionId, setActive } = await startOAuthFlow({
+        redirectUrl: Linking.createURL("/oauth-native-callback", {
+          scheme: "zonapitsexpoclerk",
+        }),
+      });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
@@ -37,11 +43,15 @@ const LoginScreen = () => {
     } catch (err) {
       console.error("OAuth error", err);
     }
-  };
+  }, [startOAuthFlow]);
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await googleAuth();
+      const { createdSessionId, setActive } = await googleAuth({
+        redirectUrl: Linking.createURL("/oauth-native-callback", {
+          scheme: "zonapitsexpoclerk",
+        }),
+      });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
@@ -49,7 +59,7 @@ const LoginScreen = () => {
     } catch (err) {
       console.error("OAuth error", err);
     }
-  };
+  }, [googleAuth]);
 
   return (
     <Box className="flex-1">

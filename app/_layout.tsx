@@ -23,9 +23,9 @@ import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
-if (typeof globalThis.window === "undefined") {
+if (typeof window === "undefined") {
   // @ts-ignore
-  globalThis.window = {};
+  globalThis.window = globalThis.window || {};
 }
 
 // @ts-ignore

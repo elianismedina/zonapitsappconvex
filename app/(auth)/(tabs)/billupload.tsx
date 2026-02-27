@@ -8,20 +8,18 @@ import { LoadingAnimation } from "@/components/LoadingAnimation";
 import { AnalysisResults } from "@/components/billupload/AnalysisResults";
 import { FilePicker } from "@/components/billupload/FilePicker";
 import { KitSelector } from "@/components/billupload/KitSelector";
+import { Box } from "@/components/ui/box";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { Text } from "@/components/ui/text";
 import {
-  Box,
-  Button,
-  ButtonSpinner,
-  ButtonText,
-  HStack,
-  Heading,
-  Text,
   Toast,
   ToastDescription,
   ToastTitle,
-  VStack,
   useToast,
-} from "@/components/ui";
+} from "@/components/ui/toast";
+import { VStack } from "@/components/ui/vstack";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 

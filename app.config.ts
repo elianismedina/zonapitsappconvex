@@ -54,10 +54,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     "expo-web-browser",
     "expo-asset",
-    "expo-audio",
-    "expo-font",
-    "expo-image",
-    "expo-secure-store",
     [
       "@sentry/react-native/expo",
       {
@@ -76,7 +72,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: false,
-    reactCompiler: true,
+    reactCompiler: false,
   },
   extra: {
     router: {},
