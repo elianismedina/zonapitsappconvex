@@ -1,7 +1,8 @@
+import RightIslandMenu from "@/components/RightIslandMenu";
 import { KitTypeCard } from "@/components/home/KitTypeCard";
 import { Box, Heading, Text, VStack } from "@/components/ui";
 import { useRouter } from "expo-router";
-import { ScrollView } from "react-native";
+import { Alert, ScrollView } from "react-native";
 
 const ongridImg = require("@/assets/images/ongrid.png");
 
@@ -38,6 +39,10 @@ const KIT_TYPES = [
 export default function FeedScreen() {
   const router = useRouter();
 
+  const handleOptionPress = (option: any) => {
+    Alert.alert(option.label, `Selected: ${option.id}`);
+  };
+
   const handleSelectType = (type: string) => {
     router.push({
       pathname: "/(auth)/(tabs)/location",
@@ -64,6 +69,18 @@ export default function FeedScreen() {
           ))}
         </VStack>
       </ScrollView>
+
+      <RightIslandMenu
+        options={[
+          { id: "1", icon: "calculator-outline", label: "Calculator" },
+          { id: "2", icon: "settings-outline", label: "Settings" },
+          { id: "3", icon: "book-outline", label: "Notes" },
+          { id: "4", icon: "calendar-outline", label: "Calendar" },
+        ]}
+        onOptionPress={handleOptionPress}
+        width={140}
+        enableHaptics={true}
+      />
     </Box>
   );
 }

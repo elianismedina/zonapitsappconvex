@@ -139,6 +139,14 @@ const InitialLayout = () => {
 const RootLayoutNav = () => {
   const [fontsLoaded, fontError] = useFonts({
     ...Ionicons.font,
+    "Sora-Thin": require("@/assets/fonts/sora/Sora-Thin.ttf"),
+    "Sora-ExtraLight": require("@/assets/fonts/sora/Sora-ExtraLight.ttf"),
+    "Sora-Light": require("@/assets/fonts/sora/Sora-Light.ttf"),
+    "Sora-Regular": require("@/assets/fonts/sora/Sora-Regular.ttf"),
+    "Sora-Medium": require("@/assets/fonts/sora/Sora-Medium.ttf"),
+    "Sora-SemiBold": require("@/assets/fonts/sora/Sora-SemiBold.ttf"),
+    "Sora-Bold": require("@/assets/fonts/sora/Sora-Bold.ttf"),
+    "Sora-ExtraBold": require("@/assets/fonts/sora/Sora-ExtraBold.ttf"),
   });
   const [isSplashFinished, setIsSplashFinished] = useState(false);
 

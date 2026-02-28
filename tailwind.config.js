@@ -176,8 +176,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
+        sans: ["var(--font-sora)", "sans-serif"],
+        sora: ["var(--font-sora)", "sans-serif"],
+        heading: ["var(--font-sora)", "sans-serif"],
+        body: ["var(--font-sora)", "sans-serif"],
         mono: undefined,
         jakarta: ["var(--font-plus-jakarta-sans)"],
         roboto: ["var(--font-roboto)"],

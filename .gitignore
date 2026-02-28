@@ -43,6 +43,11 @@ app-example
 /ios
 /android
 
-.env.local
+# Build artifacts
+android.bundle
+android.bundle.map
+report.html
 
+# Local env files
 .env.local
+.env*.local
