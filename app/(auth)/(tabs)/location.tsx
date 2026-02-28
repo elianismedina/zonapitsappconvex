@@ -39,6 +39,9 @@ export default function SearchScreen() {
     longitude: number;
   } | null>(null);
 
+  const [shakeAddress, setShakeAddress] = useState(0);
+  const [shakeName, setShakeName] = useState(0);
+
   const [region, setRegion] = useState<Region>({
     latitude: 4.651795, // Default to Bogotá, Colombia
     longitude: -74.09462,
@@ -211,7 +214,19 @@ export default function SearchScreen() {
   );
 
   const handleCreateKit = async () => {
-    if (!selectedLocation || !kitName.trim()) {
+    let hasError = false;
+
+    if (!selectedLocation) {
+      setShakeAddress((prev) => prev + 1);
+      hasError = true;
+    }
+
+    if (!kitName.trim()) {
+      setShakeName((prev) => prev + 1);
+      hasError = true;
+    }
+
+    if (hasError) {
       toast.show({
         placement: "top",
         render: ({ id }) => (
@@ -228,9 +243,9 @@ export default function SearchScreen() {
     try {
       const newKitId = await createKit({
         name: kitName,
-        address: selectedLocation.address,
-        latitude: selectedLocation.latitude,
-        longitude: selectedLocation.longitude,
+        address: selectedLocation!.address,
+        latitude: selectedLocation!.latitude,
+        longitude: selectedLocation!.longitude,
         type: kitType as "off-grid" | "on-grid" | "hybrid" | undefined,
         status: "draft",
       });
@@ -271,6 +286,7 @@ export default function SearchScreen() {
         <AddressSearch
           apiKey={GOOGLE_MAPS_API_KEY}
           onPlaceSelect={handlePlaceSelect}
+          shakeSignal={shakeAddress}
         />
 
         <MapView
@@ -313,6 +329,7 @@ export default function SearchScreen() {
             Keyboard.dismiss();
           }}
           keyboardOffset={keyboardOffset}
+          shakeSignal={shakeName}
         />
       </View>
     </TouchableWithoutFeedback>

@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import LottieView from 'lottie-react-native';
-import { useAudioPlayer } from 'expo-audio';
+import { useAudioPlayer } from "expo-audio";
+import LottieView from "lottie-react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 
-const ANIMATION_SOURCE = require('@/assets/lotties/ZonaPitsLottie.json');
-const SOUND_SOURCE = require('@/assets/sounds/LamborginiSound.m4a');
+const ANIMATION_SOURCE = require("@/assets/lotties/ZonaPitsLottie.json");
+const SOUND_SOURCE = require("@/assets/sounds/LamborginiSound.m4a");
 
 type AnimatedSplashScreenProps = {
   onAnimationFinish: () => void;
@@ -39,13 +39,13 @@ export const AnimatedSplashScreen = ({
     try {
       player.play();
     } catch (error) {
-      console.warn('Failed to play splash sound:', error);
+      console.warn("Failed to play splash sound:", error);
       // Don't block animation if sound fails
     }
 
     // Set timeout to force splash screen to finish after SPLASH_TIMEOUT_MS
     const timeoutId = setTimeout(() => {
-      console.warn('Splash screen timed out, forcing finish');
+      console.warn("Splash screen timed out, forcing finish");
       handleAnimationFinish();
     }, SPLASH_TIMEOUT_MS);
 
@@ -63,8 +63,8 @@ export const AnimatedSplashScreen = ({
         resizeMode="contain"
         style={styles.lottie}
         onAnimationFinish={handleAnimationFinish}
-        onError={(error) => {
-          console.error('Lottie animation error:', error);
+        onAnimationFailure={(error: any) => {
+          console.error("Lottie animation error:", error);
           handleAnimationFinish();
         }}
       />
@@ -75,13 +75,13 @@ export const AnimatedSplashScreen = ({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#ffffff', // Match your splash background color
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#ffffff", // Match your splash background color
+    alignItems: "center",
+    justifyContent: "center",
     zIndex: 99999, // Ensure it sits on top
   },
   lottie: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
 });

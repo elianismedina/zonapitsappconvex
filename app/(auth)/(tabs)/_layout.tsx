@@ -1,18 +1,93 @@
+import RightIslandMenu from "@/components/RightIslandMenu";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
-const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
-  <View style={styles.createIconContainer}>
-    <Ionicons name="receipt" size={size} color={color} />
-  </View>
-);
+const CreateTabIcon = ({
+  color,
+  size,
+  focused,
+}: {
+  color: string;
+  size: number;
+  focused: boolean;
+}) => {
+  const scale = useSharedValue(1);
+
+  useEffect(() => {
+    scale.value = withSpring(focused ? 1.1 : 1, {
+      damping: 12,
+      stiffness: 200,
+    });
+  }, [focused]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  return (
+    <Animated.View style={[styles.createIconContainer, animatedStyle]}>
+      <Ionicons name="receipt" size={size} color={color} />
+    </Animated.View>
+  );
+};
+
+const TabIcon = ({
+  name,
+  nameFocused,
+  focused,
+  color,
+  size,
+}: {
+  name: keyof typeof Ionicons.glyphMap;
+  nameFocused: keyof typeof Ionicons.glyphMap;
+  focused: boolean;
+  color: string;
+  size: number;
+}) => {
+  const scale = useSharedValue(1);
+  const translateY = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withSpring(focused ? 1.2 : 1, {
+      damping: 12,
+      stiffness: 200,
+    });
+    translateY.value = withSpring(focused ? -4 : 0, {
+      damping: 12,
+      stiffness: 200,
+    });
+  }, [focused]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }, { translateY: translateY.value }],
+    };
+  });
+
+  return (
+    <Animated.View style={[styles.iconContainer, animatedStyle]}>
+      <Ionicons name={focused ? nameFocused : name} size={size} color={color} />
+    </Animated.View>
+  );
+};
 
 const Layout = () => {
+  const handleOptionPress = (option: any) => {
+    Alert.alert(option.label, `Selected: ${option.id}`);
+  };
+
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
@@ -24,22 +99,14 @@ const Layout = () => {
           name="home"
           options={{
             title: "Inicio",
-            tabBarIcon: ({
-              color,
-              size,
-              focused,
-            }: {
-              color: string;
-              size: number;
-              focused: boolean;
-            }) => (
-              <View style={styles.iconContainer}>
-                <Ionicons
-                  name={focused ? "home" : "home-outline"}
-                  size={size}
-                  color={color}
-                />
-              </View>
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                name="home-outline"
+                nameFocused="home"
+                focused={focused}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -47,22 +114,14 @@ const Layout = () => {
           name="location"
           options={{
             title: "Ubicación",
-            tabBarIcon: ({
-              color,
-              size,
-              focused,
-            }: {
-              color: string;
-              size: number;
-              focused: boolean;
-            }) => (
-              <View style={styles.iconContainer}>
-                <Ionicons
-                  name={focused ? "location" : "location-outline"}
-                  size={size}
-                  color={color}
-                />
-              </View>
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                name="location-outline"
+                nameFocused="location"
+                focused={focused}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -70,8 +129,8 @@ const Layout = () => {
           name="billupload"
           options={{
             title: "Factura",
-            tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-              <CreateTabIcon color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <CreateTabIcon color={color} size={size} focused={focused} />
             ),
           }}
         />
@@ -79,22 +138,14 @@ const Layout = () => {
           name="mykits"
           options={{
             title: "Mis Kits",
-            tabBarIcon: ({
-              color,
-              size,
-              focused,
-            }: {
-              color: string;
-              size: number;
-              focused: boolean;
-            }) => (
-              <View style={styles.iconContainer}>
-                <Ionicons
-                  name={focused ? "flash" : "flash-outline"}
-                  size={size}
-                  color={color}
-                />
-              </View>
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                name="flash-outline"
+                nameFocused="flash"
+                focused={focused}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -102,27 +153,30 @@ const Layout = () => {
           name="settings"
           options={{
             title: "Ajustes",
-            tabBarIcon: ({
-              color,
-              size,
-              focused,
-            }: {
-              color: string;
-              size: number;
-              focused: boolean;
-            }) => (
-              <View style={styles.iconContainer}>
-                <Ionicons
-                  name={focused ? "settings" : "settings-outline"}
-                  size={size}
-                  color={color}
-                />
-              </View>
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                name="settings-outline"
+                nameFocused="settings"
+                focused={focused}
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
       </Tabs>
-    </>
+      <RightIslandMenu
+        options={[
+          { id: "1", icon: "headset-outline", label: "Soporte" },
+          { id: "2", icon: "bookmark-outline", label: "Favoritos" },
+          { id: "3", icon: "bar-chart-outline", label: "Proyección" },
+          { id: "4", icon: "calculator-outline", label: "Calculadora" },
+        ]}
+        onOptionPress={handleOptionPress}
+        width={160}
+        enableHaptics={true}
+      />
+    </View>
   );
 };
 

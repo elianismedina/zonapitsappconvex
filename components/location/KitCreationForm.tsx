@@ -12,7 +12,15 @@ import {
   Text,
   VStack,
 } from "@/components/ui";
+import React, { useEffect } from "react";
 import { Animated, StyleSheet, View } from "react-native";
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 interface KitCreationFormProps {
   kitType?: string;
@@ -22,6 +30,7 @@ interface KitCreationFormProps {
   onConfirm: () => void;
   onCancel: () => void;
   keyboardOffset: Animated.Value | any;
+  shakeSignal?: number;
 }
 
 export const KitCreationForm = ({
@@ -32,7 +41,26 @@ export const KitCreationForm = ({
   onConfirm,
   onCancel,
   keyboardOffset,
+  shakeSignal = 0,
 }: KitCreationFormProps) => {
+  const shakeTranslateX = useSharedValue(0);
+
+  useEffect(() => {
+    if (shakeSignal > 0) {
+      shakeTranslateX.value = withSequence(
+        withTiming(-10, { duration: 50 }),
+        withRepeat(withTiming(10, { duration: 50 }), 5, true),
+        withTiming(0, { duration: 50 }),
+      );
+    }
+  }, [shakeSignal]);
+
+  const nameAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: shakeTranslateX.value }],
+    };
+  });
+
   return (
     <Animated.View style={[styles.formContainer, { bottom: keyboardOffset }]}>
       <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
@@ -40,18 +68,20 @@ export const KitCreationForm = ({
           Crear Nuevo Kit Solar {kitType ? `(${kitType})` : ""}
         </Heading>
         <VStack space="md">
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Nombre del Kit</FormControlLabelText>
-            </FormControlLabel>
-            <Input>
-              <InputField
-                placeholder="Ej. Kit Solar Cabaña"
-                value={kitName}
-                onChangeText={setKitName}
-              />
-            </Input>
-          </FormControl>
+          <Reanimated.View style={nameAnimatedStyle}>
+            <FormControl>
+              <FormControlLabel>
+                <FormControlLabelText>Nombre del Kit</FormControlLabelText>
+              </FormControlLabel>
+              <Input>
+                <InputField
+                  placeholder="Ej. Kit Solar Cabaña"
+                  value={kitName}
+                  onChangeText={setKitName}
+                />
+              </Input>
+            </FormControl>
+          </Reanimated.View>
 
           <View>
             <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
@@ -63,19 +93,17 @@ export const KitCreationForm = ({
           </View>
 
           <HStack space="md" className="w-full">
-            <Button
-              variant="outline"
-              action="secondary"
-              onPress={onCancel}
-              className="flex-1"
-            >
-              <ButtonText>Cancelar</ButtonText>
-            </Button>
-            <Button
-              onPress={onConfirm}
-              isDisabled={!selectedLocation || !kitName}
-              className="flex-1"
-            >
+            {selectedLocation && (
+              <Button
+                variant="outline"
+                action="secondary"
+                onPress={onCancel}
+                className="flex-1"
+              >
+                <ButtonText>Cancelar</ButtonText>
+              </Button>
+            )}
+            <Button onPress={onConfirm} className="flex-1">
               <ButtonText>Crear Kit</ButtonText>
             </Button>
           </HStack>

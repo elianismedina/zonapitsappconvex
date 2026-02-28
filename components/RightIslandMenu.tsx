@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import React, { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   FadeInRight,
@@ -32,7 +33,7 @@ export default function RightIslandMenu({
   const [expanded, setExpanded] = useState(false);
 
   // Base width for the toggle button when closed
-  const CLOSED_WIDTH = 56;
+  const CLOSED_WIDTH = 28;
 
   const animatedWidth = useSharedValue(CLOSED_WIDTH);
 
@@ -47,6 +48,17 @@ export default function RightIslandMenu({
       stiffness: 200,
     });
   };
+
+  // Close the menu automatically when navigating back to the screen
+  useFocusEffect(
+    useCallback(() => {
+      setExpanded(false);
+      animatedWidth.value = withSpring(CLOSED_WIDTH, {
+        damping: 20,
+        stiffness: 200,
+      });
+    }, []),
+  );
 
   const menuAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -74,16 +86,16 @@ export default function RightIslandMenu({
           zIndex: 50, // Ensures it floats above other content
         },
       ]}
-      className="absolute right-4 top-1/3 bg-slate-900/95 rounded-[28px] overflow-hidden border border-white/20"
+      className="absolute right-0 top-1/3 bg-black rounded-l-2xl overflow-hidden"
     >
       <TouchableOpacity
-        className="items-center justify-center h-14 w-full"
+        className="items-center justify-center h-16 w-full"
         onPress={toggleMenu}
         activeOpacity={0.7}
       >
         <Ionicons
-          name={expanded ? "close-outline" : "menu-outline"}
-          size={28}
+          name={expanded ? "chevron-forward-outline" : "chevron-back-outline"}
+          size={20}
           color="#fff"
         />
       </TouchableOpacity>
@@ -103,7 +115,7 @@ export default function RightIslandMenu({
               >
                 <Ionicons name={option.icon} size={22} color="#fff" />
                 <Text
-                  className="text-white ml-3 text-base font-medium"
+                  className="text-white ml-3 text-base font-sora-medium"
                   numberOfLines={1}
                 >
                   {option.label}
