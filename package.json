@@ -73,6 +73,9 @@
     "svix": "^1.84.1",
     "tailwind-variants": "^0.1.20"
   },
+  "overrides": {
+    "hermes-compiler": "250829098.0.4"
+  },
   "devDependencies": {
     "@react-native-community/cli": "^20.1.2",
     "@react-native-community/cli-config": "^20.1.2",
