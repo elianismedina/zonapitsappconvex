@@ -2,11 +2,11 @@ import { createImage } from "@gluestack-ui/core/image/creator";
 import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
 import { tva } from "@gluestack-ui/utils/nativewind-utils";
 import { Image as ExpoImage } from "expo-image";
-import { cssInterop } from "nativewind";
+import { styled } from "nativewind";
 import React from "react";
 import { Platform } from "react-native";
 
-cssInterop(ExpoImage, { className: "style" });
+const StyledExpoImage = styled(ExpoImage, { className: "style" });
 
 const imageStyle = tva({
   base: "max-w-full",
@@ -25,30 +25,33 @@ const imageStyle = tva({
   },
 });
 
-const UIImage = createImage({ Root: ExpoImage });
+const UIImage = createImage({ Root: StyledExpoImage });
 
 type ImageProps = VariantProps<typeof imageStyle> &
-  React.ComponentProps<typeof UIImage>;
-const Image = React.forwardRef<
-  React.ComponentRef<typeof UIImage>,
-  ImageProps & { className?: string }
->(function Image({ size = "md", className, ...props }, ref) {
-  const { resizeMode, contentFit, ...remainingProps } = props as any;
+  React.ComponentProps<typeof UIImage> & {
+    className?: string;
+    contentFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+    resizeMode?: "contain" | "cover" | "stretch" | "center";
+  };
+const Image = React.forwardRef<React.ComponentRef<typeof UIImage>, ImageProps>(
+  function Image({ size = "md", className, ...props }, ref) {
+    const { resizeMode, contentFit, ...remainingProps } = props as any;
 
-  return (
-    <UIImage
-      className={imageStyle({ size, class: className })}
-      contentFit={contentFit || resizeMode || "cover"}
-      {...remainingProps}
-      ref={ref}
-      style={
-        Platform.OS === "web"
-          ? { height: "revert-layer", width: "revert-layer" }
-          : undefined
-      }
-    />
-  );
-});
+    return (
+      <UIImage
+        className={imageStyle({ size, class: className })}
+        contentFit={contentFit || resizeMode || "cover"}
+        {...remainingProps}
+        ref={ref}
+        style={
+          Platform.OS === "web"
+            ? { height: "revert-layer", width: "revert-layer" }
+            : undefined
+        }
+      />
+    );
+  },
+);
 
 Image.displayName = "Image";
 export { Image };

@@ -71,15 +71,15 @@ const LoginScreen = () => {
       />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Image
-          source={require("@/assets/images/login.png")}
-          className="w-full h-[350px]"
+          source={require("../../assets/images/login.png")}
+          className="h-[350px] w-full"
           size="full"
           alt="Login illustration"
         />
-        <VStack space="xl" className="p-5 items-center">
+        <VStack space="xl" className="items-center p-5">
           <Text
             size="lg"
-            className="font-medium text-center text-typography-900"
+            className="text-center font-medium text-typography-900"
           >
             ¿Cómo te gustaría empezar?
           </Text>
@@ -87,23 +87,23 @@ const LoginScreen = () => {
           <VStack space="lg" className="w-full">
             {/* Instagram Button */}
             <Button
-              className="bg-white border border-outline-200 h-auto p-5 rounded-lg flex-col items-start"
+              className="h-auto flex-col items-start rounded-lg border border-outline-200 bg-white p-5"
               onPress={handleFacebookLogin}
               variant="outline"
             >
-              <Box className="flex-row items-center w-full">
+              <Box className="w-full flex-row items-center">
                 <Svg width={40} height={40} viewBox="0 0 24 24">
                   <Path
                     fill="#E4405F"
                     d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
                   />
                 </Svg>
-                <Text className="flex-1 ml-2.5 text-black font-medium">
+                <Text className="ml-2.5 flex-1 font-medium text-black">
                   Continuar con Instagram
                 </Text>
                 <Ionicons name="chevron-forward" size={24} color="#D4D4D4" />
               </Box>
-              <Text className="text-xs text-typography-400 mt-2.5 leading-4">
+              <Text className="mt-2.5 text-xs leading-4 text-typography-400">
                 Inicia sesión o crea un perfil con tu cuenta de Instagram. Con
                 un perfil puedes registrar vehículos y recibir recomendaciones
                 personalizadas de repuestos, accesorios y servicios.
@@ -112,11 +112,11 @@ const LoginScreen = () => {
 
             {/* Google Button */}
             <Button
-              className="bg-white border border-outline-200 h-auto p-5 rounded-lg"
+              className="h-auto rounded-lg border border-outline-200 bg-white p-5"
               onPress={handleGoogleLogin}
               variant="outline"
             >
-              <Box className="flex-row items-center w-full">
+              <Box className="w-full flex-row items-center">
                 <Svg width={40} height={40} viewBox="0 0 48 48">
                   <Path
                     fill="#FFC107"
@@ -135,17 +135,17 @@ const LoginScreen = () => {
                     d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
                   />
                 </Svg>
-                <Text className="flex-1 ml-2.5 text-black font-medium">
+                <Text className="ml-2.5 flex-1 font-medium text-black">
                   Continuar con Google
                 </Text>
                 <Ionicons name="chevron-forward" size={24} color="#D4D4D4" />
               </Box>
             </Button>
-            <Box className="w-full flex items-center justify-center -mt-8">
+            <Box className="-mt-8 flex w-full items-center justify-center">
               <Image
-                source={require("@/assets/images/EfiSolarLight.png")}
+                source={require("../../assets/images/EfiSolarLight.png")}
                 alt="Efisolar Logo"
-                className="w-64 h-64"
+                className="h-64 w-64"
                 resizeMode="contain"
               />
             </Box>
