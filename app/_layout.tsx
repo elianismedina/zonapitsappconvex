@@ -19,7 +19,7 @@ import {
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
@@ -149,13 +149,20 @@ const RootLayoutNav = () => {
     "Sora-ExtraBold": require("@/assets/fonts/sora/Sora-ExtraBold.ttf"),
   });
   const [isSplashFinished, setIsSplashFinished] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     if (fontError) throw fontError;
   }, [fontError]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+  const onSplashReady = useCallback(() => {
+    SplashScreen.hideAsync();
+  }, []);
+
+  const onSplashFinish = useCallback(() => {
+    setIsSplashFinished(true);
+  }, []);
 
   if (!fontsLoaded) {
     return <LoadingAnimation />;
@@ -174,8 +181,8 @@ const RootLayoutNav = () => {
             </ConvexProviderWithClerk>
             {!isSplashFinished && (
               <AnimatedSplashScreen
-                onReady={() => SplashScreen.hideAsync()}
-                onAnimationFinish={() => setIsSplashFinished(true)}
+                onReady={onSplashReady}
+                onAnimationFinish={onSplashFinish}
               />
             )}
           </ClerkLoaded>

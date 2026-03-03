@@ -1,6 +1,6 @@
 import { useAudioPlayer } from "expo-audio";
 import LottieView from "lottie-react-native";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 const ANIMATION_SOURCE = require("@/assets/lotties/ZonaPitsLottie.json");
@@ -16,12 +16,12 @@ export const AnimatedSplashScreen = ({
   onReady,
 }: AnimatedSplashScreenProps) => {
   const player = useAudioPlayer(SOUND_SOURCE);
-  // Timeout to force animation finish after 5 seconds (5000ms)
-  const SPLASH_TIMEOUT_MS = 5000;
+  // Increase timeout to 8 seconds since the animation itself is 5 seconds long (150 frames @ 30fps)
+  const SPLASH_TIMEOUT_MS = 8000;
   // Track if we've already finished to prevent duplicate calls
-  const [hasFinished, setHasFinished] = React.useState(false);
+  const [hasFinished, setHasFinished] = useState(false);
 
-  const handleAnimationFinish = React.useCallback(() => {
+  const handleAnimationFinish = useCallback(() => {
     if (!hasFinished) {
       setHasFinished(true);
       onAnimationFinish();
@@ -30,7 +30,6 @@ export const AnimatedSplashScreen = ({
 
   useEffect(() => {
     // Notify parent that the component is mounted and ready to be shown
-    // This is where we would hide the native splash screen
     if (onReady) {
       onReady();
     }
@@ -40,7 +39,6 @@ export const AnimatedSplashScreen = ({
       player.play();
     } catch (error) {
       console.warn("Failed to play splash sound:", error);
-      // Don't block animation if sound fails
     }
 
     // Set timeout to force splash screen to finish after SPLASH_TIMEOUT_MS
@@ -75,10 +73,10 @@ export const AnimatedSplashScreen = ({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#ffffff", // Match your splash background color
+    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 99999, // Ensure it sits on top
+    zIndex: 99999,
   },
   lottie: {
     width: "100%",

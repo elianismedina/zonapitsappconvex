@@ -46,6 +46,7 @@ interface SizingModalProps {
   selectedOptionIndex: number | null;
   onSelectOption: (index: number) => void;
   onConfirm: () => Promise<void>;
+  onViewDetails: (panelId: Id<"solar_modules">) => void;
 }
 
 export const SizingModal = ({
@@ -57,6 +58,7 @@ export const SizingModal = ({
   selectedOptionIndex,
   onSelectOption,
   onConfirm,
+  onViewDetails,
 }: SizingModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
@@ -124,6 +126,19 @@ export const SizingModal = ({
                       <Text size="xs" className="text-typography-500">
                         {option.pmax} Wp @ ${option.price}/panel
                       </Text>
+                      <Button
+                        variant="outline"
+                        action="secondary"
+                        size="xs"
+                        className="mt-2 self-start border-primary-500"
+                        onPress={() => {
+                          onViewDetails(option.moduleId);
+                        }}
+                      >
+                        <ButtonText className="text-primary-600">
+                          Ver detalles
+                        </ButtonText>
+                      </Button>
                     </VStack>
                     <VStack className="items-end ml-2">
                       <Text size="lg" className="font-bold text-primary-600">

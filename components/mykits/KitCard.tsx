@@ -7,8 +7,12 @@ import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Id } from "@/convex/_generated/dataModel";
+import { Image } from "expo-image";
+import { Link } from "expo-router";
 import { Edit, Trash } from "lucide-react-native";
 import React from "react";
+
+const kitImage = require("@/assets/images/kitImage.webp");
 
 interface KitCardProps {
   item: any;
@@ -32,34 +36,43 @@ export const KitCard = ({
     : false;
 
   return (
-    <Card size="md" variant="elevated" className="mb-4 p-4">
-      <VStack space="md">
-        <HStack className="justify-between items-center">
-          <HStack space="sm" className="items-center flex-1">
-            <Heading size="md" className="flex-shrink-0">
-              {item.name}
-            </Heading>
-          </HStack>
-          <HStack space="sm">
-            <Button
-              size="xs"
-              variant="outline"
-              action="secondary"
-              onPress={() => onEdit(item)}
-            >
-              <ButtonIcon as={Edit} />
-            </Button>
-            <Button
-              size="xs"
-              variant="outline"
-              action="negative"
-              onPress={() => onDelete(item._id)}
-            >
-              <ButtonIcon as={Trash} />
-            </Button>
-          </HStack>
+    <Card size="md" variant="elevated" className="mb-4 p-0 overflow-hidden">
+      <Box className="relative">
+        <Image
+          source={kitImage}
+          style={{ width: "100%", height: 200 }}
+          contentFit="cover"
+          transition={300}
+        />
+        <HStack space="sm" className="absolute top-3 right-3 z-10">
+          <Button
+            size="xs"
+            variant="solid"
+            action="secondary"
+            className="bg-white/80 rounded-full"
+            onPress={() => onEdit(item)}
+          >
+            <ButtonIcon as={Edit} className="text-secondary-600" />
+          </Button>
+          <Button
+            size="xs"
+            variant="solid"
+            action="negative"
+            className="bg-white/80 rounded-full"
+            onPress={() => onDelete(item._id)}
+          >
+            <ButtonIcon as={Trash} className="text-negative-600" />
+          </Button>
         </HStack>
 
+        <Box className="absolute inset-0 items-center justify-center bg-black/30">
+          <Heading size="lg" className="text-white text-center px-4 font-bold">
+            {item.name}
+          </Heading>
+        </Box>
+      </Box>
+
+      <VStack space="md" className="p-4">
         <VStack space="xs">
           {item.capacity && (
             <HStack space="md">
@@ -88,26 +101,38 @@ export const KitCard = ({
           </Box>
         ))}
 
-        {(!components || components.length === 0) && !item.billStorageId && (
-          <Text size="xs" className="text-typography-400 italic mt-2">
-            Sin componentes añadidos aún.
-          </Text>
-        )}
-
         {hasSolarModule && (
           <Button className="mt-4" onPress={() => onAddInverter(item._id)}>
             <ButtonText>Añadir inversor</ButtonText>
           </Button>
         )}
 
-        {item.billStorageId && (
+        {/* If we have data, show the sizing button. If not, show the upload button. */}
+        {item.monthlyConsumptionKwh ? (
           <Button
             className="mt-4"
             onPress={() => onSizing(item)}
-            isDisabled={!item.monthlyConsumptionKwh}
+            variant="solid"
+            action="primary"
           >
             <ButtonText>Dimensionar Kit</ButtonText>
           </Button>
+        ) : item.billStorageId ? (
+          <Button className="mt-4" isDisabled={true}>
+            <ButtonText>Procesando Factura...</ButtonText>
+          </Button>
+        ) : (
+          <Link
+            href={{
+              pathname: "/(auth)/(tabs)/billupload",
+              params: { kitId: item._id },
+            }}
+            asChild
+          >
+            <Button className="mt-4" variant="outline" action="primary">
+              <ButtonText>Subir Factura para Dimensionar</ButtonText>
+            </Button>
+          </Link>
         )}
       </VStack>
     </Card>

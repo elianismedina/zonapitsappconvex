@@ -39,8 +39,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       "expo-build-properties",
       {
-        buildReactNativeFromSource: true,
-        useHermesV1: true,
+        buildReactNativeFromSource: false,
+        useHermesV1: false,
       },
     ],
     "expo-audio",

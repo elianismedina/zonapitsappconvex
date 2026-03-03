@@ -26,6 +26,7 @@ const CreateTabIcon = ({
       damping: 12,
       stiffness: 200,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -66,6 +67,7 @@ const TabIcon = ({
       damping: 12,
       stiffness: 200,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focused]);
 
   const animatedStyle = useAnimatedStyle(() => {

@@ -31,6 +31,7 @@ export const AddressSearch = ({
         withTiming(0, { duration: 50 }),
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shakeSignal]);
 
   const animatedStyle = useAnimatedStyle(() => {

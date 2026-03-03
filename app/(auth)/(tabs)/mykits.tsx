@@ -2,20 +2,19 @@ import { LoadingAnimation } from "@/components/LoadingAnimation";
 import { EditKitModal } from "@/components/mykits/EditKitModal";
 import { EmptyKitsView } from "@/components/mykits/EmptyKitsView";
 import { KitCard } from "@/components/mykits/KitCard";
-import { SizingModal, SizingResults } from "@/components/mykits/SizingModal";
 import { Box, Heading } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useAction, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
+import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { Alert, FlatList } from "react-native";
 
 export default function GarageScreen() {
+  const router = useRouter();
   const kits = useQuery(api.kits.getKits, {});
   const deleteKit = useMutation(api.kits.deleteKit);
   const updateKit = useMutation(api.kits.updateKit);
-  const addComponent = useMutation(api.kit_components.addComponent);
-  const calculateSizing = useAction(api.sizing.calculateSizing);
 
   // Query all kit components for all of user's kits
   const allKitComponents = useQuery(api.kit_components.getAllComponents);
@@ -39,16 +38,6 @@ export default function GarageScreen() {
     id: Id<"kits">;
     name: string;
   } | null>(null);
-
-  // State for Sizing Modal
-  const [showSizingModal, setShowSizingModal] = useState(false);
-  const [isSizing, setIsSizing] = useState(false);
-  const [sizingResults, setSizingResults] = useState<SizingResults>(null);
-  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(null);
-  const [selectedKitName, setSelectedKitName] = useState("");
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
-    null,
-  );
 
   const handleDelete = (id: Id<"kits">) => {
     Alert.alert(
@@ -93,7 +82,7 @@ export default function GarageScreen() {
     }
   };
 
-  const handleSizing = async (kit: any) => {
+  const handleSizing = (kit: any) => {
     if (!kit.monthlyConsumptionKwh) {
       Alert.alert(
         "Datos incompletos",
@@ -101,57 +90,10 @@ export default function GarageScreen() {
       );
       return;
     }
-    setSelectedKitId(kit._id);
-    setSelectedKitName(kit.name);
-    setShowSizingModal(true);
-    setIsSizing(true);
-
-    setSizingResults(null);
-    setSelectedOptionIndex(null);
-    try {
-      const results = await calculateSizing({ kitId: kit._id });
-      setSizingResults(results as SizingResults);
-    } catch (error: any) {
-      console.error("Error calculating sizing:", error);
-      Alert.alert("Error de Cálculo", error.message);
-      setShowSizingModal(false);
-    } finally {
-      setIsSizing(false);
-    }
-  };
-
-  const handleSelectModule = async () => {
-    if (!sizingResults || selectedOptionIndex === null || !selectedKitId)
-      return;
-
-    const selectedOption = sizingResults.sizingOptions[selectedOptionIndex];
-    const moduleId = selectedOption.moduleId;
-
-    if (!moduleId) {
-      Alert.alert(
-        "Error",
-        "No se encontró el ID del módulo solar. Intenta dimensionar de nuevo.",
-      );
-      return;
-    }
-
-    try {
-      await addComponent({
-        kitId: selectedKitId,
-        type: "solar_module",
-        solarModuleId: moduleId,
-        quantity: selectedOption.panelsNeeded,
-      });
-
-      setShowSizingModal(false);
-      Alert.alert(
-        "¡Éxito!",
-        `Se han añadido ${selectedOption.panelsNeeded} paneles ${selectedOption.brand} a tu kit.`,
-      );
-    } catch (error) {
-      console.error("Error adding component:", error);
-      Alert.alert("Error", "No se pudo añadir el módulo al kit.");
-    }
+    router.push({
+      pathname: "/(auth)/panel-selection/[kitId]",
+      params: { kitId: kit._id },
+    });
   };
 
   if (kits === undefined) {
@@ -192,17 +134,6 @@ export default function GarageScreen() {
         onClose={() => setShowEditModal(false)}
         kit={editingKit}
         onSave={handleSaveEdit}
-      />
-
-      <SizingModal
-        isOpen={showSizingModal}
-        onClose={() => setShowSizingModal(false)}
-        isSizing={isSizing}
-        sizingResults={sizingResults}
-        selectedKitName={selectedKitName}
-        selectedOptionIndex={selectedOptionIndex}
-        onSelectOption={setSelectedOptionIndex}
-        onConfirm={handleSelectModule}
       />
     </Box>
   );

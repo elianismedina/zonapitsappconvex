@@ -53,6 +53,7 @@ export const KitCreationForm = ({
         withTiming(0, { duration: 50 }),
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shakeSignal]);
 
   const nameAnimatedStyle = useAnimatedStyle(() => {
