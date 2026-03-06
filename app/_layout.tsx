@@ -20,6 +20,7 @@ import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
@@ -153,8 +154,10 @@ const RootLayoutNav = () => {
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    if (fontError) throw fontError;
-  }, [fontError]);
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
 
   const onSplashReady = useCallback(() => {
     SplashScreen.hideAsync();
@@ -165,7 +168,7 @@ const RootLayoutNav = () => {
   }, []);
 
   if (!fontsLoaded) {
-    return <LoadingAnimation />;
+    return <View style={{ flex: 1, backgroundColor: "red" }} />;
   }
   return (
     <SafeAreaProvider>

@@ -1,0 +1,213 @@
+app/(auth)/(tabs)/billupload.tsx(7,34): error TS2307: Cannot find module '@/components/LoadingAnimation' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(8,33): error TS2307: Cannot find module '@/components/billupload/AnalysisResults' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(9,28): error TS2307: Cannot find module '@/components/billupload/FilePicker' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(10,29): error TS2307: Cannot find module '@/components/billupload/KitSelector' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(11,21): error TS2307: Cannot find module '@/components/ui/box' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(12,51): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(13,25): error TS2307: Cannot find module '@/components/ui/heading' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(14,24): error TS2307: Cannot find module '@/components/ui/hstack' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(15,22): error TS2307: Cannot find module '@/components/ui/text' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(21,8): error TS2307: Cannot find module '@/components/ui/toast' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(22,24): error TS2307: Cannot find module '@/components/ui/vstack' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(23,21): error TS2307: Cannot find module '@/convex/_generated/api' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(24,20): error TS2307: Cannot find module '@/convex/_generated/dataModel' or its corresponding type declarations.
+app/(auth)/(tabs)/billupload.tsx(122,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(123,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(124,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(174,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(175,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(176,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(190,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(191,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(192,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(209,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(210,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(211,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(212,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(213,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(218,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(222,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(225,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(229,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(231,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(241,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(248,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(249,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(252,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(254,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(261,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(262,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(263,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(269,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(275,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(276,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(277,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(280,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(286,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(293,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(294,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(300,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(301,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(307,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(309,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(317,25): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(321,27): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(322,27): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(327,25): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(335,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(336,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(342,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(343,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(347,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+app/(auth)/(tabs)/billupload.tsx(355,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+node_modules/@react-navigation/core/lib/typescript/src/StaticNavigation.d.ts(35,27): error TS2315: Type 'StaticParamList' is not generic.
+node_modules/@react-navigation/core/lib/typescript/src/StaticNavigation.d.ts(35,137): error TS2315: Type 'StaticParamList' is not generic.
+node_modules/@react-navigation/core/lib/typescript/src/StaticNavigation.d.ts(130,13): error TS2456: Type alias 'StaticParamList' circularly references itself.
+node_modules/@react-navigation/core/lib/typescript/src/useNavigationBuilder.d.ts(86,136): error TS2344: Type 'Omit<{ dispatch(action: Readonly<{ type: string; payload?: object; source?: string; target?: string; }> | ((state: Readonly<State>) => Readonly<{ type: string; payload?: object; source?: string; target?: string; }>)): void; ... 9 more ...; getState(): State; } & PrivateValueStore<...>, "getParent"> & ... 4 more ... ...' does not satisfy the constraint 'NavigationProp<any, any, any, any, any, any>'.
+  Type 'Omit<{ dispatch(action: Readonly<{ type: string; payload?: object; source?: string; target?: string; }> | ((state: Readonly<State>) => Readonly<{ type: string; payload?: object; source?: string; target?: string; }>)): void; ... 9 more ...; getState(): State; } & PrivateValueStore<...>, "getParent"> & ... 4 more ... ...' is not assignable to type 'Omit<NavigationHelpersCommon<any, any>, "getParent">'.
+    Types of property 'preload' are incompatible.
+      Type '<RouteName extends string>(...args: RouteName extends unknown ? [screen: RouteName, params?: object] : never) => void' is not assignable to type '<RouteName extends string | number | symbol>(...args: RouteName extends unknown ? [screen: RouteName, params?: any] : never) => void'.
+        Types of parameters 'screen' and 'args' are incompatible.
+          Type 'RouteName extends unknown ? [screen: RouteName, params?: any] : never' is not assignable to type '[screen: string, params?: object]'.
+            Type '[screen: string, params?: any] | [screen: number, params?: any] | [screen: symbol, params?: any]' is not assignable to type '[screen: string, params?: object]'.
+              Type '[screen: number, params?: any]' is not assignable to type '[screen: string, params?: object]'.
+                Type at position 0 in source is not compatible with type at position 0 in target.
+                  Type 'number' is not assignable to type 'string'.
+node_modules/@react-navigation/core/lib/typescript/src/useNavigationBuilder.d.ts(138,77): error TS2344: Type 'Omit<{ dispatch(action: Readonly<{ type: string; payload?: object; source?: string; target?: string; }> | ((state: Readonly<State>) => Readonly<{ type: string; payload?: object; source?: string; target?: string; }>)): void; ... 9 more ...; getState(): State; } & PrivateValueStore<...>, "getParent"> & ... 4 more ... ...' does not satisfy the constraint 'NavigationProp<any, any, any, any, any, any>'.
+  Type 'Omit<{ dispatch(action: Readonly<{ type: string; payload?: object; source?: string; target?: string; }> | ((state: Readonly<State>) => Readonly<{ type: string; payload?: object; source?: string; target?: string; }>)): void; ... 9 more ...; getState(): State; } & PrivateValueStore<...>, "getParent"> & ... 4 more ... ...' is not assignable to type 'Omit<NavigationHelpersCommon<any, any>, "getParent">'.
+    Types of property 'preload' are incompatible.
+      Type '<RouteName extends string>(...args: RouteName extends unknown ? [screen: RouteName, params?: object] : never) => void' is not assignable to type '<RouteName extends string | number | symbol>(...args: RouteName extends unknown ? [screen: RouteName, params?: any] : never) => void'.
+        Types of parameters 'screen' and 'args' are incompatible.
+          Type 'RouteName extends unknown ? [screen: RouteName, params?: any] : never' is not assignable to type '[screen: string, params?: object]'.
+            Type '[screen: string, params?: any] | [screen: number, params?: any] | [screen: symbol, params?: any]' is not assignable to type '[screen: string, params?: object]'.
+              Type '[screen: number, params?: any]' is not assignable to type '[screen: string, params?: object]'.
+                Type at position 0 in source is not compatible with type at position 0 in target.
+                  Type 'number' is not assignable to type 'string'.
+node_modules/@types/node/module.d.ts(804,13): error TS2403: Subsequent variable declarations must have the same type.  Variable 'require' must be of type 'NodeRequire', but here has type 'Require'.
+node_modules/convex/dist/cjs-types/react/auth_helpers.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/convex/dist/cjs-types/react/client.d.ts(2,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/convex/dist/cjs-types/react/ConvexAuthState.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-image/build/ExpoImage.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-image/build/Image.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-image/build/ImageBackground.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-modules-core/build/NativeViewManagerAdapter.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/ExpoRoot.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/layouts/stack-utils/screen/StackScreenTitle.d.ts(2,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/layouts/stack-utils/toolbar/StackToolbarClient.d.ts(2,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/layouts/StackClient.d.ts(3,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/layouts/StackClient.d.ts(58,220): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(59,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(60,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(61,224): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(62,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(63,198): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(64,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(70,220): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(71,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(72,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(73,224): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(74,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(75,198): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(76,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(103,220): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(104,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(105,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(106,224): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(107,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(108,198): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(109,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(115,220): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(116,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(117,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(118,224): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(119,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(120,198): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/StackClient.d.ts(121,200): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(3,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/layouts/TabsClient.d.ts(16,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(17,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(18,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(19,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(20,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(21,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(28,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(29,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(30,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(31,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(32,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(33,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(68,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(69,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(70,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(71,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(72,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(73,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(80,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(81,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(82,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(83,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(84,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(85,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(115,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(116,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(117,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(118,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(119,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(120,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(127,210): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(128,216): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(129,212): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(130,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(131,194): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/layouts/TabsClient.d.ts(132,196): error TS2344: Type 'unknown' does not satisfy the constraint 'boolean'.
+node_modules/expo-router/build/link/elements.d.ts(2,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/useScreens.d.ts(4,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/views/Sitemap.d.ts(2,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/views/Try.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-router/build/views/Unmatched.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/expo-server/build/cjs/ImmutableRequest.d.ts(17,5): error TS18028: Private identifiers are only available when targeting ECMAScript 2015 and higher.
+node_modules/expo-server/build/cjs/ImmutableRequest.d.ts(30,5): error TS18028: Private identifiers are only available when targeting ECMAScript 2015 and higher.
+node_modules/expo-symbols/build/android/index.d.ts(5,21): error TS2732: Cannot find module './symbols.json'. Consider using '--resolveJsonModule' to import module with '.json' extension.
+node_modules/react-native-screens/lib/typescript/components/FullWindowOverlay.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/Screen.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/ScreenContainer.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/ScreenContentWrapper.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/ScreenFooter.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/ScreenStack.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/ScreenStackHeaderConfig.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/SearchBar.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/tabs/TabsHost.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/components/tabs/TabsScreen.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native-screens/lib/typescript/types.d.ts(1,8): error TS1259: Module '"C:/zonapitsexpoclerk/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-native/src/types/globals.d.ts(10,1): error TS6200: Definitions of the following identifiers conflict with those in another file: EndingType, BlobPart, BufferSource, FormData, RequestInfo, XMLHttpRequestResponseType, AbortSignal, AbortController
+node_modules/react-native/src/types/globals.d.ts(166,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'Blob' must be of type '{ new (blobParts?: BlobPart[], options?: BlobPropertyBag): Blob; prototype: Blob; }', but here has type '{ new (blobParts?: (string | Blob)[], options?: BlobOptions): Blob; prototype: Blob; }'.
+node_modules/react-native/src/types/globals.d.ts(180,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'File' must be of type '{ new (fileBits: BlobPart[], fileName: string, options?: FilePropertyBag): File; prototype: File; }', but here has type '{ new (fileParts: BlobPart[], name: string, options?: FilePropertyBag): File; prototype: File; }'.
+node_modules/react-native/src/types/globals.d.ts(266,5): error TS2717: Subsequent property declarations must have the same type.  Property 'body' must be of type 'BodyInit', but here has type 'BodyInit_'.
+node_modules/react-native/src/types/globals.d.ts(275,5): error TS2717: Subsequent property declarations must have the same type.  Property 'signal' must be of type 'AbortSignal', but here has type 'AbortSignal'.
+node_modules/react-native/src/types/globals.d.ts(285,14): error TS2717: Subsequent property declarations must have the same type.  Property 'signal' must be of type 'AbortSignal', but here has type 'AbortSignal'.
+node_modules/react-native/src/types/globals.d.ts(289,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'Request' must be of type '{ new (input: RequestInfo | URL, init?: RequestInit): Request; prototype: Request; }', but here has type '{ new (input: string | Request, init?: RequestInit): Request; prototype: Request; }'.
+node_modules/react-native/src/types/globals.d.ts(313,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'Response' must be of type '{ new (body?: BodyInit, init?: ResponseInit): Response; prototype: Response; error(): Response; json(data: any, init?: ResponseInit): Response; redirect(url: string | URL, status?: number): Response; }', but here has type '{ new (body?: BodyInit_, init?: ResponseInit): Response; prototype: Response; error(): Response; json(data: any, init?: ResponseInit): Response; redirect: (url: string | URL, status?: number) => Response; }'.
+node_modules/react-native/src/types/globals.d.ts(398,5): error TS2717: Subsequent property declarations must have the same type.  Property 'abort' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(399,5): error TS2717: Subsequent property declarations must have the same type.  Property 'error' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(400,5): error TS2717: Subsequent property declarations must have the same type.  Property 'load' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(401,5): error TS2717: Subsequent property declarations must have the same type.  Property 'loadend' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(402,5): error TS2717: Subsequent property declarations must have the same type.  Property 'loadstart' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(403,5): error TS2717: Subsequent property declarations must have the same type.  Property 'progress' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(404,5): error TS2717: Subsequent property declarations must have the same type.  Property 'timeout' must be of type 'ProgressEvent<XMLHttpRequestEventTarget>', but here has type 'ProgressEvent<EventTarget>'.
+node_modules/react-native/src/types/globals.d.ts(471,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'URL' must be of type '{ new (url: string | URL, base?: string | URL): URL; prototype: URL; canParse(url: string | URL, base?: string | URL): boolean; createObjectURL(obj: Blob | MediaSource): string; parse(url: string | URL, base?: string | URL): URL; revokeObjectURL(url: string): void; }', but here has type '{ new (url: string | URL, base?: string | URL): URL; prototype: URL; createObjectURL(obj: Blob): string; revokeObjectURL(url: string): void; }'.
+node_modules/react-native/src/types/globals.d.ts(534,5): error TS2717: Subsequent property declarations must have the same type.  Property 'onopen' must be of type '(this: WebSocket, ev: Event) => any', but here has type '() => void'.
+node_modules/react-native/src/types/globals.d.ts(535,5): error TS2717: Subsequent property declarations must have the same type.  Property 'onmessage' must be of type '(this: WebSocket, ev: MessageEvent<any>) => any', but here has type '(event: WebSocketMessageEvent) => void'.
+node_modules/react-native/src/types/globals.d.ts(536,5): error TS2717: Subsequent property declarations must have the same type.  Property 'onerror' must be of type '(this: WebSocket, ev: Event) => any', but here has type '(event: WebSocketErrorEvent) => void'.
+node_modules/react-native/src/types/globals.d.ts(537,5): error TS2717: Subsequent property declarations must have the same type.  Property 'onclose' must be of type '(this: WebSocket, ev: CloseEvent) => any', but here has type '(event: WebSocketCloseEvent) => void'.
+node_modules/react-native/src/types/globals.d.ts(538,5): error TS2717: Subsequent property declarations must have the same type.  Property 'addEventListener' must be of type '{ <K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void; (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void; }', but here has type 'WebsocketEventListener'.
+node_modules/react-native/src/types/globals.d.ts(539,5): error TS2717: Subsequent property declarations must have the same type.  Property 'removeEventListener' must be of type '{ <K extends keyof WebSocketEventMap>(type: K, listener: (this: WebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | EventListenerOptions): void; (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void; }', but here has type 'WebsocketEventListener'.
+node_modules/react-native/src/types/globals.d.ts(542,7): error TS2403: Subsequent variable declarations must have the same type.  Variable 'WebSocket' must be of type '{ new (url: string | URL, protocols?: string | string[]): WebSocket; prototype: WebSocket; readonly CONNECTING: 0; readonly OPEN: 1; readonly CLOSING: 2; readonly CLOSED: 3; }', but here has type '{ new (uri: string, protocols?: string | string[], options?: { [optionName: string]: any; headers: { [headerName: string]: string; }; }): WebSocket; prototype: WebSocket; readonly CLOSED: number; readonly CLOSING: number; readonly CONNECTING: number; readonly OPEN: number; }'.
+node_modules/react-native/src/types/globals.d.ts(627,14): error TS2717: Subsequent property declarations must have the same type.  Property 'error' must be of type 'DOMException', but here has type 'Error'.
+node_modules/react-native/src/types/globals.d.ts(640,14): error TS2717: Subsequent property declarations must have the same type.  Property 'readyState' must be of type '0 | 2 | 1', but here has type 'number'.
+node_modules/typescript/lib/lib.dom.d.ts(23,1): error TS6200: Definitions of the following identifiers conflict with those in another file: EndingType, BlobPart, BufferSource, FormData, RequestInfo, XMLHttpRequestResponseType, AbortSignal, AbortController
+node_modules/typescript/lib/lib.dom.d.ts(32640,11): error TS2430: Interface 'URL' incorrectly extends interface 'import("node:url").URL'.
+  The types returned by 'searchParams[Symbol.iterator]()' are incompatible between these types.
+    Property '[Symbol.dispose]' is missing in type 'IterableIterator<[string, string]>' but required in type 'URLSearchParamsIterator<[string, string]>'.
+node_modules/typescript/lib/lib.dom.d.ts(32759,11): error TS2430: Interface 'URLSearchParams' incorrectly extends interface 'import("node:url").URLSearchParams'.
+  The types returned by '[Symbol.iterator]()' are incompatible between these types.
+    Property '[Symbol.dispose]' is missing in type 'IterableIterator<[string, string]>' but required in type 'URLSearchParamsIterator<[string, string]>'.

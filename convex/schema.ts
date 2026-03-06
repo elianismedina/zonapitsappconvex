@@ -21,7 +21,9 @@ export const Kit = {
   address: v.string(),
   latitude: v.number(),
   longitude: v.number(),
-  type: v.optional(v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid"))),
+  type: v.optional(
+    v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid")),
+  ),
   capacity: v.optional(v.number()),
   status: v.string(), // e.g., "draft", "pending", "completed"
   billStorageId: v.optional(v.id("_storage")),
@@ -31,6 +33,18 @@ export const Kit = {
   currency: v.optional(v.string()),
   billingPeriod: v.optional(v.string()),
   provider: v.optional(v.string()),
+  generationPercentage: v.optional(v.number()),
+  roofType: v.optional(
+    v.union(
+      v.literal("thermoacoustic"),
+      v.literal("standing_seam"),
+      v.literal("clay_tile"),
+      v.literal("asphalt_mantle"),
+      v.literal("eternit_tile"),
+      v.literal("wood"),
+      v.literal("zinc"),
+    ),
+  ),
 };
 
 export const SolarModule = {

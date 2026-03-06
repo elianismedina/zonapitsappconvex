@@ -47,7 +47,7 @@ export default function PanelDetailsScreen() {
       />
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {panel.imageUrl && (
-          <Box className="bg-background-50 p-6 items-center border-b border-outline-100">
+          <Box className="items-center border-b border-outline-100 bg-background-50 p-6">
             <Image
               source={{ uri: panel.imageUrl }}
               style={{ width: "100%", height: 300 }}
@@ -61,18 +61,19 @@ export default function PanelDetailsScreen() {
             <Heading size="2xl" className="text-typography-950">
               {panel.brand}
             </Heading>
-            <Heading size="lg" className="text-primary-600 font-medium italic">
+            <Heading size="lg" className="font-medium text-primary-600 italic">
               {panel.model}
             </Heading>
-            <Text size="xl" className="font-bold text-success-700 mt-2">
-              ${panel.price.toLocaleString()} por unidad
+            <Text size="xl" className="mt-2 font-bold text-success-700">
+              $ {panel.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+              por unidad
             </Text>
           </VStack>
 
           <Card variant="outline" className="p-4">
             <VStack space="lg">
               <HStack className="items-center" space="md">
-                <Box className="p-2 rounded-full bg-primary-100">
+                <Box className="rounded-full bg-primary-100 p-2">
                   <Zap size={20} className="text-primary-600" />
                 </Box>
                 <VStack className="flex-1">
@@ -86,7 +87,7 @@ export default function PanelDetailsScreen() {
               </HStack>
 
               <HStack className="items-center" space="md">
-                <Box className="p-2 rounded-full bg-success-100">
+                <Box className="rounded-full bg-success-100 p-2">
                   <BarChart3 size={20} className="text-success-600" />
                 </Box>
                 <VStack className="flex-1">
@@ -94,13 +95,13 @@ export default function PanelDetailsScreen() {
                     Eficiencia
                   </Text>
                   <Text size="md" className="font-bold">
-                    {(panel.efficiency * 100).toFixed(2)}%
+                    {panel.efficiency.toFixed(2)}%
                   </Text>
                 </VStack>
               </HStack>
 
               <HStack className="items-center" space="md">
-                <Box className="p-2 rounded-full bg-blue-100">
+                <Box className="rounded-full bg-blue-100 p-2">
                   <Ruler size={20} className="text-blue-600" />
                 </Box>
                 <VStack className="flex-1">
@@ -114,7 +115,7 @@ export default function PanelDetailsScreen() {
               </HStack>
 
               <HStack className="items-center" space="md">
-                <Box className="p-2 rounded-full bg-orange-100">
+                <Box className="rounded-full bg-orange-100 p-2">
                   <Weight size={20} className="text-orange-600" />
                 </Box>
                 <VStack className="flex-1">
@@ -134,7 +135,7 @@ export default function PanelDetailsScreen() {
               <Info size={20} className="mr-2 inline" /> Especificaciones
               Eléctricas
             </Heading>
-            <VStack className="bg-background-50 rounded-lg border border-outline-100 overflow-hidden">
+            <VStack className="overflow-hidden rounded-lg border border-outline-100 bg-background-50">
               <SpecRow
                 label="Voltaje Máximo (Vmp)"
                 value={`${panel.vmp} V`}

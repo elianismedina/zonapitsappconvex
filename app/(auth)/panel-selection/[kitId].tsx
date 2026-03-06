@@ -117,11 +117,11 @@ export default function PanelSelectionScreen() {
       />
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <VStack space="xl">
-          <Box className="p-4 bg-primary-50 rounded-xl border border-primary-100">
-            <Heading size="md" className="text-primary-900 mb-2">
+          <Box className="rounded-xl border border-primary-100 bg-primary-50 p-4">
+            <Heading size="md" className="mb-2 text-primary-900">
               Resumen para {kit.name}
             </Heading>
-            <HStack className="justify-between mb-1">
+            <HStack className="mb-1 justify-between">
               <Text size="sm" className="text-primary-700">
                 Horas Pico Solar (HSP):
               </Text>
@@ -141,7 +141,7 @@ export default function PanelSelectionScreen() {
 
           <VStack space="md">
             <Heading size="lg">Opciones Recomendadas</Heading>
-            <Text size="sm" className="text-typography-500 -mt-2">
+            <Text size="sm" className="-mt-2 text-typography-500">
               Selecciona el panel que mejor se ajuste a tu presupuesto y espacio
               disponible.
             </Text>
@@ -150,7 +150,7 @@ export default function PanelSelectionScreen() {
               <Pressable
                 key={index}
                 onPress={() => setSelectedOptionIndex(index)}
-                className={`p-4 rounded-xl shadow-soft-1 border-2 flex-row items-center bg-white ${
+                className={`flex-row items-center rounded-xl border-2 bg-white p-4 shadow-soft-1 ${
                   selectedOptionIndex === index
                     ? "border-primary-500 bg-primary-0"
                     : "border-outline-100"
@@ -165,23 +165,23 @@ export default function PanelSelectionScreen() {
                   />
                 )}
                 <VStack className="flex-1">
-                  <HStack className="justify-between items-start">
+                  <HStack className="items-start justify-between">
                     <VStack className="flex-1">
-                      <Text className="font-bold text-typography-900 text-lg">
+                      <Text className="text-lg font-bold text-typography-900">
                         {option.brand}
                       </Text>
                       <Text size="sm" className="text-typography-500">
                         {option.model}
                       </Text>
                     </VStack>
-                    <Box className="bg-primary-100 px-2 py-1 rounded-md">
-                      <Text size="xs" className="text-primary-700 font-bold">
+                    <Box className="rounded-md bg-primary-100 px-2 py-1">
+                      <Text size="xs" className="font-bold text-primary-700">
                         {option.pmax}W
                       </Text>
                     </Box>
                   </HStack>
 
-                  <HStack className="mt-3 justify-between items-end">
+                  <HStack className="mt-3 items-end justify-between">
                     <VStack>
                       <Text size="xs" className="text-typography-400">
                         Cantidad
@@ -195,7 +195,10 @@ export default function PanelSelectionScreen() {
                         Inversión aprox.
                       </Text>
                       <Text size="lg" className="font-bold text-success-700">
-                        ${option.totalPrice.toLocaleString()}
+                        ${" "}
+                        {option.totalPrice
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                       </Text>
                     </VStack>
                   </HStack>
@@ -203,7 +206,7 @@ export default function PanelSelectionScreen() {
                   <Button
                     variant="link"
                     size="sm"
-                    className="mt-2 self-start p-0 h-auto"
+                    className="mt-2 h-auto self-start p-0"
                     onPress={() => {
                       router.push({
                         pathname: "/(auth)/panel-details/[panelId]",
@@ -213,7 +216,7 @@ export default function PanelSelectionScreen() {
                   >
                     <HStack space="xs" className="items-center">
                       <Info size={14} className="text-primary-600" />
-                      <ButtonText className="text-primary-600 text-xs">
+                      <ButtonText className="text-xs text-primary-600">
                         Ver detalles técnicos
                       </ButtonText>
                     </HStack>
@@ -225,7 +228,7 @@ export default function PanelSelectionScreen() {
         </VStack>
       </ScrollView>
 
-      <Box className="p-4 bg-white border-t border-outline-100 pb-8">
+      <Box className="border-t border-outline-100 bg-white p-4 pb-8">
         <Button
           size="lg"
           className="w-full"

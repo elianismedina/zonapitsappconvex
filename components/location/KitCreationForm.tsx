@@ -64,7 +64,7 @@ export const KitCreationForm = ({
 
   return (
     <Animated.View style={[styles.formContainer, { bottom: keyboardOffset }]}>
-      <Box className="bg-white p-4 rounded-t-3xl shadow-lg">
+      <Box className="rounded-t-3xl bg-white p-4 shadow-lg">
         <Heading size="md" className="mb-4">
           Crear Nuevo Kit Solar {kitType ? `(${kitType})` : ""}
         </Heading>
@@ -74,18 +74,19 @@ export const KitCreationForm = ({
               <FormControlLabel>
                 <FormControlLabelText>Nombre del Kit</FormControlLabelText>
               </FormControlLabel>
-              <Input>
+              <Input size="lg" className="h-12">
                 <InputField
                   placeholder="Ej. Kit Solar Cabaña"
                   value={kitName}
                   onChangeText={setKitName}
+                  className="py-0"
                 />
               </Input>
             </FormControl>
           </Reanimated.View>
 
           <View>
-            <Text className="text-gray-500 text-sm mb-1">Ubicación:</Text>
+            <Text className="mb-1 text-sm text-gray-500">Ubicación:</Text>
             <Text numberOfLines={1} className="font-medium">
               {selectedLocation
                 ? selectedLocation.address

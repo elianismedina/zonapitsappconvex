@@ -44,8 +44,8 @@ export const AddressSearch = ({
     <Animated.View style={[styles.searchContainer, animatedStyle]}>
       <VStack style={styles.vStackContainer}>
         <GooglePlacesAutocomplete
-          placeholder="Buscar una dirección"
           onPress={onPlaceSelect}
+          placeholder="Buscar una dirección"
           query={{
             key: apiKey,
             language: "es",
@@ -59,19 +59,31 @@ export const AddressSearch = ({
               width: "100%",
               zIndex: 1,
             },
+            textInputContainer: {
+              backgroundColor: "#f8f8f8",
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: "#e5e5e5",
+              height: 50,
+              alignItems: "center",
+            },
+            textInput: {
+              backgroundColor: "transparent",
+              fontSize: 16,
+              color: "#000",
+              margin: 0,
+              paddingHorizontal: 12,
+              paddingVertical: 0,
+              flex: 1, // Let it fill the container height centered
+            },
             listView: {
               backgroundColor: "white",
               zIndex: 1000,
               position: "absolute",
-              top: 45,
+              top: 55,
               width: "100%",
-            },
-            textInput: {
-              height: 44,
               borderRadius: 8,
-              paddingHorizontal: 10,
-              backgroundColor: "#f0f0f0",
-              fontSize: 16,
+              elevation: 4,
             },
           }}
           enablePoweredByContainer={false}

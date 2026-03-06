@@ -1,13 +1,13 @@
-import {
-  Box,
-  Card,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from "@/components/ui";
+import { Box, Card, Heading, HStack, Text, VStack } from "@/components/ui";
 import { Image } from "expo-image";
-import { Sun, Zap, Battery, Hammer, Cable as CableIcon, ShieldCheck } from "lucide-react-native"; // X icon removed
+import {
+  Battery,
+  Cable as CableIcon,
+  Hammer,
+  ShieldCheck,
+  Sun,
+  Zap,
+} from "lucide-react-native"; // X icon removed
 
 export interface KitComponentCardProps {
   type: string;
@@ -73,10 +73,13 @@ export function KitComponentCard({
   };
 
   return (
-    <Card variant="elevated" className="p-0 overflow-hidden border-outline-100 bg-white shadow-soft-1">
-      <HStack className="items-stretch relative">
+    <Card
+      variant="elevated"
+      className="overflow-hidden border-outline-100 bg-white p-0 shadow-soft-1"
+    >
+      <HStack className="relative items-stretch">
         {/* Image Section */}
-        <Box className="w-32 h-32 bg-background-50 items-center justify-center border-r border-outline-50">
+        <Box className="h-32 w-32 items-center justify-center border-r border-outline-50 bg-background-50">
           {imageUrl ? (
             <Image
               source={{ uri: imageUrl }}
@@ -85,7 +88,7 @@ export function KitComponentCard({
               transition={200}
             />
           ) : (
-            <Box className="p-3 rounded-full bg-white shadow-sm">
+            <Box className="rounded-full bg-white p-3 shadow-sm">
               {getIcon()}
             </Box>
           )}
@@ -94,52 +97,72 @@ export function KitComponentCard({
         {/* Info Section */}
         <VStack className="flex-1 p-3" space="xs">
           {/* onRemove button removed */}
-          <HStack className="justify-between items-start">
+          <HStack className="items-start justify-between">
             <VStack className="flex-1">
-              <Text size="xs" className="text-typography-500 font-medium uppercase tracking-wider">
+              <Text
+                size="xs"
+                className="font-medium tracking-wider text-typography-500 uppercase"
+              >
                 {getTypeLabel()}
               </Text>
-              <Heading size="xs" className="text-typography-900 mt-0.5" numberOfLines={1}>
+              <Heading
+                size="xs"
+                className="mt-0.5 text-typography-900"
+                numberOfLines={1}
+              >
                 {brand && model ? `${brand} ${model}` : "Sin detalle"}
               </Heading>
             </VStack>
-            <Box className="bg-primary-50 px-2 py-1 rounded-md">
-              <Text size="xs" className="text-primary-600 font-bold">
+            <Box className="rounded-md bg-primary-50 px-2 py-1">
+              <Text size="xs" className="font-bold text-primary-600">
                 x{quantity}
               </Text>
             </Box>
           </HStack>
 
-          <HStack className="flex-wrap items-center mt-1" space="sm">
+          <HStack className="mt-1 flex-wrap items-center" space="sm">
             {pmax && (
-              <Box className="bg-background-50 px-2 py-0.5 rounded border border-outline-100">
-                <Text size="xs" className="text-typography-700">{pmax} Wp</Text>
+              <Box className="rounded border border-outline-100 bg-background-50 px-2 py-0.5">
+                <Text size="xs" className="text-typography-700">
+                  {pmax} Wp
+                </Text>
               </Box>
             )}
             {power && (
-              <Box className="bg-background-50 px-2 py-0.5 rounded border border-outline-100">
-                <Text size="xs" className="text-typography-700">{power} W</Text>
+              <Box className="rounded border border-outline-100 bg-background-50 px-2 py-0.5">
+                <Text size="xs" className="text-typography-700">
+                  {power} W
+                </Text>
               </Box>
             )}
             {capacity && (
-              <Box className="bg-background-50 px-2 py-0.5 rounded border border-outline-100">
-                <Text size="xs" className="text-typography-700">{capacity} kWh</Text>
+              <Box className="rounded border border-outline-100 bg-background-50 px-2 py-0.5">
+                <Text size="xs" className="text-typography-700">
+                  {capacity} kWh
+                </Text>
               </Box>
             )}
           </HStack>
 
           {price && (
-            <VStack className="mt-2 pt-2 border-t border-outline-50">
-              <HStack className="justify-between items-center">
-                <Text size="xs" className="text-typography-500">Precio unitario</Text>
-                <Text size="sm" className="text-typography-900 font-semibold">
-                  ${price.toLocaleString()}
+            <VStack className="mt-2 border-t border-outline-50 pt-2">
+              <HStack className="items-center justify-between">
+                <Text size="xs" className="text-typography-500">
+                  Precio unitario
+                </Text>
+                <Text size="sm" className="font-semibold text-typography-900">
+                  $ {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                 </Text>
               </HStack>
-              <HStack className="justify-between items-center mt-1">
-                <Text size="sm" className="text-typography-700 font-medium">Subtotal</Text>
-                <Text size="md" className="text-primary-600 font-bold">
-                  ${(price * quantity).toLocaleString()}
+              <HStack className="mt-1 items-center justify-between">
+                <Text size="sm" className="font-medium text-typography-700">
+                  Subtotal
+                </Text>
+                <Text size="md" className="font-bold text-primary-600">
+                  ${" "}
+                  {(price * quantity)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                 </Text>
               </HStack>
             </VStack>

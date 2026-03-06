@@ -5,7 +5,7 @@ export const getKits = query({
   args: { userId: v.optional(v.id("users")) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    
+
     if (args.userId) {
       return await ctx.db
         .query("kits")
@@ -44,7 +44,9 @@ export const createKit = mutation({
     address: v.string(),
     latitude: v.number(),
     longitude: v.number(),
-    type: v.optional(v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid"))),
+    type: v.optional(
+      v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid")),
+    ),
     capacity: v.optional(v.number()),
     status: v.string(),
   },
@@ -79,9 +81,23 @@ export const updateKit = mutation({
     address: v.optional(v.string()),
     latitude: v.optional(v.number()),
     longitude: v.optional(v.number()),
-    type: v.optional(v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid"))),
+    type: v.optional(
+      v.union(v.literal("off-grid"), v.literal("on-grid"), v.literal("hybrid")),
+    ),
     capacity: v.optional(v.number()),
     status: v.optional(v.string()),
+    generationPercentage: v.optional(v.number()),
+    roofType: v.optional(
+      v.union(
+        v.literal("thermoacoustic"),
+        v.literal("standing_seam"),
+        v.literal("clay_tile"),
+        v.literal("asphalt_mantle"),
+        v.literal("eternit_tile"),
+        v.literal("wood"),
+        v.literal("zinc"),
+      ),
+    ),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -145,322 +161,111 @@ export const deleteKit = mutation({
       .collect();
 
     // Delete each component
-    await Promise.all(componentsToDelete.map(comp => ctx.db.delete(comp._id)));
+    await Promise.all(
+      componentsToDelete.map((comp) => ctx.db.delete(comp._id)),
+    );
 
     // Finally, delete the kit
     await ctx.db.delete(args.id);
   },
 });
 
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
+});
 
-    
+export const addBillToKit = mutation({
+  args: {
+    storageId: v.id("_storage"),
 
-    export const generateUploadUrl = mutation(async (ctx) => {
+    kitId: v.id("kits"),
+  },
 
-      return await ctx.storage.generateUploadUrl();
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
 
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+
+      .query("users")
+
+      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const kit = await ctx.db.get(args.kitId);
+
+    if (!kit) {
+      throw new Error("Kit not found");
+    }
+
+    if (kit.userId !== user._id) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(args.kitId, {
+      billStorageId: args.storageId,
     });
+  },
+});
 
-    
+export const saveBillAnalysis = mutation({
+  args: {
+    kitId: v.id("kits"),
 
-    export const addBillToKit = mutation({
+    monthlyConsumptionKwh: v.optional(v.number()),
 
-      args: {
+    energyRate: v.optional(v.number()),
 
-        storageId: v.id("_storage"),
+    totalAmount: v.optional(v.number()),
 
-        kitId: v.id("kits"),
+    currency: v.optional(v.string()),
 
-      },
+    billingPeriod: v.optional(v.string()),
 
-      handler: async (ctx, args) => {
+    provider: v.optional(v.string()),
 
-        const identity = await ctx.auth.getUserIdentity();
+    generationPercentage: v.optional(v.number()),
+  },
 
-        if (!identity) {
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
 
-          throw new Error("Not authenticated");
+    if (!identity) throw new Error("Not authenticated");
 
-        }
+    const user = await ctx.db
 
-        
+      .query("users")
 
-        const user = await ctx.db
+      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
 
-          .query("users")
+      .unique();
 
-          .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+    if (!user) throw new Error("User not found");
 
-          .unique();
+    const kit = await ctx.db.get(args.kitId);
 
-    
+    if (!kit) throw new Error("Kit not found");
 
-        if (!user) {
+    if (kit.userId !== user._id) throw new Error("Unauthorized");
 
-          throw new Error("User not found");
+    const { kitId, ...analysisData } = args;
 
-        }
+    await ctx.db.patch(kitId, analysisData);
+  },
+});
 
-    
+export const getBillUrl = query({
+  args: { storageId: v.id("_storage") },
 
-        const kit = await ctx.db.get(args.kitId);
-
-        if (!kit) {
-
-          throw new Error("Kit not found");
-
-        }
-
-    
-
-        if (kit.userId !== user._id) {
-
-          throw new Error("Unauthorized");
-
-        }
-
-    
-
-                await ctx.db.patch(args.kitId, {
-
-    
-
-                  billStorageId: args.storageId,
-
-    
-
-                });
-
-    
-
-              },
-
-    
-
-            });
-
-    
-
-        
-
-    
-
-                export const saveBillAnalysis = mutation({
-
-    
-
-        
-
-    
-
-                  args: {
-
-    
-
-        
-
-    
-
-                    kitId: v.id("kits"),
-
-    
-
-        
-
-    
-
-                    monthlyConsumptionKwh: v.optional(v.number()),
-
-    
-
-        
-
-    
-
-                    energyRate: v.optional(v.number()),
-
-    
-
-        
-
-    
-
-                    totalAmount: v.optional(v.number()),
-
-    
-
-        
-
-    
-
-                    currency: v.optional(v.string()),
-
-    
-
-        
-
-    
-
-                    billingPeriod: v.optional(v.string()),
-
-    
-
-        
-
-    
-
-                    provider: v.optional(v.string()),
-
-    
-
-        
-
-    
-
-                  },
-
-    
-
-              handler: async (ctx, args) => {
-
-    
-
-                const identity = await ctx.auth.getUserIdentity();
-
-    
-
-                if (!identity) throw new Error("Not authenticated");
-
-    
-
-        
-
-    
-
-                const user = await ctx.db
-
-    
-
-                  .query("users")
-
-    
-
-                  .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
-
-    
-
-                  .unique();
-
-    
-
-                if (!user) throw new Error("User not found");
-
-    
-
-        
-
-    
-
-                const kit = await ctx.db.get(args.kitId);
-
-    
-
-                if (!kit) throw new Error("Kit not found");
-
-    
-
-                if (kit.userId !== user._id) throw new Error("Unauthorized");
-
-    
-
-        
-
-    
-
-                        const { kitId, ...analysisData } = args;
-
-    
-
-        
-
-    
-
-                        await ctx.db.patch(kitId, analysisData);
-
-    
-
-        
-
-    
-
-                      },
-
-    
-
-        
-
-    
-
-                    });
-
-    
-
-        
-
-    
-
-                
-
-    
-
-        
-
-    
-
-                    export const getBillUrl = query({
-
-    
-
-        
-
-    
-
-                      args: { storageId: v.id("_storage") },
-
-    
-
-        
-
-    
-
-                      handler: async (ctx, args) => {
-
-    
-
-        
-
-    
-
-                        return await ctx.storage.getUrl(args.storageId);
-
-    
-
-        
-
-    
-
-                      },
-
-    
-
-        
-
-    
-
-                    });
-
-    
-
-        
-
-    
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
+  },
+});

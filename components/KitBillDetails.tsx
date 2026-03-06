@@ -1,5 +1,5 @@
+import { HStack, Heading, Text, VStack } from "@/components/ui";
 import React from "react";
-import { HStack, VStack, Text, Heading } from "@/components/ui";
 
 interface KitBillDetailsProps {
   provider?: string;
@@ -23,6 +23,9 @@ export const KitBillDetails = ({
   variant = "full",
 }: KitBillDetailsProps) => {
   const isCompact = variant === "compact";
+  const formatCurrency = (amount: number = 0) => {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   return (
     <VStack space={isCompact ? "xs" : "md"} className="w-full">
@@ -31,36 +34,54 @@ export const KitBillDetails = ({
           Detalles de Factura
         </Heading>
       )}
-      
-      <HStack className="justify-between items-center">
-        <Text size="sm" className="text-typography-500">Proveedor:</Text>
-        <Text size="sm" className="font-bold">{provider || "N/A"}</Text>
+
+      <HStack className="items-center justify-between">
+        <Text size="sm" className="text-typography-500">
+          Proveedor:
+        </Text>
+        <Text size="sm" className="font-bold">
+          {provider || "N/A"}
+        </Text>
       </HStack>
 
-      <HStack className="justify-between items-center">
-        <Text size="sm" className="text-typography-500">Periodo:</Text>
-        <Text size="sm" className="font-bold">{billingPeriod || "N/A"}</Text>
+      <HStack className="items-center justify-between">
+        <Text size="sm" className="text-typography-500">
+          Periodo:
+        </Text>
+        <Text size="sm" className="font-bold">
+          {billingPeriod || "N/A"}
+        </Text>
       </HStack>
 
-      <HStack 
-        className={`justify-between items-center ${!isCompact ? "border-t border-outline-200 pt-2" : ""}`}
+      <HStack
+        className={`items-center justify-between ${!isCompact ? "border-t border-outline-200 pt-2" : ""}`}
       >
-        <Text size="sm" className="text-typography-500">Consumo:</Text>
+        <Text size="sm" className="text-typography-500">
+          Consumo:
+        </Text>
         <Text size={isCompact ? "sm" : "lg"} className="font-bold">
           {monthlyConsumptionKwh ?? 0} kWh
         </Text>
       </HStack>
 
       {energyRate !== undefined && (
-        <HStack className="justify-between items-center">
-          <Text size="sm" className="text-typography-500">Tarifa:</Text>
-          <Text size="sm" className="font-bold">{currency} {energyRate}</Text>
+        <HStack className="items-center justify-between">
+          <Text size="sm" className="text-typography-500">
+            Tarifa:
+          </Text>
+          <Text size="sm" className="font-bold">
+            {currency} {formatCurrency(energyRate)}
+          </Text>
         </HStack>
       )}
 
-      <HStack className="justify-between items-center">
-        <Text size="sm" className="text-typography-500">Total:</Text>
-        <Text size="sm" className="font-bold">{currency} {totalAmount ?? 0}</Text>
+      <HStack className="items-center justify-between">
+        <Text size="sm" className="text-typography-500">
+          Total:
+        </Text>
+        <Text size="sm" className="font-bold">
+          {currency} {formatCurrency(totalAmount ?? 0)}
+        </Text>
       </HStack>
     </VStack>
   );

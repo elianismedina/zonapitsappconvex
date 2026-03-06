@@ -1,7 +1,7 @@
 import { v } from "convex/values";
-import { action } from "./_generated/server";
 import { api } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
+import { action } from "./_generated/server";
 
 type SizingResult = {
   peakSunHours: number;
@@ -25,15 +25,23 @@ export const calculateSizing = action({
     kitId: v.id("kits"),
   },
   handler: async (ctx, args): Promise<SizingResult> => {
-    const kit: Doc<"kits"> | null = await ctx.runQuery(api.kits.getKitById, { id: args.kitId });
+    const kit: Doc<"kits"> | null = await ctx.runQuery(api.kits.getKitById, {
+      id: args.kitId,
+    });
     if (!kit) throw new Error("Kit no encontrado.");
-    
+
     if (!kit.monthlyConsumptionKwh || !kit.latitude || !kit.longitude) {
-      throw new Error("El kit no tiene datos de consumo o ubicación para el cálculo.");
+      throw new Error(
+        "El kit no tiene datos de consumo o ubicación para el cálculo.",
+      );
     }
 
-    const allModules: Doc<"solar_modules">[] = await ctx.runQuery(api.modules.getModules, {});
-    if (allModules.length === 0) throw new Error("No hay módulos solares en la base de datos.");
+    const allModules: Doc<"solar_modules">[] = await ctx.runQuery(
+      api.modules.getModules,
+      {},
+    );
+    if (allModules.length === 0)
+      throw new Error("No hay módulos solares en la base de datos.");
 
     const apiKey = process.env.PVWATTS_API_KEY;
     if (!apiKey) throw new Error("PVWATTS_API_KEY no configurada.");
@@ -50,21 +58,28 @@ export const calculateSizing = action({
       azimuth: "180",
       format: "json",
     });
-    
-    const pvwattsResponse = await fetch(`https://developer.nrel.gov/api/pvwatts/v8.json?${params.toString()}`);
-    if (!pvwattsResponse.ok) throw new Error(`Error API PVWatts: ${await pvwattsResponse.text()}`);
-    
+
+    const pvwattsResponse = await fetch(
+      `https://developer.nrel.gov/api/pvwatts/v8.json?${params.toString()}`,
+    );
+    if (!pvwattsResponse.ok)
+      throw new Error(`Error API PVWatts: ${await pvwattsResponse.text()}`);
+
     const pvwattsData = await pvwattsResponse.json();
     const monthlyIrradiance = pvwattsData.outputs.solrad_monthly as number[];
-    const peakSunHours = monthlyIrradiance.reduce((a, b) => a + b, 0) / monthlyIrradiance.length;
+    const peakSunHours =
+      monthlyIrradiance.reduce((a, b) => a + b, 0) / monthlyIrradiance.length;
 
-    const dailyDemandKwh = (kit.monthlyConsumptionKwh / 30) * 1.25;
+    const coverageFactor = (kit.generationPercentage ?? 100) / 100;
+    const dailyDemandKwh =
+      (kit.monthlyConsumptionKwh / 30) * 1.25 * coverageFactor;
     const performanceRatio = 0.85;
 
     const sizingOptions = allModules.map((module) => {
-      const panelDailyProduction = (module.pmax / 1000) * peakSunHours * performanceRatio;
+      const panelDailyProduction =
+        (module.pmax / 1000) * peakSunHours * performanceRatio;
       const panelsNeeded = Math.ceil(dailyDemandKwh / panelDailyProduction);
-      
+
       return {
         moduleId: module._id,
         brand: module.brand,
@@ -72,7 +87,9 @@ export const calculateSizing = action({
         pmax: module.pmax,
         price: module.price,
         panelsNeeded,
-        totalCapacityKw: parseFloat(((panelsNeeded * module.pmax) / 1000).toFixed(2)),
+        totalCapacityKw: parseFloat(
+          ((panelsNeeded * module.pmax) / 1000).toFixed(2),
+        ),
         totalPrice: parseFloat((panelsNeeded * module.price).toFixed(2)),
         imageUrl: module.imageUrl, // Pass the imageUrl
       };
