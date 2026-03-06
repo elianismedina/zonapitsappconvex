@@ -64,7 +64,7 @@ export default function PanelSelectionScreen() {
       }
     }
     performSizing();
-  }, [kitId]);
+  }, [kitId, calculateSizing, router]);
 
   const handleConfirmSelection = async () => {
     if (!sizingResults || selectedOptionIndex === null) return;

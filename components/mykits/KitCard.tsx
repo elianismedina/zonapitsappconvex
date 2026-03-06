@@ -69,7 +69,7 @@ const PulsingNextStep = ({
       scale.value = withTiming(1);
       opacity.value = withTiming(1);
     }
-  }, [active]);
+  }, [active, opacity, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
