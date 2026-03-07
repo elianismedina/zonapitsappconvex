@@ -20,7 +20,6 @@ import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
@@ -40,7 +39,7 @@ if (typeof window.addEventListener !== "function") {
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
 });
-
+// Sentry configuration
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
 
@@ -99,11 +98,11 @@ const tokenCache = {
     }
   },
 };
-
+// Convex configuration
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
 });
-
+// Initial layout
 const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
@@ -117,7 +116,7 @@ const InitialLayout = () => {
       navigationIntegration.registerNavigationContainer(navigationRef);
     }
   }, [navigationRef]);
-
+  // Handle navigation
   useEffect(() => {
     if (!isLoaded || !rootNavigationState?.key) return;
 
@@ -137,39 +136,51 @@ const InitialLayout = () => {
   return <Slot />;
 };
 
+// Root layout
 const RootLayoutNav = () => {
+  // Load fonts
   const [fontsLoaded, fontError] = useFonts({
     ...Ionicons.font,
-    "Sora-Thin": require("@/assets/fonts/sora/Sora-Thin.ttf"),
-    "Sora-ExtraLight": require("@/assets/fonts/sora/Sora-ExtraLight.ttf"),
-    "Sora-Light": require("@/assets/fonts/sora/Sora-Light.ttf"),
-    "Sora-Regular": require("@/assets/fonts/sora/Sora-Regular.ttf"),
-    "Sora-Medium": require("@/assets/fonts/sora/Sora-Medium.ttf"),
-    "Sora-SemiBold": require("@/assets/fonts/sora/Sora-SemiBold.ttf"),
-    "Sora-Bold": require("@/assets/fonts/sora/Sora-Bold.ttf"),
-    "Sora-ExtraBold": require("@/assets/fonts/sora/Sora-ExtraBold.ttf"),
+    "Sora-Thin": require("../assets/fonts/sora/Sora-Thin.ttf"),
+    "Sora-ExtraLight": require("../assets/fonts/sora/Sora-ExtraLight.ttf"),
+    "Sora-Light": require("../assets/fonts/sora/Sora-Light.ttf"),
+    "Sora-Regular": require("../assets/fonts/sora/Sora-Regular.ttf"),
+    "Sora-Medium": require("../assets/fonts/sora/Sora-Medium.ttf"),
+    "Sora-SemiBold": require("../assets/fonts/sora/Sora-SemiBold.ttf"),
+    "Sora-Bold": require("../assets/fonts/sora/Sora-Bold.ttf"),
+    "Sora-ExtraBold": require("../assets/fonts/sora/Sora-ExtraBold.ttf"),
   });
+  // Splash screen state
   const [isSplashFinished, setIsSplashFinished] = useState(false);
+  // Color mode state
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
+  // Handle font loading
   useEffect(() => {
+    if (fontError) {
+      console.error("Font loading error:", fontError);
+    }
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
 
+  // Handle splash screen ready
   const onSplashReady = useCallback(() => {
     SplashScreen.hideAsync();
   }, []);
 
+  // Handle splash screen finish
   const onSplashFinish = useCallback(() => {
     setIsSplashFinished(true);
   }, []);
 
-  if (!fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: "red" }} />;
+  // Handle font loading error
+  if (!fontsLoaded && !fontError) {
+    return <LoadingAnimation />;
   }
+  // Render root layout
   return (
     <SafeAreaProvider>
       <GluestackUIProvider mode={colorMode}>
