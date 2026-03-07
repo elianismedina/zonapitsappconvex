@@ -21,7 +21,7 @@ import {
   Trash,
   Zap,
 } from "lucide-react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -91,6 +91,7 @@ interface KitCardProps {
   onDelete: (id: Id<"kits">) => void;
   onSizing: (item: any) => void;
   onAddInverter: (id: Id<"kits">) => void;
+  onAddBattery: (id: Id<"kits">) => void;
 }
 
 export const KitCard = ({
@@ -100,6 +101,7 @@ export const KitCard = ({
   onDelete,
   onSizing,
   onAddInverter,
+  onAddBattery,
 }: KitCardProps) => {
   const hasSolarModule = components
     ? components.some((comp) => comp.type === "solar_module")
@@ -107,11 +109,25 @@ export const KitCard = ({
   const hasInverter = components
     ? components.some((comp) => comp.type === "inverter")
     : false;
+  const hasBattery = components
+    ? components.some((comp) => comp.type === "battery")
+    : false;
 
   // Determine which step should pulse
   const isStep0Next =
     !hasSolarModule && !(item.billStorageId && !item.monthlyConsumptionKwh);
   const isStep1Next = hasSolarModule && !hasInverter;
+  const isStep2Next = hasInverter && !hasBattery;
+
+  const totalInvestment = useMemo(() => {
+    if (!components) return 0;
+    return components.reduce((acc, comp) => {
+      const details = comp.details as any;
+      const price =
+        details?.price ?? details?.pricePerUnit ?? details?.pricePerMeter ?? 0;
+      return acc + price * comp.quantity;
+    }, 0);
+  }, [components]);
 
   return (
     <Card size="md" variant="elevated" className="mb-4 overflow-hidden p-0">
@@ -122,12 +138,13 @@ export const KitCard = ({
           contentFit="cover"
           transition={300}
         />
-        <HStack space="sm" className="absolute top-3 right-3 z-10">
+        {/* Actions - Now on the top-left */}
+        <HStack space="sm" className="absolute top-3 left-3 z-10">
           <Button
             size="xs"
             variant="solid"
             action="secondary"
-            className="rounded-full bg-white/80"
+            className="rounded-full bg-white/90"
             onPress={() => onEdit(item)}
           >
             <ButtonIcon as={Edit} className="text-secondary-600" />
@@ -136,28 +153,41 @@ export const KitCard = ({
             size="xs"
             variant="solid"
             action="negative"
-            className="rounded-full bg-white/80"
+            className="rounded-full bg-white/90"
             onPress={() => onDelete(item._id)}
           >
             <ButtonIcon as={Trash} className="text-negative-600" />
           </Button>
         </HStack>
 
-        <Box className="absolute inset-0 items-center justify-center bg-black/30">
-          <Heading size="lg" className="px-4 text-center font-bold text-white">
-            {item.name}
-          </Heading>
+        {/* Total Price - Now on the top-right */}
+        <Box className="absolute top-3 right-3 z-10 rounded-full bg-white/95 px-3 py-1.5 shadow-soft-2">
+          <HStack space="xs" className="items-center">
+            <CircleDollarSign size={14} className="text-primary-600" />
+            <Text className="text-sm font-bold text-primary-700">
+              ${" "}
+              {totalInvestment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            </Text>
+          </HStack>
         </Box>
       </Box>
 
       <VStack space="md" className="p-4">
         <VStack space="xs">
+          <Heading size="md" className="font-bold text-typography-900">
+            {item.name}
+          </Heading>
           {item.capacity && (
-            <HStack space="md">
-              <Text size="sm" className="w-24 font-bold">
+            <HStack space="xs" className="items-center">
+              <Text
+                size="xs"
+                className="font-bold text-typography-500 uppercase"
+              >
                 Capacidad:
               </Text>
-              <Text size="sm">{item.capacity} kWp</Text>
+              <Text size="xs" className="font-medium text-typography-700">
+                {item.capacity} kWp
+              </Text>
             </HStack>
           )}
         </VStack>
@@ -280,21 +310,37 @@ export const KitCard = ({
           </PulsingNextStep>
 
           {/* Step 3: Baterías */}
-          <Pressable
-            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl border border-outline-100 bg-white p-4 opacity-50`}
+          <PulsingNextStep
+            active={isStep2Next}
+            onPress={() => onAddBattery(item._id)}
+            disabled={!hasInverter}
+            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
+              hasBattery ? "bg-success-50" : "bg-white"
+            } ${!hasInverter ? "opacity-50" : ""}`}
           >
             <VStack space="xs" className="items-center">
-              <Box className="rounded-full bg-background-50 p-3">
-                <Battery size={24} color="#64748b" />
+              <Box
+                className={`rounded-full p-3 ${
+                  hasBattery ? "bg-success-100" : "bg-background-50"
+                }`}
+              >
+                <Battery size={24} color={hasBattery ? "#16a34a" : "#64748b"} />
               </Box>
               <Text
                 size="xs"
-                className="text-center font-bold text-typography-500"
+                className={`text-center font-bold ${
+                  hasBattery ? "text-success-700" : "text-typography-500"
+                }`}
               >
                 Baterías
               </Text>
+              {hasBattery && (
+                <Box className="absolute -top-1 -right-1">
+                  <CheckCircle2 size={16} color="#16a34a" />
+                </Box>
+              )}
             </VStack>
-          </Pressable>
+          </PulsingNextStep>
 
           {/* Step 4: Estructura */}
           <Pressable

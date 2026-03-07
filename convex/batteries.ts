@@ -24,6 +24,18 @@ export const createBattery = mutation({
     type: v.string(),
     price: v.number(),
     imageUrl: v.optional(v.string()),
+    nominalCapacityAh: v.optional(v.number()),
+    nominalEnergyWh: v.optional(v.number()),
+    lifeCycles: v.optional(v.string()),
+    recommendedChargeVoltage: v.optional(v.number()),
+    chargeCurrent: v.optional(v.string()),
+    endOfDischargeVoltage: v.optional(v.number()),
+    dischargeCurrent: v.optional(v.string()),
+    cutOffVoltage: v.optional(v.string()),
+    operatingTemperature: v.optional(v.string()),
+    storageTemperature: v.optional(v.string()),
+    parallelModules: v.optional(v.string()),
+    communication: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -45,6 +57,18 @@ export const updateBattery = mutation({
     type: v.optional(v.string()),
     price: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    nominalCapacityAh: v.optional(v.number()),
+    nominalEnergyWh: v.optional(v.number()),
+    lifeCycles: v.optional(v.string()),
+    recommendedChargeVoltage: v.optional(v.number()),
+    chargeCurrent: v.optional(v.string()),
+    endOfDischargeVoltage: v.optional(v.number()),
+    dischargeCurrent: v.optional(v.string()),
+    cutOffVoltage: v.optional(v.string()),
+    operatingTemperature: v.optional(v.string()),
+    storageTemperature: v.optional(v.string()),
+    parallelModules: v.optional(v.string()),
+    communication: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -80,13 +104,39 @@ export const bulkCreateBatteries = mutation({
         type: v.string(),
         price: v.number(),
         imageUrl: v.optional(v.string()),
-      })
+        nominalCapacityAh: v.optional(v.number()),
+        nominalEnergyWh: v.optional(v.number()),
+        lifeCycles: v.optional(v.string()),
+        recommendedChargeVoltage: v.optional(v.number()),
+        chargeCurrent: v.optional(v.string()),
+        endOfDischargeVoltage: v.optional(v.number()),
+        dischargeCurrent: v.optional(v.string()),
+        cutOffVoltage: v.optional(v.string()),
+        operatingTemperature: v.optional(v.string()),
+        storageTemperature: v.optional(v.string()),
+        parallelModules: v.optional(v.string()),
+        communication: v.optional(v.string()),
+      }),
     ),
   },
   handler: async (ctx, args) => {
+    let createdCount = 0;
     for (const item of args.batteries) {
-      await ctx.db.insert("batteries", item);
+      const existing = await ctx.db
+        .query("batteries")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("brand"), item.brand),
+            q.eq(q.field("model"), item.model),
+          ),
+        )
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("batteries", item);
+        createdCount++;
+      }
     }
-    return args.batteries.length;
+    return createdCount;
   },
 });

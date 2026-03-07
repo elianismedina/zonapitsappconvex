@@ -95,17 +95,27 @@ export const bulkCreateModules = mutation({
         efficiency: v.number(),
         weight: v.number(),
         dimensions: v.string(),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {
-    // You might want to add an admin check here later
-    // const identity = await ctx.auth.getUserIdentity();
-    // if (!isAdmin(identity)) throw new Error("Unauthorized");
-
+    let createdCount = 0;
     for (const mod of args.modules) {
-      await ctx.db.insert("solar_modules", mod);
+      const existing = await ctx.db
+        .query("solar_modules")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("brand"), mod.brand),
+            q.eq(q.field("model"), mod.model),
+          ),
+        )
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("solar_modules", mod);
+        createdCount++;
+      }
     }
-    return args.modules.length;
+    return createdCount;
   },
 });

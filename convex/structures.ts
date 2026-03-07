@@ -74,13 +74,22 @@ export const bulkCreateStructures = mutation({
         material: v.optional(v.string()),
         pricePerUnit: v.number(),
         imageUrl: v.optional(v.string()),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {
+    let createdCount = 0;
     for (const item of args.structures) {
-      await ctx.db.insert("structures", item);
+      const existing = await ctx.db
+        .query("structures")
+        .filter((q) => q.eq(q.field("name"), item.name))
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("structures", item);
+        createdCount++;
+      }
     }
-    return args.structures.length;
+    return createdCount;
   },
 });

@@ -1,0 +1,21 @@
+[
+  {
+    "brand": "MUST",
+    "model": "PV29-6048 LPH",
+    "type": "OFF-GRID",
+    "power": 6000,
+    "efficiency": 0.88,
+    "price": 2116800,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1772903116/inverterImage_ac5m8x.png",
+    "nominalPower": 6000,
+    "maxPvPower": 5000,
+    "peakPower": 18000,
+    "nominalOutputVoltage": "220 / 230 / 240 VAC",
+    "waveForm": "Onda senoidal pura",
+    "frequency": 60,
+    "acInputVoltage": "110 / 120 VDC",
+    "batteryVoltage": 48,
+    "mpptChargeCurrent": 80,
+    "maxPvVoltage": 245
+  }
+]

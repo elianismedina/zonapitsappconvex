@@ -24,6 +24,16 @@ export const createInverter = mutation({
     efficiency: v.optional(v.number()),
     price: v.number(),
     imageUrl: v.optional(v.string()),
+    nominalPower: v.optional(v.number()),
+    maxPvPower: v.optional(v.number()),
+    peakPower: v.optional(v.number()),
+    nominalOutputVoltage: v.optional(v.string()),
+    waveForm: v.optional(v.string()),
+    frequency: v.optional(v.number()),
+    acInputVoltage: v.optional(v.string()),
+    batteryVoltage: v.optional(v.number()),
+    mpptChargeCurrent: v.optional(v.number()),
+    maxPvVoltage: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -45,6 +55,16 @@ export const updateInverter = mutation({
     efficiency: v.optional(v.number()),
     price: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
+    nominalPower: v.optional(v.number()),
+    maxPvPower: v.optional(v.number()),
+    peakPower: v.optional(v.number()),
+    nominalOutputVoltage: v.optional(v.string()),
+    waveForm: v.optional(v.string()),
+    frequency: v.optional(v.number()),
+    acInputVoltage: v.optional(v.string()),
+    batteryVoltage: v.optional(v.number()),
+    mpptChargeCurrent: v.optional(v.number()),
+    maxPvVoltage: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -80,13 +100,37 @@ export const bulkCreateInverters = mutation({
         efficiency: v.optional(v.number()),
         price: v.number(),
         imageUrl: v.optional(v.string()),
-      })
+        nominalPower: v.optional(v.number()),
+        maxPvPower: v.optional(v.number()),
+        peakPower: v.optional(v.number()),
+        nominalOutputVoltage: v.optional(v.string()),
+        waveForm: v.optional(v.string()),
+        frequency: v.optional(v.number()),
+        acInputVoltage: v.optional(v.string()),
+        batteryVoltage: v.optional(v.number()),
+        mpptChargeCurrent: v.optional(v.number()),
+        maxPvVoltage: v.optional(v.number()),
+      }),
     ),
   },
   handler: async (ctx, args) => {
+    let createdCount = 0;
     for (const item of args.inverters) {
-      await ctx.db.insert("inverters", item);
+      const existing = await ctx.db
+        .query("inverters")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("brand"), item.brand),
+            q.eq(q.field("model"), item.model),
+          ),
+        )
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("inverters", item);
+        createdCount++;
+      }
     }
-    return args.inverters.length;
+    return createdCount;
   },
 });

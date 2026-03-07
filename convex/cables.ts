@@ -71,13 +71,22 @@ export const bulkCreateCables = mutation({
         type: v.string(),
         pricePerMeter: v.number(),
         imageUrl: v.optional(v.string()),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {
+    let createdCount = 0;
     for (const item of args.cables) {
-      await ctx.db.insert("cables", item);
+      const existing = await ctx.db
+        .query("cables")
+        .filter((q) => q.eq(q.field("name"), item.name))
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("cables", item);
+        createdCount++;
+      }
     }
-    return args.cables.length;
+    return createdCount;
   },
 });

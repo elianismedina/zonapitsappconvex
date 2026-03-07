@@ -98,14 +98,14 @@ export default function GarageScreen() {
 
   if (kits === undefined) {
     return (
-      <Box className="flex-1 justify-center items-center">
+      <Box className="flex-1 items-center justify-center">
         <LoadingAnimation />
       </Box>
     );
   }
 
   return (
-    <Box className="flex-1 p-4 bg-background-0">
+    <Box className="flex-1 bg-background-0 p-4">
       <Heading size="xl" className="mb-4">
         Mis Kits
       </Heading>
@@ -123,7 +123,18 @@ export default function GarageScreen() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               onSizing={handleSizing}
-              onAddInverter={(id) => console.log("Add Inverter for kit:", id)}
+              onAddInverter={(id) => {
+                router.push({
+                  pathname: "/(auth)/inverter-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
+              onAddBattery={(id) => {
+                router.push({
+                  pathname: "/(auth)/battery-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
             />
           )}
         />

@@ -74,13 +74,22 @@ export const bulkCreateProtections = mutation({
         rating: v.string(),
         price: v.number(),
         imageUrl: v.optional(v.string()),
-      })
+      }),
     ),
   },
   handler: async (ctx, args) => {
+    let createdCount = 0;
     for (const item of args.protections) {
-      await ctx.db.insert("protections", item);
+      const existing = await ctx.db
+        .query("protections")
+        .filter((q) => q.eq(q.field("name"), item.name))
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("protections", item);
+        createdCount++;
+      }
     }
-    return args.protections.length;
+    return createdCount;
   },
 });

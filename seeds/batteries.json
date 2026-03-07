@@ -1,0 +1,23 @@
+[
+  {
+    "brand": "Must",
+    "model": "LP16-24100",
+    "type": "Litio",
+    "capacity": 2.56,
+    "voltage": 25.6,
+    "price": 2587600,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1772903864/BatteryImage_oypat4.png",
+    "nominalCapacityAh": 100,
+    "nominalEnergyWh": 2560,
+    "lifeCycles": "Más de 6000 ciclos (25℃, 80% DOD)",
+    "recommendedChargeVoltage": 29.2,
+    "chargeCurrent": "Recomendada: 40A / Máxima: 150A",
+    "endOfDischargeVoltage": 22.0,
+    "dischargeCurrent": "Recomendada: 100A / Máxima: 150A",
+    "cutOffVoltage": "Carga: 29,2V / Descarga: 22,0V (2s)",
+    "operatingTemperature": "0 ~ 45℃ (carga) / -10 ~ 55℃ (descarga)",
+    "storageTemperature": "-5 ~ 35℃",
+    "parallelModules": "Hasta 15 unidades",
+    "communication": "CAN2.0 / RS232 / RS485"
+  }
+]

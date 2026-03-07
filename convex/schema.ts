@@ -70,6 +70,17 @@ export const Inverter = {
   efficiency: v.optional(v.number()),
   price: v.number(),
   imageUrl: v.optional(v.string()),
+  // Technical details
+  nominalPower: v.optional(v.number()), // Watts
+  maxPvPower: v.optional(v.number()), // Watts
+  peakPower: v.optional(v.number()), // Watts
+  nominalOutputVoltage: v.optional(v.string()), // e.g., "220 / 230 / 240 VAC"
+  waveForm: v.optional(v.string()), // e.g., "Onda senoidal pura"
+  frequency: v.optional(v.number()), // Hz
+  acInputVoltage: v.optional(v.string()), // e.g., "110 / 120 VDC"
+  batteryVoltage: v.optional(v.number()), // VDC
+  mpptChargeCurrent: v.optional(v.number()), // A
+  maxPvVoltage: v.optional(v.number()), // VDC
 };
 
 export const Battery = {
@@ -80,6 +91,19 @@ export const Battery = {
   type: v.string(), // e.g. "LiFePO4", "Lead-acid"
   price: v.number(),
   imageUrl: v.optional(v.string()),
+  // Technical details
+  nominalCapacityAh: v.optional(v.number()),
+  nominalEnergyWh: v.optional(v.number()),
+  lifeCycles: v.optional(v.string()),
+  recommendedChargeVoltage: v.optional(v.number()),
+  chargeCurrent: v.optional(v.string()),
+  endOfDischargeVoltage: v.optional(v.number()),
+  dischargeCurrent: v.optional(v.string()),
+  cutOffVoltage: v.optional(v.string()),
+  operatingTemperature: v.optional(v.string()),
+  storageTemperature: v.optional(v.string()),
+  parallelModules: v.optional(v.string()),
+  communication: v.optional(v.string()),
 };
 
 export const Structure = {
