@@ -12,7 +12,7 @@ import { VStack } from "@/components/ui/vstack";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect } from "react";
-import { ScrollView, StyleSheet } from "react-native"; // Import StyleSheet
+import { ScrollView } from "react-native";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -67,7 +67,7 @@ const LoginScreen = () => {
         colors={["#A7C7E7", "#E0BBE4"]} // Example colors: light blue to light purple
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFillObject}
+        className="absolute top-0 right-0 bottom-0 left-0"
       />
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Image

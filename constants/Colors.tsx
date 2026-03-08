@@ -4,8 +4,8 @@ export const Colors = {
   background: "#FFFFFF",
   border: "#E5E7EB",
   itemBackground: "#FAFAFA",
-  primary: "#EAB308",
-  black: "#11181C",
+  primary: "#F0D117",
+  black: "#000000",
 
   ...Platform.select({
     ios: {

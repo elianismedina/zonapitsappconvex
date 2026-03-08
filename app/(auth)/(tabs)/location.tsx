@@ -16,7 +16,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   Platform,
-  StyleSheet,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -282,7 +281,7 @@ export default function SearchScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <View className="flex-1 bg-white">
         <AddressSearch
           apiKey={GOOGLE_MAPS_API_KEY}
           onPlaceSelect={handlePlaceSelect}
@@ -291,7 +290,7 @@ export default function SearchScreen() {
 
         <MapView
           ref={mapRef}
-          style={styles.map}
+          className="h-full w-full"
           provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
           initialRegion={region}
           onRegionChangeComplete={setRegion}
@@ -335,14 +334,3 @@ export default function SearchScreen() {
     </TouchableWithoutFeedback>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  map: {
-    width: "100%",
-    height: "100%",
-  },
-});

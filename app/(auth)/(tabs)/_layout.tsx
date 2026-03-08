@@ -3,7 +3,7 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useEffect } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -36,7 +36,10 @@ const CreateTabIcon = ({
   });
 
   return (
-    <Animated.View style={[styles.createIconContainer, animatedStyle]}>
+    <Animated.View
+      className="rounded-lg p-1.5"
+      style={[{ backgroundColor: Colors.itemBackground }, animatedStyle]}
+    >
       <Ionicons name="receipt" size={size} color={color} />
     </Animated.View>
   );
@@ -77,7 +80,7 @@ const TabIcon = ({
   });
 
   return (
-    <Animated.View style={[styles.iconContainer, animatedStyle]}>
+    <Animated.View className="p-0.5" style={[animatedStyle]}>
       <Ionicons name={focused ? nameFocused : name} size={size} color={color} />
     </Animated.View>
   );
@@ -183,14 +186,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
-const styles = StyleSheet.create({
-  createIconContainer: {
-    backgroundColor: Colors.itemBackground,
-    borderRadius: 8,
-    padding: 6,
-  },
-  iconContainer: {
-    padding: 2,
-  },
-});

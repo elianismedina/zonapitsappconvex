@@ -101,7 +101,7 @@ export default function InverterSelectionScreen() {
     } else if (filteredInverters && (!solarModule || quantity === 0)) {
       setIsCalculating(false);
     }
-  }, [filteredInverters, solarModule, quantity]);
+  }, [filteredInverters, solarModule, quantity, inverters]);
 
   const handleConfirmSelection = async () => {
     if (!selectedInverterId || !kitId) return;
