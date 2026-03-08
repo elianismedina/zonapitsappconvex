@@ -56,10 +56,17 @@ export default function InverterSelectionScreen() {
     | undefined;
   const quantity = solarModuleComponent?.quantity || 0;
 
-  // For now, we'll assume a default string configuration if not set
-  // In a real app, this might be calculated or chosen by the user earlier
-  const panelsInSeries = quantity > 0 ? (quantity >= 4 ? 4 : quantity) : 0;
-  const strings = quantity > 0 ? Math.ceil(quantity / panelsInSeries) : 0;
+  const filteredInverters = React.useMemo(() => {
+    if (!inverters || !kit) return [];
+    if (kit.type === "off-grid") {
+      return inverters.filter(
+        (i) =>
+          i.type.toLowerCase().includes("off") ||
+          i.type.toLowerCase().includes("aislad"),
+      );
+    }
+    return inverters;
+  }, [inverters, kit]);
 
   useEffect(() => {
     if (inverters && solarModule && quantity > 0) {
@@ -77,9 +84,8 @@ export default function InverterSelectionScreen() {
             voc: solarModule.voc,
             isc: solarModule.isc,
           },
-          panelsInSeries,
-          strings,
-          inverters.map((inv) => ({
+          quantity,
+          filteredInverters.map((inv) => ({
             ...inv,
             nominalPower: inv.nominalPower || inv.power || 0,
             maxPvPower: inv.maxPvPower || 0,
@@ -92,10 +98,10 @@ export default function InverterSelectionScreen() {
       };
 
       runCheck();
-    } else if (inverters && (!solarModule || quantity === 0)) {
+    } else if (filteredInverters && (!solarModule || quantity === 0)) {
       setIsCalculating(false);
     }
-  }, [inverters, solarModule, quantity, panelsInSeries, strings]);
+  }, [filteredInverters, solarModule, quantity]);
 
   const handleConfirmSelection = async () => {
     if (!selectedInverterId || !kitId) return;
@@ -198,32 +204,15 @@ export default function InverterSelectionScreen() {
             {solarModule ? (
               <VStack space="xs">
                 <Text size="sm" className="text-primary-700">
-                  Basado en {quantity} paneles {solarModule.brand} (
-                  {panelsInSeries} en serie x {strings} strings)
+                  Basado en {quantity} paneles {solarModule.brand}
                 </Text>
                 <HStack space="md" className="mt-1">
                   <VStack>
                     <Text size="xs" className="font-bold text-primary-600">
-                      Potencia PV:
+                      Potencia Fotovoltaica:
                     </Text>
                     <Text size="xs" className="text-primary-800">
                       {(quantity * solarModule.pmax) / 1000} kW
-                    </Text>
-                  </VStack>
-                  <VStack>
-                    <Text size="xs" className="font-bold text-primary-600">
-                      Voltaje Max:
-                    </Text>
-                    <Text size="xs" className="text-primary-800">
-                      {panelsInSeries * solarModule.voc} V
-                    </Text>
-                  </VStack>
-                  <VStack>
-                    <Text size="xs" className="font-bold text-primary-600">
-                      Corriente Max:
-                    </Text>
-                    <Text size="xs" className="text-primary-800">
-                      {strings * solarModule.isc} A
                     </Text>
                   </VStack>
                 </HStack>
@@ -238,7 +227,13 @@ export default function InverterSelectionScreen() {
           <VStack space="md">
             <Heading size="lg">Opciones Disponibles</Heading>
 
-            {inverters.map((inverter) => {
+            {filteredInverters.length === 0 && (
+              <Text size="sm" className="text-typography-500 italic">
+                No se encontraron inversores disponibles para este tipo de kit.
+              </Text>
+            )}
+
+            {filteredInverters.map((inverter) => {
               const result = compatibilityResults.find(
                 (r) => r.inverterId === inverter._id,
               );
@@ -288,6 +283,17 @@ export default function InverterSelectionScreen() {
                         </Text>
                       </Box>
                     </HStack>
+
+                    {result?.optimalConfig && (
+                      <HStack className="mt-2 items-center rounded-md bg-background-50 p-2">
+                        <Text size="xs" className="text-typography-600">
+                          Cfg. Óptima: {result.optimalConfig.strings} string
+                          {result.optimalConfig.strings > 1 ? "s" : ""} (
+                          {result.optimalConfig.panelsInSeries} paneles en
+                          serie)
+                        </Text>
+                      </HStack>
+                    )}
 
                     {!result?.isCompatible && result?.constraints && (
                       <VStack className="mt-2 rounded-md bg-error-50 p-2">

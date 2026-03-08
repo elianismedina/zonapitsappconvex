@@ -15,6 +15,7 @@ export default function GarageScreen() {
   const kits = useQuery(api.kits.getKits, {});
   const deleteKit = useMutation(api.kits.deleteKit);
   const updateKit = useMutation(api.kits.updateKit);
+  const removeComponent = useMutation(api.kit_components.removeComponent);
 
   // Query all kit components for all of user's kits
   const allKitComponents = useQuery(api.kit_components.getAllComponents);
@@ -59,6 +60,15 @@ export default function GarageScreen() {
         },
       ],
     );
+  };
+
+  const handleRemoveComponent = async (componentId: Id<"kit_components">) => {
+    try {
+      await removeComponent({ id: componentId });
+    } catch (error) {
+      console.error("Error removing kit component:", error);
+      Alert.alert("Error", "No se pudo eliminar el componente.");
+    }
   };
 
   const handleEdit = (kit: any) => {
@@ -135,6 +145,7 @@ export default function GarageScreen() {
                   params: { kitId: id },
                 });
               }}
+              onRemoveComponent={handleRemoveComponent}
             />
           )}
         />

@@ -92,6 +92,7 @@ interface KitCardProps {
   onSizing: (item: any) => void;
   onAddInverter: (id: Id<"kits">) => void;
   onAddBattery: (id: Id<"kits">) => void;
+  onRemoveComponent: (componentId: Id<"kit_components">) => void;
 }
 
 export const KitCard = ({
@@ -102,6 +103,7 @@ export const KitCard = ({
   onSizing,
   onAddInverter,
   onAddBattery,
+  onRemoveComponent,
 }: KitCardProps) => {
   const hasSolarModule = components
     ? components.some((comp) => comp.type === "solar_module")
@@ -205,6 +207,14 @@ export const KitCard = ({
               power={component.details?.power}
               capacity={component.details?.capacity}
               imageUrl={component.details?.imageUrl}
+              solarModuleId={component.solarModuleId}
+              inverterId={component.inverterId}
+              batteryId={component.batteryId}
+              structureId={component.structureId}
+              cableId={component.cableId}
+              protectionId={component.protectionId}
+              componentId={component._id}
+              onRemove={onRemoveComponent}
             />
           </Box>
         ))}
