@@ -24,7 +24,8 @@ import {
   ActionsheetSectionList,
   ActionsheetSectionHeaderText,
 } from './select-actionsheet';
-import { Pressable, View, TextInput } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { TextInput } from 'react-native-keyboard-controller';
 
 const SelectTriggerWrapper = React.forwardRef<
   React.ComponentRef<typeof Pressable>,

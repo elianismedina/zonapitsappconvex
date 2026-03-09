@@ -20,6 +20,7 @@ import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useState } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // --- TEMP SAFETY POLYFILL FOR WEB-ONLY LIBS ---
@@ -183,25 +184,27 @@ const RootLayoutNav = () => {
   // Render root layout
   return (
     <SafeAreaProvider>
-      <GluestackUIProvider mode={colorMode}>
-        <StatusBar style="auto" />
-        <ClerkProvider
-          publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-          tokenCache={tokenCache}
-        >
-          <ClerkLoaded>
-            <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-              <InitialLayout />
-            </ConvexProviderWithClerk>
-            {!isSplashFinished && (
-              <AnimatedSplashScreen
-                onReady={onSplashReady}
-                onAnimationFinish={onSplashFinish}
-              />
-            )}
-          </ClerkLoaded>
-        </ClerkProvider>
-      </GluestackUIProvider>
+      <KeyboardProvider>
+        <GluestackUIProvider mode={colorMode}>
+          <StatusBar style="auto" />
+          <ClerkProvider
+            publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+            tokenCache={tokenCache}
+          >
+            <ClerkLoaded>
+              <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+                <InitialLayout />
+              </ConvexProviderWithClerk>
+              {!isSplashFinished && (
+                <AnimatedSplashScreen
+                  onReady={onSplashReady}
+                  onAnimationFinish={onSplashFinish}
+                />
+              )}
+            </ClerkLoaded>
+          </ClerkProvider>
+        </GluestackUIProvider>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 };
