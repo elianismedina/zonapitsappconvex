@@ -15,11 +15,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
-  Platform,
+  StyleSheet,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import MapView, { Marker, Region } from "react-native-maps";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
@@ -282,16 +282,9 @@ export default function SearchScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 bg-white">
-        <AddressSearch
-          apiKey={GOOGLE_MAPS_API_KEY}
-          onPlaceSelect={handlePlaceSelect}
-          shakeSignal={shakeAddress}
-        />
-
         <MapView
           ref={mapRef}
-          className="h-full w-full"
-          provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
+          style={{ flex: 1 }}
           initialRegion={region}
           onRegionChangeComplete={setRegion}
           zoomEnabled={true}
@@ -309,6 +302,12 @@ export default function SearchScreen() {
             />
           )}
         </MapView>
+
+        <AddressSearch
+          apiKey={GOOGLE_MAPS_API_KEY}
+          onPlaceSelect={handlePlaceSelect}
+          shakeSignal={shakeAddress}
+        />
 
         <ZoomControls
           onZoomIn={() => handleZoom("in")}
@@ -334,3 +333,10 @@ export default function SearchScreen() {
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+});

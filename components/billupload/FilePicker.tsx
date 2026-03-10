@@ -61,14 +61,14 @@ export const FilePicker = ({
       <Pressable
         onPress={onPress}
         disabled={isDisabled}
-        className="w-full aspect-[16/9] bg-background-50 rounded-lg border border-dashed border-outline-300 items-center justify-center overflow-hidden"
+        className="aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-lg border border-dashed border-outline-300 bg-background-50"
       >
         {selectedFile ? (
           selectedFile.mimeType?.startsWith("image/") ? (
             <Image
               source={{ uri: selectedFile.uri }}
               alt="Energy bill"
-              className="w-full h-full"
+              className="h-full w-full"
               resizeMode="contain"
             />
           ) : (
@@ -76,7 +76,7 @@ export const FilePicker = ({
               <FileUp size={48} color="#9CA3AF" />
               <Text
                 size="sm"
-                className="text-typography-500 mt-2 text-center"
+                className="mt-2 text-center text-typography-500"
                 isTruncated
               >
                 {selectedFile.name || "Archivo seleccionado"}
@@ -86,9 +86,9 @@ export const FilePicker = ({
         ) : (
           <VStack className="items-center" space="xs">
             <Animated.View style={animatedStyle}>
-              <FileUp size={56} color="#0066FF" />
+              <FileUp size={56} color="#F0D117" />
             </Animated.View>
-            <Text size="sm" className="font-medium text-primary-600 mt-2">
+            <Text size="sm" className="mt-2 font-medium text-primary-600">
               Toca para seleccionar una imagen o PDF
             </Text>
           </VStack>

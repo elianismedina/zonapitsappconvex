@@ -311,9 +311,7 @@ export default function UploadBillScreen() {
           <Text
             size="sm"
             className={`font-medium ${
-              activeTab === "bill"
-                ? "text-primary-600"
-                : "text-typography-500"
+              activeTab === "bill" ? "text-primary-600" : "text-typography-500"
             }`}
           >
             Factura
@@ -330,9 +328,7 @@ export default function UploadBillScreen() {
           <Text
             size="sm"
             className={`font-medium ${
-              activeTab === "roof"
-                ? "text-primary-600"
-                : "text-typography-500"
+              activeTab === "roof" ? "text-primary-600" : "text-typography-500"
             }`}
           >
             Tipo de Techo
@@ -359,8 +355,8 @@ export default function UploadBillScreen() {
                   ¿Qué porcentaje de tu factura quieres cubrir?
                 </Heading>
                 <Text size="xs" className="text-typography-500">
-                  Esto nos ayuda a dimensionar el kit ideal para tu presupuesto y
-                  espacio.
+                  Esto nos ayuda a dimensionar el kit ideal para tu presupuesto
+                  y espacio.
                 </Text>
                 <HStack space="xs" className="flex-wrap">
                   {[50, 60, 70, 80, 90, 100].map((val) => (
@@ -480,7 +476,7 @@ export default function UploadBillScreen() {
                     analysisResult={analysisResult}
                   />
 
-                  <Button onPress={handleFinish} className="bg-success-600">
+                  <Button onPress={handleFinish} className="bg-primary-600">
                     <ButtonText>Arma tu Efikit Solar</ButtonText>
                   </Button>
 
@@ -605,7 +601,7 @@ export default function UploadBillScreen() {
                   {selectedRoofType && (
                     <Button
                       onPress={handleFinish}
-                      className="bg-success-600 mt-4"
+                      className="mt-4 bg-primary-600"
                     >
                       <ButtonText>Continuar</ButtonText>
                     </Button>

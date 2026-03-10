@@ -6,8 +6,8 @@ import {
   withStyleContext,
 } from "@gluestack-ui/utils/nativewind-utils";
 import React from "react";
-import { Pressable, View } from "react-native";
-import { TextInput } from "react-native-keyboard-controller";
+import { Pressable, TextInput, View } from "react-native";
+// import { TextInput } from "react-native-keyboard-controller";
 
 import { PrimitiveIcon, UIIcon } from "@gluestack-ui/core/icon/creator";
 import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
