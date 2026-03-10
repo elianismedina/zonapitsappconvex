@@ -1,24 +1,14 @@
 import { AddressSearch } from "@/components/location/AddressSearch";
 import { KitCreationForm } from "@/components/location/KitCreationForm";
 import { ZoomControls } from "@/components/location/ZoomControls";
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-} from "@/components/ui/toast";
+import { useToastNotify } from "@/components/hooks/useToastNotify";
 import { api } from "@/convex/_generated/api";
 import { useKeyboardOffset } from "@/hooks/use-keyboard-offset";
 import { useMutation } from "convex/react";
 import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Keyboard,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 
 const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || "";
@@ -28,7 +18,7 @@ export default function SearchScreen() {
   const createKit = useMutation(api.kits.createKit);
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
-  const toast = useToast();
+  const notify = useToastNotify();
   const keyboardOffset = useKeyboardOffset();
 
   const [kitName, setKitName] = useState("");
@@ -53,16 +43,11 @@ export default function SearchScreen() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        toast.show({
-          placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="error">
-              <ToastTitle>Permiso de ubicación denegado</ToastTitle>
-              <ToastDescription>
-                No podemos centrar el mapa en tu ubicación actual sin permiso.
-              </ToastDescription>
-            </Toast>
-          ),
+        notify({
+          title: "Permiso de ubicación denegado",
+          description:
+            "No podemos centrar el mapa en tu ubicación actual sin permiso.",
+          action: "error",
         });
         return;
       }
@@ -96,20 +81,14 @@ export default function SearchScreen() {
         mapRef.current?.animateToRegion(newRegion, 1000);
       } catch (error) {
         console.error("Error fetching location:", error);
-        toast.show({
-          placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="error">
-              <ToastTitle>Error al obtener ubicación</ToastTitle>
-              <ToastDescription>
-                No se pudo obtener tu ubicación actual.
-              </ToastDescription>
-            </Toast>
-          ),
+        notify({
+          title: "Error al obtener ubicación",
+          description: "No se pudo obtener tu ubicación actual.",
+          action: "error",
         });
       }
     })();
-  }, [toast]);
+  }, [notify]);
 
   const handlePlaceSelect = useCallback((data: any, details: any = null) => {
     if (details) {
@@ -137,16 +116,10 @@ export default function SearchScreen() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        toast.show({
-          placement: "top",
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action="error">
-              <ToastTitle>Permiso denegado</ToastTitle>
-              <ToastDescription>
-                Necesitamos permiso para usar tu ubicación.
-              </ToastDescription>
-            </Toast>
-          ),
+        notify({
+          title: "Permiso denegado",
+          description: "Necesitamos permiso para usar tu ubicación.",
+          action: "error",
         });
         return;
       }
@@ -182,16 +155,10 @@ export default function SearchScreen() {
       }
     } catch (error) {
       console.error("Error using current location:", error);
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action="error">
-            <ToastTitle>Error</ToastTitle>
-            <ToastDescription>
-              No se pudo determinar la dirección.
-            </ToastDescription>
-          </Toast>
-        ),
+      notify({
+        title: "Error",
+        description: "No se pudo determinar la dirección.",
+        action: "error",
       });
     }
   };
@@ -226,15 +193,10 @@ export default function SearchScreen() {
     }
 
     if (hasError) {
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast action="error" variant="outline" nativeID={id}>
-            <ToastTitle>
-              Por favor, selecciona una ubicación y escribe un nombre.
-            </ToastTitle>
-          </Toast>
-        ),
+      notify({
+        title: "Por favor, selecciona una ubicación y escribe un nombre.",
+        action: "error",
+        variant: "outline",
       });
       return;
     }
@@ -249,13 +211,10 @@ export default function SearchScreen() {
         status: "draft",
       });
 
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast action="success" variant="outline" nativeID={id}>
-            <ToastTitle>¡Kit creado exitosamente!</ToastTitle>
-          </Toast>
-        ),
+      notify({
+        title: "¡Kit creado exitosamente!",
+        action: "success",
+        variant: "outline",
       });
 
       setKitName("");
@@ -268,13 +227,10 @@ export default function SearchScreen() {
       });
     } catch (error) {
       console.error("Error creating kit:", error);
-      toast.show({
-        placement: "top",
-        render: ({ id }) => (
-          <Toast action="error" variant="outline" nativeID={id}>
-            <ToastTitle>Fallo al crear kit.</ToastTitle>
-          </Toast>
-        ),
+      notify({
+        title: "Fallo al crear kit.",
+        action: "error",
+        variant: "outline",
       });
     }
   };
@@ -334,9 +290,3 @@ export default function SearchScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  map: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
-  },
-});

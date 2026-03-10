@@ -19,5 +19,26 @@
     "storageTemperature": "-5 ~ 35℃",
     "parallelModules": "Hasta 15 unidades",
     "communication": "CAN2.0 / RS232 / RS485"
+  },
+  {
+    "brand": "MUST",
+    "model": "LP16-48200",
+    "type": "Litio LifePO4",
+    "capacity": 10.24,
+    "voltage": 51.2,
+    "price": 6957600,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773150353/BatteryImage200_nu9r9c.png",
+    "nominalCapacityAh": 200,
+    "nominalEnergyWh": 10240,
+    "lifeCycles": "6000 ciclos (25℃, 80% DOD)",
+    "recommendedChargeVoltage": 58.4,
+    "chargeCurrent": "Recomendada: 40A / Máxima: 150A",
+    "endOfDischargeVoltage": 44,
+    "dischargeCurrent": "Recomendada: 100A / Máxima: 150A",
+    "cutOffVoltage": "Carga: 58.4V / Descarga: 44.0V (2s)",
+    "operatingTemperature": "0 ~ 45℃ (carga) / -10 ~ 55℃ (descarga)",
+    "storageTemperature": "-5 ~ 35℃",
+    "parallelModules": "Hasta 15 unidades",
+    "communication": "CAN2.0 / RS232 / RS485"
   }
 ]

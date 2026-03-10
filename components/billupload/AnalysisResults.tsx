@@ -1,3 +1,6 @@
+import React from "react";
+import { CheckCircle, FileUp } from "lucide-react-native";
+
 import { KitBillDetails } from "@/components/KitBillDetails";
 import {
   Box,
@@ -8,16 +11,12 @@ import {
   Text,
   VStack,
 } from "@/components/ui";
-import { CheckCircle, FileUp } from "lucide-react-native";
-import React from "react";
+import { BillAnalysisResult, SelectedFile } from "@/components/billupload/types";
 
 interface AnalysisResultsProps {
-  selectedFile: {
-    uri: string;
-    mimeType?: string;
-  } | null;
+  selectedFile: SelectedFile | null;
   billUrl: string | null;
-  analysisResult: any;
+  analysisResult: BillAnalysisResult;
 }
 
 export const AnalysisResults = ({

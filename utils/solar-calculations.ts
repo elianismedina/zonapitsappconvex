@@ -207,19 +207,27 @@ export function checkBatteryBankCompatibility(
   dailyConsumptionKwh: number = 0,
   daysOfAutonomy: number = 1,
 ): BatteryCompatibilityResult[] {
-  // If the inverter doesn't specify a battery voltage, default to 48V for standard residential,
-  // or it might mean it's a grid-tie without battery support.
-  const inverterReqVoltage = inverter.batteryVoltage || 48;
-
   return batteries.map((battery) => {
     // 1. Voltage compatibility (Crucial: Nominal must match)
-    const batteryVoltage = battery.voltage || 48; // Default assumption if missing
-    const isVoltageCompatible = batteryVoltage === inverterReqVoltage;
+    const invReqV = Number(inverter.batteryVoltage || 48);
+    const batV = Number(battery.voltage || 48);
+
+    // Group actual voltages into nominal classes (e.g. 51.2V and 48V both fall into 48V class)
+    const getNominalClass = (v: number) => {
+      if (v >= 40 && v <= 65) return 48; // 48V systems (e.g. 48V, 51.2V LFP)
+      if (v >= 20 && v <= 32) return 24; // 24V systems (e.g. 24V, 25.6V LFP)
+      if (v >= 10 && v <= 16) return 12; // 12V systems (e.g. 12V, 12.8V LFP)
+      return v;
+    };
+
+    const isVoltageCompatible =
+      getNominalClass(batV) === getNominalClass(invReqV);
 
     // Helper to parse max current from strings like "100A", "50-100"
     const parseCurrentLimit = (currentStr?: string) => {
       if (!currentStr) return 0;
-      const matches = currentStr.match(/\d+(\.\d+)?/g);
+      const cleanStr = currentStr.replace(/,/g, ".");
+      const matches = cleanStr.match(/\d+(\.\d+)?/g);
       if (matches && matches.length > 0) {
         return Math.max(...matches.map(Number));
       }
@@ -231,24 +239,11 @@ export function checkBatteryBankCompatibility(
     const invChargeCurrent = inverter.mpptChargeCurrent || 0;
     const batMaxCharge = parseCurrentLimit(battery.chargeCurrent);
 
-    // If we have both values, check strict compatibility. Otherwise, assume pass or warn.
-    const isChargeCompatible =
-      invChargeCurrent === 0 || batMaxCharge === 0
-        ? true
-        : invChargeCurrent <= batMaxCharge;
-
     // 3. Discharge current comparison
     // Inverter max continuous draw = nominalPower / batteryVoltage
     const requiredDischargeCurrent =
-      inverterReqVoltage > 0
-        ? (inverter.nominalPower || 0) / inverterReqVoltage
-        : 0;
+      invReqV > 0 ? (inverter.nominalPower || 0) / invReqV : 0;
     const batMaxDischarge = parseCurrentLimit(battery.dischargeCurrent);
-
-    const isDischargeCompatible =
-      batMaxDischarge === 0
-        ? true
-        : requiredDischargeCurrent <= batMaxDischarge;
 
     // 4. Chemistry / Communication check
     // Very basic check, mainly verifying if the chemistry is generally supported
@@ -261,24 +256,44 @@ export function checkBatteryBankCompatibility(
       ? "Compatible (Requiere verificar pines BMS)"
       : "Compatible (Plomo-ácido, verificar perfiles de tensión)";
 
-    // 5. Calculate recommended quantity for autonomy
-    let optimalQuantity = 0;
-    let totalCapacityProvided = 0;
+    // 4. Calculate recommended quantity based on 3 factors:
+    // a) Autonomy (Energy needs)
+    // b) Charge Current (Can the bank take the inverter's charge current?)
+    // c) Discharge Current (Can the bank handle the inverter's power draw?)
 
+    let autonomyQuantity = 0;
     if (dailyConsumptionKwh > 0 && battery.capacity > 0) {
-      // Depth of Discharge (DoD) safety limit: Lithium ~80-90%, Lead-acid ~50%
       const dodLimit = isLithium ? 0.8 : 0.5;
-
-      // Total usable energy needed in kWh
       const requiredUsableEnergy = dailyConsumptionKwh * daysOfAutonomy;
-
-      // Required raw nominal capacity
       const requiredNominalCapacity = requiredUsableEnergy / dodLimit;
-
-      // Battery nominal capacity in kWh
-      optimalQuantity = Math.ceil(requiredNominalCapacity / battery.capacity);
-      totalCapacityProvided = optimalQuantity * battery.capacity;
+      autonomyQuantity = Math.ceil(requiredNominalCapacity / battery.capacity);
     }
+
+    // Safety factor for charge current as suggested by designers (1.25x)
+    const chargeQuantity =
+      batMaxCharge > 0
+        ? Math.ceil((invChargeCurrent * 1.25) / batMaxCharge)
+        : 1;
+    const dischargeQuantity =
+      batMaxDischarge > 0
+        ? Math.ceil(requiredDischargeCurrent / batMaxDischarge)
+        : 1;
+
+    // Final suggested quantity is the highest of all needs
+    const optimalQuantity = Math.max(
+      autonomyQuantity,
+      chargeQuantity,
+      dischargeQuantity,
+      1,
+    );
+    const totalCapacityProvided = optimalQuantity * battery.capacity;
+
+    // A configuration is compatible if voltage matches and the recommended quantity handles the currents
+    const isChargeCompatible =
+      batMaxCharge === 0 || invChargeCurrent <= batMaxCharge * optimalQuantity;
+    const isDischargeCompatible =
+      batMaxDischarge === 0 ||
+      requiredDischargeCurrent <= batMaxDischarge * optimalQuantity;
 
     return {
       batteryId: battery._id,
@@ -286,28 +301,25 @@ export function checkBatteryBankCompatibility(
       model: battery.model,
       isCompatible:
         isVoltageCompatible && isChargeCompatible && isDischargeCompatible,
-      optimalConfig:
-        optimalQuantity > 0
-          ? {
-              quantity: optimalQuantity,
-              totalCapacityKwh: totalCapacityProvided,
-              daysOfAutonomy: daysOfAutonomy,
-            }
-          : undefined,
+      optimalConfig: {
+        quantity: optimalQuantity,
+        totalCapacityKwh: totalCapacityProvided,
+        daysOfAutonomy: daysOfAutonomy,
+      },
       constraints: {
         voltage: {
-          inverterVoltage: inverterReqVoltage,
-          batteryVoltage: batteryVoltage,
+          inverterVoltage: invReqV,
+          batteryVoltage: batV,
           isCompatible: isVoltageCompatible,
         },
         chargeCurrent: {
           inverterChargeCurrent: invChargeCurrent,
-          batteryMaxCharge: batMaxCharge,
+          batteryMaxCharge: batMaxCharge * optimalQuantity,
           isCompatible: isChargeCompatible,
         },
         dischargeCurrent: {
           requiredByInverter: requiredDischargeCurrent,
-          batteryMaxDischarge: batMaxDischarge,
+          batteryMaxDischarge: batMaxDischarge * optimalQuantity,
           isCompatible: isDischargeCompatible,
         },
         chemistry: {

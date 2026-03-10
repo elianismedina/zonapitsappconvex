@@ -240,11 +240,45 @@ export default function BatterySelectionScreen() {
                     )}
 
                     {!result?.isCompatible && result?.constraints && (
-                      <VStack className="mt-2 rounded-md bg-error-50 p-2">
-                        <Text size="xs" className="text-error-600">
-                          {!result.constraints.voltage.isCompatible &&
-                            "• Tensión incompatible con inversor"}
-                        </Text>
+                      <VStack
+                        className="mt-2 rounded-md bg-error-50 p-2"
+                        space="xs"
+                      >
+                        {!result.constraints.voltage.isCompatible && (
+                          <Text size="xs" className="text-error-600">
+                            • Tensión (
+                            {result.constraints.voltage.batteryVoltage}V)
+                            incompatible con inversor (
+                            {result.constraints.voltage.inverterVoltage}V)
+                          </Text>
+                        )}
+                        {!result.constraints.chargeCurrent.isCompatible && (
+                          <Text size="xs" className="text-error-600">
+                            • Corriente de carga excedida (Inv:{" "}
+                            {
+                              result.constraints.chargeCurrent
+                                .inverterChargeCurrent
+                            }
+                            A {">"} Bat:{" "}
+                            {result.constraints.chargeCurrent.batteryMaxCharge}
+                            A)
+                          </Text>
+                        )}
+                        {!result.constraints.dischargeCurrent.isCompatible && (
+                          <Text size="xs" className="text-error-600">
+                            • Descarga insuficiente para potencia pico (Req:{" "}
+                            {Math.round(
+                              result.constraints.dischargeCurrent
+                                .requiredByInverter,
+                            )}
+                            A {">"} Bat:{" "}
+                            {
+                              result.constraints.dischargeCurrent
+                                .batteryMaxDischarge
+                            }
+                            A)
+                          </Text>
+                        )}
                       </VStack>
                     )}
 

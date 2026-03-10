@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormControl,
   FormControlLabel,
@@ -14,8 +13,9 @@ import {
   SelectPortal,
   SelectTrigger,
 } from "@/components/ui";
-import { ChevronDown } from "lucide-react-native";
 import { Id } from "@/convex/_generated/dataModel";
+import { ChevronDown } from "lucide-react-native";
+import React from "react";
 
 interface KitSelectorProps {
   kits: any[] | undefined;
@@ -30,8 +30,6 @@ export const KitSelector = ({
   onValueChange,
   isDisabled,
 }: KitSelectorProps) => {
-  const selectedKitObject = kits?.find((k) => k._id === selectedKitId);
-
   return (
     <FormControl>
       <FormControlLabel>
@@ -45,7 +43,6 @@ export const KitSelector = ({
         <SelectTrigger variant="outline" size="md">
           <SelectInput
             placeholder={!kits ? "Cargando kits..." : "Selecciona..."}
-            value={selectedKitObject?.name}
           />
           <SelectIcon as={ChevronDown} className="mr-3" />
         </SelectTrigger>
