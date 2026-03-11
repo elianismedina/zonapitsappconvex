@@ -23,7 +23,7 @@ export const addComponent = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      return [];
     }
 
     const user = await ctx.db
@@ -118,7 +118,7 @@ export const removeComponent = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Not authenticated");
+      return [];
     }
     
     // We should ideally check kit ownership here too, but for speed let's assume if you have the ID you can delete, 
