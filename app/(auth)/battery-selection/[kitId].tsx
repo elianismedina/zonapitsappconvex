@@ -118,12 +118,14 @@ export default function BatterySelectionScreen() {
   if (batteries === undefined || !kit || isCalculating) {
     return (
       <Box className="flex-1 items-center justify-center bg-background-0">
-        <LoadingAnimation size={140} />
-        <Text className="mt-4 text-typography-500">
-          {isCalculating
-            ? "Calculando autonomía óptima..."
-            : "Cargando opciones de baterías..."}
-        </Text>
+        <LoadingAnimation
+          size={140}
+          text={
+            isCalculating
+              ? "Calculando autonomía óptima..."
+              : "Cargando opciones de baterías..."
+          }
+        />
       </Box>
     );
   }
