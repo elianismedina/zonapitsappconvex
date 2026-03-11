@@ -20,7 +20,15 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Battery, CheckCircle2, Info, XCircle, Zap } from "lucide-react-native";
+import {
+  Battery,
+  CheckCircle2,
+  Info,
+  Minus,
+  Plus,
+  XCircle,
+  Zap,
+} from "lucide-react-native";
 import React, { useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
@@ -35,6 +43,7 @@ export default function BatterySelectionScreen() {
 
   const [selectedBatteryId, setSelectedBatteryId] =
     useState<Id<"batteries"> | null>(null);
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const [isCalculating, setIsCalculating] = useState(true);
   const [compatibilityResults, setCompatibilityResults] = useState<
     BatteryCompatibilityResult[]
@@ -79,10 +88,7 @@ export default function BatterySelectionScreen() {
   const handleConfirmSelection = async () => {
     if (!selectedBatteryId || !kitId) return;
 
-    const result = compatibilityResults.find(
-      (r) => r.batteryId === selectedBatteryId,
-    );
-    const quantity = result?.optimalConfig?.quantity || 1;
+    const quantity = selectedQuantity;
 
     try {
       await addComponent({
@@ -183,7 +189,12 @@ export default function BatterySelectionScreen() {
               return (
                 <Pressable
                   key={currBattery._id}
-                  onPress={() => setSelectedBatteryId(currBattery._id)}
+                  onPress={() => {
+                    if (selectedBatteryId !== currBattery._id) {
+                      setSelectedBatteryId(currBattery._id);
+                      setSelectedQuantity(result?.optimalConfig?.quantity || 1);
+                    }
+                  }}
                   className={`flex-row items-center rounded-xl border-2 bg-white p-4 shadow-soft-1 ${
                     isSelected
                       ? "border-primary-500 bg-primary-0"
@@ -237,6 +248,83 @@ export default function BatterySelectionScreen() {
                           </Text>
                         </HStack>
                       </HStack>
+                    )}
+
+                    {isSelected && (
+                      <VStack
+                        space="sm"
+                        className="mt-4 border-t border-outline-50 pt-4"
+                      >
+                        <HStack className="items-center justify-between">
+                          <Text
+                            size="xs"
+                            className="font-bold uppercase text-typography-500"
+                          >
+                            Ajustar Cantidad
+                          </Text>
+                          {selectedQuantity !==
+                            result?.optimalConfig?.quantity && (
+                            <Button
+                              variant="link"
+                              size="xs"
+                              className="h-auto p-0"
+                              onPress={() =>
+                                setSelectedQuantity(
+                                  result?.optimalConfig?.quantity || 1,
+                                )
+                              }
+                            >
+                              <ButtonText className="text-[10px]">
+                                Reestablecer sugerido
+                              </ButtonText>
+                            </Button>
+                          )}
+                        </HStack>
+
+                        <HStack space="md" className="items-center">
+                          <Button
+                            variant="outline"
+                            action="secondary"
+                            size="sm"
+                            className="h-10 w-10 px-0"
+                            onPress={() =>
+                              setSelectedQuantity(
+                                Math.max(1, selectedQuantity - 1),
+                              )
+                            }
+                          >
+                            <Minus size={16} color="#64748b" />
+                          </Button>
+
+                          <Box className="w-12 items-center">
+                            <Text className="text-lg font-bold">
+                              {selectedQuantity}
+                            </Text>
+                          </Box>
+
+                          <Button
+                            variant="outline"
+                            action="secondary"
+                            size="sm"
+                            className="h-10 w-10 px-0"
+                            onPress={() =>
+                              setSelectedQuantity(selectedQuantity + 1)
+                            }
+                          >
+                            <Plus size={16} color="#64748b" />
+                          </Button>
+
+                          <VStack className="ml-auto items-end">
+                            <Text size="xs" className="text-typography-400">
+                              Total:{" "}
+                              {(selectedQuantity * currBattery.capacity).toFixed(
+                                1,
+                              )}
+                              kWh
+                            </Text>
+                          </VStack>
+                        </HStack>
+                      </VStack>
                     )}
 
                     {!result?.isCompatible && result?.constraints && (

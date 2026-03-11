@@ -6,22 +6,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "zonapitsexpoclerk",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/ic_launcher_foreground/ic_launcher_foreground_mdpi.png",
   scheme: "zonapitsexpoclerk",
   userInterfaceStyle: "automatic",
   jsEngine: "hermes",
   ios: {
     supportsTablet: true,
+    icon: "./assets/images/ios_app_icon/iOS App Icon_1024pt@1x.png",
     config: {
       googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
     },
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
-      backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: "./assets/images/android-icon-monochrome.png",
+      foregroundImage: "./assets/images/ic_launcher_foreground/ic_launcher_foreground_mdpi.png",
+      backgroundImage: "./assets/images/ic_launcher_background/ic_launcher_background_mdpi.png",
     },
     predictiveBackGestureEnabled: false,
     package: "com.elianismedina05.zonapitsexpoclerk",
