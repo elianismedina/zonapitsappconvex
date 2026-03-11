@@ -44,6 +44,7 @@ export default function BatterySelectionScreen() {
   const [selectedBatteryId, setSelectedBatteryId] =
     useState<Id<"batteries"> | null>(null);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+  const [autonomyHours, setAutonomyHours] = useState<number>(12);
   const [isCalculating, setIsCalculating] = useState(true);
   const [compatibilityResults, setCompatibilityResults] = useState<
     BatteryCompatibilityResult[]
@@ -61,7 +62,7 @@ export default function BatterySelectionScreen() {
         await new Promise((resolve) => setTimeout(resolve, 800));
 
         const dailyConsumptionKwh = (kit.monthlyConsumptionKwh || 0) / 30;
-        const daysOfAutonomy = kit.type === "off-grid" ? 2 : 1; // Default rules
+        const daysOfAutonomy = autonomyHours / 24; // Convert hours to days
 
         const results = checkBatteryBankCompatibility(
           {
@@ -83,7 +84,7 @@ export default function BatterySelectionScreen() {
     } else if (batteries && !inverter) {
       setIsCalculating(false);
     }
-  }, [batteries, kit, inverter]);
+  }, [batteries, kit, inverter, autonomyHours]);
 
   const handleConfirmSelection = async () => {
     if (!selectedBatteryId || !kitId) return;
@@ -170,9 +171,44 @@ export default function BatterySelectionScreen() {
                 Consumo Diario Estimado:{" "}
                 {((kit.monthlyConsumptionKwh || 0) / 30).toFixed(2)} kWh
               </Text>
-              <Text size="xs" className="text-primary-600">
-                Calculamos la cantidad de baterías necesaria para{" "}
-                {kit.type === "off-grid" ? "2 días" : "1 día"} de autonomía.
+
+              <Box className="mt-3">
+                <Text size="sm" className="mb-2 font-bold text-primary-800">
+                  Horas de Autonomía Deseada
+                </Text>
+                <Box className="flex-row flex-wrap gap-3">
+                  {[6, 12, 18, 24].map((hours) => {
+                    const isSelected = autonomyHours === hours;
+
+                    return (
+                      <Pressable
+                        key={hours}
+                        onPress={() => setAutonomyHours(hours)}
+                        className={`rounded-full border px-3 py-2 ${
+                          isSelected
+                            ? "border-primary-600 bg-primary-600"
+                            : "border-primary-300 bg-white"
+                        }`}
+                      >
+                        <Text
+                          size="sm"
+                          className={
+                            isSelected
+                              ? "font-bold text-white"
+                              : "font-semibold text-primary-800"
+                          }
+                        >
+                          {hours}h
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </Box>
+              </Box>
+
+              <Text size="xs" className="mt-2 text-primary-600">
+                Selecciona cuántas horas de respaldo necesitas. Más horas =
+                más baterías.
               </Text>
             </VStack>
           </Box>
