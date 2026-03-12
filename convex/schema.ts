@@ -88,6 +88,10 @@ export const Battery = {
   model: v.string(),
   capacity: v.number(), // kWh
   voltage: v.optional(v.number()),
+  dimensions: v.optional(v.string()),
+  weight: v.optional(v.string()),
+  protectionIP: v.optional(v.string()),
+  warranty: v.optional(v.string()),
   type: v.string(), // e.g. "LiFePO4", "Lead-acid"
   price: v.number(),
   imageUrl: v.optional(v.string()),

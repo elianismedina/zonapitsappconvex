@@ -40,5 +40,28 @@
     "storageTemperature": "-5 ~ 35℃",
     "parallelModules": "Hasta 15 unidades",
     "communication": "CAN2.0 / RS232 / RS485"
+  },
+  {
+    "brand": "GROWATT",
+    "model": "HOPE 5.0L-B1",
+    "type": "Litio LifePO4",
+    "capacity": 5.12,
+    "voltage": 51.2,
+    "price": 4255300,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773354058/growattbattery_trbeln.png",
+    "lifeCycles": "6000 ciclos (25℃, 98% DOD)",
+    "recommendedChargeVoltage": 58.4,
+    "chargeCurrent": "Recomendada: 40A / Máxima: 100A",
+    "endOfDischargeVoltage": 44,
+    "dischargeCurrent": "Recomendada: 100A / Máxima: 250A",
+    "cutOffVoltage": "",
+    "operatingTemperature": "0 ~ 55℃ (carga) / -20 ~ 55℃ (descarga)",
+    "storageTemperature": "-5 ~ 35℃",
+    "parallelModules": "Hasta 48 unidades",
+    "communication": "CAN / RS485",
+    "warranty": "5 años",
+    "weight": "43 kg",
+    "dimensions": "440 x 480 x 130.5 mm",
+    "protectionIP": "IP20"
   }
 ]
