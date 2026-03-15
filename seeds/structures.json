@@ -1,0 +1,86 @@
+[
+  {
+    "name": "End Clamp",
+    "description": "Abrazadera terminal para fijar los paneles solares de los extremos al riel de aluminio.",
+    "price": 8500,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/EndClamp_lvzf4a.png",
+    "category": "fijacion"
+  },
+  {
+    "name": "Mid Clamp",
+    "description": "Abrazadera intermedia diseñada para asegurar dos paneles solares adyacentes al riel.",
+    "price": 7200,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600860/EfiSolarApp/MidClamp_ylkfrk.png",
+    "category": "fijacion"
+  },
+  {
+    "name": "L-Feet",
+    "description": "Soporte en forma de L para anclaje de rieles en cubiertas de teja de zinc o metálicas.",
+    "price": 12500,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600859/EfiSolarApp/LFeet_cwoli6.png",
+    "category": "soporte"
+  },
+  {
+    "name": "Ground Clip",
+    "description": "Clip de conexión a tierra para asegurar la continuidad eléctrica entre el panel y el riel.",
+    "price": 3800,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/GroundClip_w5d4kx.png",
+    "category": "proteccion"
+  },
+  {
+    "name": "Tornillo Fijación Madera",
+    "description": "Tornillo de alta resistencia para el anclaje de estructuras sobre bases o vigas de madera.",
+    "price": 4500,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600866/EfiSolarApp/TornilloFijacionMadera_xpqvrl.png",
+    "category": "ferreteria"
+  },
+  {
+    "name": "Rail Clamp",
+    "description": "Abrazadera de riel utilizada para sujetar el riel a estructuras de soporte primarias.",
+    "price": 11000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600861/EfiSolarApp/RailClamp_xpn8jx.png",
+    "category": "fijacion"
+  },
+  {
+    "name": "Hanger Bolt",
+    "description": "Perno de suspensión con doble rosca para instalación en techos de fibrocemento o madera.",
+    "price": 18900,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600858/EfiSolarApp/HangerBolt_xzkrhn.png",
+    "category": "soporte"
+  },
+  {
+    "name": "Mini Riel",
+    "description": "Riel corto de aluminio ideal para montajes directos en láminas trapezoidales.",
+    "price": 28000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600861/EfiSolarApp/MiniRiel_zhgamk.png",
+    "category": "riel"
+  },
+  {
+    "name": "Riel",
+    "description": "Riel de aluminio estructural de alta resistencia para soporte de paneles fotovoltaicos.",
+    "price": 145000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600862/EfiSolarApp/Riel_jkbllu.png",
+    "category": "riel"
+  },
+  {
+    "name": "Standing Seam",
+    "description": "Abrazadera especializada para techos de junta alzada que no requiere perforación.",
+    "price": 22000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600865/EfiSolarApp/StandingSeam_bkj5v5.png",
+    "category": "soporte"
+  },
+  {
+    "name": "Riel Conector",
+    "description": "Pieza de unión interna o externa para extender la longitud de dos tramos de riel.",
+    "price": 15600,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600864/EfiSolarApp/RielConector_ziolzr.png",
+    "category": "riel"
+  },
+  {
+    "name": "Ground Lug",
+    "description": "Terminal de puesta a tierra para la conexión del cable de cobre al sistema de rieles.",
+    "price": 12000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/GroundLug_unvpk1.png",
+    "category": "proteccion"
+  }
+]

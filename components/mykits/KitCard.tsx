@@ -92,6 +92,7 @@ interface KitCardProps {
   onSizing: (item: any) => void;
   onAddInverter: (id: Id<"kits">) => void;
   onAddBattery: (id: Id<"kits">) => void;
+  onAddStructure: (id: Id<"kits">) => void;
   onRemoveComponent: (componentId: Id<"kit_components">) => void;
 }
 
@@ -103,6 +104,7 @@ export const KitCard = ({
   onSizing,
   onAddInverter,
   onAddBattery,
+  onAddStructure,
   onRemoveComponent,
 }: KitCardProps) => {
   const hasSolarModule = components
@@ -114,21 +116,64 @@ export const KitCard = ({
   const hasBattery = components
     ? components.some((comp) => comp.type === "battery")
     : false;
+  const hasStructure = components
+    ? components.some((comp) => comp.type === "structure")
+    : false;
 
   // Determine which step should pulse
   const isStep0Next =
     !hasSolarModule && !(item.billStorageId && !item.monthlyConsumptionKwh);
   const isStep1Next = hasSolarModule && !hasInverter;
   const isStep2Next = hasInverter && !hasBattery;
+  const isStep3Next = hasSolarModule && !hasStructure;
 
   const totalInvestment = useMemo(() => {
     if (!components) return 0;
     return components.reduce((acc, comp) => {
       const details = comp.details as any;
-      const price =
-        details?.price ?? details?.pricePerUnit ?? details?.pricePerMeter ?? 0;
-      return acc + price * comp.quantity;
+      if (!details) return acc;
+
+      const unitPrice =
+        details.price ?? details.pricePerUnit ?? details.pricePerMeter ?? 0;
+      const quantity = comp.quantity ?? 0;
+
+      return acc + unitPrice * quantity;
     }, 0);
+  }, [components]);
+
+  const { displayComponents, structureSummary } = useMemo(() => {
+    if (!components) {
+      return { displayComponents: [], structureSummary: null };
+    }
+
+    const nonStructure = components.filter((comp) => comp.type !== "structure");
+    const structureComponents = components.filter(
+      (comp) => comp.type === "structure",
+    );
+
+    if (structureComponents.length === 0) {
+      return { displayComponents: nonStructure, structureSummary: null };
+    }
+
+    const summary = structureComponents.reduce(
+      (acc, comp) => {
+        const details = comp.details as any;
+        if (!details) return acc;
+
+        const unitPrice = details.pricePerUnit ?? 0;
+        const quantity = comp.quantity ?? 0;
+
+        acc.quantity += quantity;
+        acc.subtotal += unitPrice * quantity;
+        return acc;
+      },
+      { quantity: 0, subtotal: 0 },
+    );
+
+    return {
+      displayComponents: nonStructure,
+      structureSummary: summary,
+    };
   }, [components]);
 
   return (
@@ -195,15 +240,16 @@ export const KitCard = ({
         </VStack>
 
         {/* Display kit components */}
-        {components?.map((component: any) => (
+        {displayComponents.map((component: any) => (
           <Box key={component._id} className="mt-2">
             <KitComponentCard
               type={component.type}
               brand={component.details?.brand}
               model={component.details?.model}
+              name={component.details?.name}
               quantity={component.quantity}
               pmax={component.details?.pmax}
-              price={component.details?.price}
+              price={component.details?.price ?? component.details?.pricePerUnit ?? component.details?.pricePerMeter}
               power={component.details?.power}
               capacity={component.details?.capacity}
               imageUrl={component.details?.imageUrl}
@@ -218,6 +264,17 @@ export const KitCard = ({
             />
           </Box>
         ))}
+        {structureSummary && (
+          <Box className="mt-2">
+            <KitComponentCard
+              type="structure"
+              name="Estructura (varios)"
+              quantity={structureSummary.quantity}
+              subtotalOverride={structureSummary.subtotal}
+              componentId={item._id}
+            />
+          </Box>
+        )}
 
         {/* Grid of Steps */}
         <Box className="mt-4 flex-row flex-wrap justify-between">
@@ -353,21 +410,40 @@ export const KitCard = ({
           </PulsingNextStep>
 
           {/* Step 4: Estructura */}
-          <Pressable
-            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl border border-outline-100 bg-white p-4 opacity-50`}
+          <PulsingNextStep
+            active={isStep3Next}
+            onPress={() => onAddStructure(item._id)}
+            disabled={!hasSolarModule}
+            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
+              hasStructure ? "bg-success-50" : "bg-white"
+            } ${!hasSolarModule ? "opacity-50" : ""}`}
           >
             <VStack space="xs" className="items-center">
-              <Box className="rounded-full bg-background-50 p-3">
-                <HammerIcon size={24} color="#64748b" />
+              <Box
+                className={`rounded-full p-3 ${
+                  hasStructure ? "bg-success-100" : "bg-background-50"
+                }`}
+              >
+                <HammerIcon
+                  size={24}
+                  color={hasStructure ? "#16a34a" : "#64748b"}
+                />
               </Box>
               <Text
                 size="xs"
-                className="text-center font-bold text-typography-500"
+                className={`text-center font-bold ${
+                  hasStructure ? "text-success-700" : "text-typography-500"
+                }`}
               >
                 Estructura
               </Text>
+              {hasStructure && (
+                <Box className="absolute -top-1 -right-1">
+                  <CheckCircle2 size={16} color="#16a34a" />
+                </Box>
+              )}
             </VStack>
-          </Pressable>
+          </PulsingNextStep>
 
           {/* Step 5: Instalación */}
           <Pressable

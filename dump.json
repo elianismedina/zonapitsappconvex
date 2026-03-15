@@ -1,0 +1,110 @@
+[
+  {
+    "_creationTime": 1773601600963.9282,
+    "_id": "k5792pa985kent5yj4vp5a4f7582ytk9",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/EndClamp_lvzf4a.png",
+    "material": "aluminum",
+    "name": "End Clamp",
+    "pricePerUnit": 8500,
+    "type": "fijacion"
+  },
+  {
+    "_creationTime": 1773601600963.9285,
+    "_id": "k57bhge1t81w45s1eb04wmjem582yc58",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600860/EfiSolarApp/MidClamp_ylkfrk.png",
+    "material": "aluminum",
+    "name": "Mid Clamp",
+    "pricePerUnit": 7200,
+    "type": "fijacion"
+  },
+  {
+    "_creationTime": 1773601600963.9287,
+    "_id": "k57c8s28vt2k3qs8hrjkrrjmcd82yye4",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600859/EfiSolarApp/LFeet_cwoli6.png",
+    "material": "aluminum",
+    "name": "L-Feet",
+    "pricePerUnit": 12500,
+    "type": "soporte"
+  },
+  {
+    "_creationTime": 1773601600963.929,
+    "_id": "k574a7xjxjkkrztsh6fjppwjbh82zfyx",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/GroundClip_w5d4kx.png",
+    "material": "aluminum",
+    "name": "Ground Clip",
+    "pricePerUnit": 3800,
+    "type": "proteccion"
+  },
+  {
+    "_creationTime": 1773601600963.9292,
+    "_id": "k576ee3hewkkckxce8xq5rna5182y62v",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600866/EfiSolarApp/TornilloFijacionMadera_xpqvrl.png",
+    "material": "aluminum",
+    "name": "Tornillo Fijación Madera",
+    "pricePerUnit": 4500,
+    "type": "ferreteria"
+  },
+  {
+    "_creationTime": 1773601600963.9294,
+    "_id": "k57a0he0akqjpww2319g65wef182zyen",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600861/EfiSolarApp/RailClamp_xpn8jx.png",
+    "material": "aluminum",
+    "name": "Rail Clamp",
+    "pricePerUnit": 11000,
+    "type": "fijacion"
+  },
+  {
+    "_creationTime": 1773601600963.9297,
+    "_id": "k5733sknpgtenq21e8yf87jhm182z4pr",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600858/EfiSolarApp/HangerBolt_xzkrhn.png",
+    "material": "aluminum",
+    "name": "Hanger Bolt",
+    "pricePerUnit": 18900,
+    "type": "soporte"
+  },
+  {
+    "_creationTime": 1773601600963.93,
+    "_id": "k571swp6fbah6g9s53kcx7t72d82ztys",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600861/EfiSolarApp/MiniRiel_zhgamk.png",
+    "material": "aluminum",
+    "name": "Mini Riel",
+    "pricePerUnit": 28000,
+    "type": "riel"
+  },
+  {
+    "_creationTime": 1773601600963.9302,
+    "_id": "k5703xk7dgt9ng8zrgms1seb2982y7c0",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600862/EfiSolarApp/Riel_jkbllu.png",
+    "material": "aluminum",
+    "name": "Riel",
+    "pricePerUnit": 145000,
+    "type": "riel"
+  },
+  {
+    "_creationTime": 1773601600963.9304,
+    "_id": "k570v91220v4p7dz0zxbsn1rz582yt6p",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600865/EfiSolarApp/StandingSeam_bkj5v5.png",
+    "material": "aluminum",
+    "name": "Standing Seam",
+    "pricePerUnit": 22000,
+    "type": "soporte"
+  },
+  {
+    "_creationTime": 1773601600963.9307,
+    "_id": "k57e5eprsq80mmytf9dtnj9a8982yrnr",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600864/EfiSolarApp/RielConector_ziolzr.png",
+    "material": "aluminum",
+    "name": "Riel Conector",
+    "pricePerUnit": 15600,
+    "type": "riel"
+  },
+  {
+    "_creationTime": 1773601600963.931,
+    "_id": "k5729zqz9m9dbbyw5zxpjdx69s82y15d",
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773600856/EfiSolarApp/GroundLug_unvpk1.png",
+    "material": "aluminum",
+    "name": "Ground Lug",
+    "pricePerUnit": 12000,
+    "type": "proteccion"
+  }
+]

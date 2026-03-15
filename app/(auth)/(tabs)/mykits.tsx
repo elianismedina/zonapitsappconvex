@@ -145,6 +145,12 @@ export default function GarageScreen() {
                   params: { kitId: id },
                 });
               }}
+              onAddStructure={(id) => {
+                router.push({
+                  pathname: "/(auth)/structure-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
               onRemoveComponent={handleRemoveComponent}
             />
           )}

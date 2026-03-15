@@ -12,16 +12,31 @@ async function seedTable(fileName, mutationName, argName) {
     return;
   }
 
-  const data = JSON.parse(fs.readFileSync(dataPath, "utf8"));
-  if (data.length === 0) {
+  let rawData = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+  
+  // Map fields to match Convex schema if necessary
+  const mappedData = rawData.map(item => {
+    if (fileName === "structures") {
+      return {
+        name: item.name,
+        type: item.category || item.type || "other",
+        material: item.material || "aluminum",
+        pricePerUnit: item.price || item.pricePerUnit || 0,
+        imageUrl: item.imageUrl
+      };
+    }
+    return item;
+  });
+
+  if (mappedData.length === 0) {
     console.log(`Skipping ${fileName}: no data in file`);
     return;
   }
 
-  console.log(`Seeding ${data.length} items into ${fileName}...`);
+  console.log(`Seeding ${mappedData.length} items into ${fileName}...`);
   
   try {
-    const count = await client.mutation(mutationName, { [argName]: data });
+    const count = await client.mutation(mutationName, { [argName]: mappedData });
     console.log(`Successfully added ${count} items to ${fileName}!`);
   } catch (err) {
     console.error(`Error seeding ${fileName}:`, err);

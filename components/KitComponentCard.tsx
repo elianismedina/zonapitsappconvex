@@ -27,8 +27,10 @@ export interface KitComponentCardProps {
   quantity: number;
   pmax?: number; // for solar modules
   price?: number;
+  subtotalOverride?: number;
   power?: number; // for inverters
   capacity?: number; // for batteries
+  name?: string; // for structures, cables, etc.
   imageUrl?: string;
   // Component IDs for navigation
   solarModuleId?: string;
@@ -37,7 +39,7 @@ export interface KitComponentCardProps {
   structureId?: string;
   cableId?: string;
   protectionId?: string;
-  componentId: Id<"kit_components">;
+  componentId?: Id<"kit_components">;
   onRemove?: (componentId: Id<"kit_components">) => void;
 }
 
@@ -48,8 +50,10 @@ export function KitComponentCard({
   quantity,
   pmax,
   price,
+  subtotalOverride,
   power,
   capacity,
+  name,
   imageUrl,
   solarModuleId,
   inverterId,
@@ -187,7 +191,7 @@ export function KitComponentCard({
                   className="mt-0.5 text-typography-900"
                   numberOfLines={1}
                 >
-                  {brand && model ? `${brand} ${model}` : "Sin detalle"}
+                  {name || (brand && model ? `${brand} ${model}` : "Sin detalle")}
                 </Heading>
               </VStack>
               <Box className="rounded-md bg-primary-50 px-2 py-1">
@@ -221,23 +225,28 @@ export function KitComponentCard({
               )}
             </HStack>
 
-            {price && (
+            {(price || subtotalOverride !== undefined) && (
               <VStack className="mt-2 border-t border-outline-50 pt-2">
-                <HStack className="items-center justify-between">
-                  <Text size="xs" className="text-typography-500">
-                    Precio unitario
-                  </Text>
-                  <Text size="sm" className="font-semibold text-typography-900">
-                    $ {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                  </Text>
-                </HStack>
+                {type !== "structure" && price !== undefined && (
+                  <HStack className="items-center justify-between">
+                    <Text size="xs" className="text-typography-500">
+                      Precio unitario
+                    </Text>
+                    <Text size="sm" className="font-semibold text-typography-900">
+                      $ {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                    </Text>
+                  </HStack>
+                )}
                 <HStack className="mt-1 items-center justify-between">
                   <Text size="sm" className="font-medium text-typography-700">
                     Subtotal
                   </Text>
                   <Text size="md" className="font-bold text-primary-600">
                     ${" "}
-                    {(price * quantity)
+                    {(
+                      subtotalOverride ??
+                      (price || 0) * (quantity || 0)
+                    )
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                   </Text>
