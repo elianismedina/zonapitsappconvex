@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Fusible DC 1000V 15A con Portafusible",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Fusibles",
+    "rating": "1000V 15A",
+    "price": 45000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Fusible DC 1000V 20A con Portafusible",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Fusibles",
+    "rating": "1000V 20A",
+    "price": 48000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Interruptor Termomagnético DC 2P 1000V 32A",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Interruptores Termomagnéticos",
+    "rating": "1000V 32A",
+    "price": 120000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Interruptor Termomagnético DC 2P 1000V 63A",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Interruptores Termomagnéticos",
+    "rating": "1000V 63A",
+    "price": 145000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Caja Combinadora 4 Strings - 1000V",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Cajas combinadoras",
+    "rating": "1000V 4 Strings",
+    "price": 950000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Supresor de Picos DC Type II 1000V 40kA",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Supresores de picos",
+    "rating": "1000V 40kA",
+    "price": 185000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Kit Puesta a Tierra para Sistemas Solares",
+    "category": "Protección para Corriente Directa",
+    "subcategory": "Puesta a tierra",
+    "rating": "N/A",
+    "price": 250000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Interruptor Automático AC 1P 120V 20A",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Interruptores automáticos",
+    "rating": "120V 20A",
+    "price": 35000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Interruptor Automático AC 2P 240V 40A",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Interruptores automáticos",
+    "rating": "240V 40A",
+    "price": 75000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  },
+  {
+    "name": "Interruptor de Falla por Arco (AFCI) 1P 120V 15A",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Interruptores de falla por arco",
+    "rating": "120V 15A",
+    "price": 180000,
+    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+  }
+]

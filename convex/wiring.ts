@@ -1,23 +1,24 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const getCables = query({
+export const getWiring = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cables").collect();
+    return await ctx.db.query("wiring").collect();
   },
 });
 
-export const getCableById = query({
-  args: { id: v.id("cables") },
+export const getWiringById = query({
+  args: { id: v.id("wiring") },
   handler: async (ctx, args) => {
     return await ctx.db.get(args.id);
   },
 });
 
-export const createCable = mutation({
+export const createWiring = mutation({
   args: {
     name: v.string(),
+    brand: v.optional(v.string()),
     type: v.string(),
     pricePerMeter: v.number(),
     imageUrl: v.optional(v.string()),
@@ -28,14 +29,15 @@ export const createCable = mutation({
       throw new Error("Not authenticated");
     }
 
-    return await ctx.db.insert("cables", args);
+    return await ctx.db.insert("wiring", args);
   },
 });
 
-export const updateCable = mutation({
+export const updateWiring = mutation({
   args: {
-    id: v.id("cables"),
+    id: v.id("wiring"),
     name: v.optional(v.string()),
+    brand: v.optional(v.string()),
     type: v.optional(v.string()),
     pricePerMeter: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
@@ -51,8 +53,8 @@ export const updateCable = mutation({
   },
 });
 
-export const deleteCable = mutation({
-  args: { id: v.id("cables") },
+export const deleteWiring = mutation({
+  args: { id: v.id("wiring") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
@@ -63,11 +65,12 @@ export const deleteCable = mutation({
   },
 });
 
-export const bulkCreateCables = mutation({
+export const bulkCreateWiring = mutation({
   args: {
-    cables: v.array(
+    wiring: v.array(
       v.object({
         name: v.string(),
+        brand: v.optional(v.string()),
         type: v.string(),
         pricePerMeter: v.number(),
         imageUrl: v.optional(v.string()),
@@ -76,14 +79,14 @@ export const bulkCreateCables = mutation({
   },
   handler: async (ctx, args) => {
     let createdCount = 0;
-    for (const item of args.cables) {
+    for (const item of args.wiring) {
       const existing = await ctx.db
-        .query("cables")
+        .query("wiring")
         .filter((q) => q.eq(q.field("name"), item.name))
         .first();
 
       if (!existing) {
-        await ctx.db.insert("cables", item);
+        await ctx.db.insert("wiring", item);
         createdCount++;
       }
     }

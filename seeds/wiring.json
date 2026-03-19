@@ -1,0 +1,16 @@
+[
+  {
+    "name": "CABLE SOLAR 6MM 10AWG NEGRO",
+    "brand": "LEADER",
+    "type": "DC 6mm",
+    "pricePerMeter": 11600,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773789996/EfiSolarApp/CableSolarNegro_jpomxh.png"
+  },
+  {
+    "name": "CABLE SOLAR 6MM 10AWG ROJO",
+    "brand": "LEADER",
+    "type": "DC 6mm",
+    "pricePerMeter": 11600,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1773789996/EfiSolarApp/CableSolarRojo_cnuaso.png"
+  }
+]

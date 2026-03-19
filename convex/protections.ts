@@ -18,7 +18,19 @@ export const getProtectionById = query({
 export const createProtection = mutation({
   args: {
     name: v.string(),
-    type: v.string(),
+    category: v.union(
+      v.literal("Protección para Corriente Directa"),
+      v.literal("Proteccion para Corriente Alterna"),
+    ),
+    subcategory: v.union(
+      v.literal("Fusibles"),
+      v.literal("Interruptores Termomagnéticos"),
+      v.literal("Cajas combinadoras"),
+      v.literal("Supresores de picos"),
+      v.literal("Puesta a tierra"),
+      v.literal("Interruptores automáticos"),
+      v.literal("Interruptores de falla por arco"),
+    ),
     rating: v.string(),
     price: v.number(),
     imageUrl: v.optional(v.string()),
@@ -37,7 +49,23 @@ export const updateProtection = mutation({
   args: {
     id: v.id("protections"),
     name: v.optional(v.string()),
-    type: v.optional(v.string()),
+    category: v.optional(
+      v.union(
+        v.literal("Protección para Corriente Directa"),
+        v.literal("Proteccion para Corriente Alterna"),
+      ),
+    ),
+    subcategory: v.optional(
+      v.union(
+        v.literal("Fusibles"),
+        v.literal("Interruptores Termomagnéticos"),
+        v.literal("Cajas combinadoras"),
+        v.literal("Supresores de picos"),
+        v.literal("Puesta a tierra"),
+        v.literal("Interruptores automáticos"),
+        v.literal("Interruptores de falla por arco"),
+      ),
+    ),
     rating: v.optional(v.string()),
     price: v.optional(v.number()),
     imageUrl: v.optional(v.string()),
@@ -70,7 +98,19 @@ export const bulkCreateProtections = mutation({
     protections: v.array(
       v.object({
         name: v.string(),
-        type: v.string(),
+        category: v.union(
+          v.literal("Protección para Corriente Directa"),
+          v.literal("Proteccion para Corriente Alterna"),
+        ),
+        subcategory: v.union(
+          v.literal("Fusibles"),
+          v.literal("Interruptores Termomagnéticos"),
+          v.literal("Cajas combinadoras"),
+          v.literal("Supresores de picos"),
+          v.literal("Puesta a tierra"),
+          v.literal("Interruptores automáticos"),
+          v.literal("Interruptores de falla por arco"),
+        ),
         rating: v.string(),
         price: v.number(),
         imageUrl: v.optional(v.string()),

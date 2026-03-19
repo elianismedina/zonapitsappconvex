@@ -151,6 +151,18 @@ export default function GarageScreen() {
                   params: { kitId: id },
                 });
               }}
+              onAddWiring={(id) => {
+                router.push({
+                  pathname: "/(auth)/wiring-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
+              onAddProtection={(id) => {
+                router.push({
+                  pathname: "/(auth)/protection-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
               onRemoveComponent={handleRemoveComponent}
             />
           )}

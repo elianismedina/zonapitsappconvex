@@ -114,6 +114,9 @@ export const bulkCreateModules = mutation({
       if (!existing) {
         await ctx.db.insert("solar_modules", mod);
         createdCount++;
+      } else if (!existing.imageUrl && mod.imageUrl) {
+        await ctx.db.patch(existing._id, { imageUrl: mod.imageUrl });
+        createdCount++;
       }
     }
     return createdCount;

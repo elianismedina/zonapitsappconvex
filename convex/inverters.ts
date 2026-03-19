@@ -129,6 +129,9 @@ export const bulkCreateInverters = mutation({
       if (!existing) {
         await ctx.db.insert("inverters", item);
         createdCount++;
+      } else if (!existing.imageUrl && item.imageUrl) {
+        await ctx.db.patch(existing._id, { imageUrl: item.imageUrl });
+        createdCount++;
       }
     }
     return createdCount;

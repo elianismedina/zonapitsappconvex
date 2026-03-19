@@ -9,14 +9,14 @@ export const addComponent = mutation({
       v.literal("inverter"),
       v.literal("battery"),
       v.literal("structure"),
-      v.literal("cable"),
+      v.literal("wiring"),
       v.literal("protection")
     ),
     solarModuleId: v.optional(v.id("solar_modules")),
     inverterId: v.optional(v.id("inverters")),
     batteryId: v.optional(v.id("batteries")),
     structureId: v.optional(v.id("structures")),
-    cableId: v.optional(v.id("cables")),
+    wiringId: v.optional(v.id("wiring")),
     protectionId: v.optional(v.id("protections")),
     quantity: v.number(),
   },
@@ -51,7 +51,7 @@ export const addComponent = mutation({
     if (args.type === "inverter" && !args.inverterId) throw new Error("inverterId is required");
     if (args.type === "battery" && !args.batteryId) throw new Error("batteryId is required");
     if (args.type === "structure" && !args.structureId) throw new Error("structureId is required");
-    if (args.type === "cable" && !args.cableId) throw new Error("cableId is required");
+    if (args.type === "wiring" && !args.wiringId) throw new Error("wiringId is required");
     if (args.type === "protection" && !args.protectionId) throw new Error("protectionId is required");
 
     // For sizing/solar_module, we want to replace any existing solar module, not add multiple
@@ -77,7 +77,7 @@ export const addComponent = mutation({
           inverterId: args.inverterId,
           batteryId: args.batteryId,
           structureId: args.structureId,
-          cableId: args.cableId,
+          wiringId: args.wiringId,
           protectionId: args.protectionId,
       });
     }
@@ -87,7 +87,7 @@ export const addComponent = mutation({
     if (args.type === "inverter") existing = components.find(c => c.inverterId === args.inverterId);
     if (args.type === "battery") existing = components.find(c => c.batteryId === args.batteryId);
     if (args.type === "structure") existing = components.find(c => c.structureId === args.structureId);
-    if (args.type === "cable") existing = components.find(c => c.cableId === args.cableId);
+    if (args.type === "wiring") existing = components.find(c => c.wiringId === args.wiringId);
     if (args.type === "protection") existing = components.find(c => c.protectionId === args.protectionId);
 
     if (existing) {
@@ -104,7 +104,7 @@ export const addComponent = mutation({
             inverterId: args.inverterId,
             batteryId: args.batteryId,
             structureId: args.structureId,
-            cableId: args.cableId,
+            wiringId: args.wiringId,
             protectionId: args.protectionId,
         });
     }
@@ -183,7 +183,7 @@ export const getKitComponents = query({
         if (comp.type === "inverter" && comp.inverterId) details = await ctx.db.get(comp.inverterId);
         if (comp.type === "battery" && comp.batteryId) details = await ctx.db.get(comp.batteryId);
         if (comp.type === "structure" && comp.structureId) details = await ctx.db.get(comp.structureId);
-        if (comp.type === "cable" && comp.cableId) details = await ctx.db.get(comp.cableId);
+        if (comp.type === "wiring" && comp.wiringId) details = await ctx.db.get(comp.wiringId);
         if (comp.type === "protection" && comp.protectionId) details = await ctx.db.get(comp.protectionId);
 
         return {
@@ -238,7 +238,7 @@ export const getAllComponents = query({
         if (comp.type === "inverter" && comp.inverterId) details = await ctx.db.get(comp.inverterId);
         if (comp.type === "battery" && comp.batteryId) details = await ctx.db.get(comp.batteryId);
         if (comp.type === "structure" && comp.structureId) details = await ctx.db.get(comp.structureId);
-        if (comp.type === "cable" && comp.cableId) details = await ctx.db.get(comp.cableId);
+        if (comp.type === "wiring" && comp.wiringId) details = await ctx.db.get(comp.wiringId);
         if (comp.type === "protection" && comp.protectionId) details = await ctx.db.get(comp.protectionId);
 
         return {

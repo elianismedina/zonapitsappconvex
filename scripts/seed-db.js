@@ -48,7 +48,7 @@ async function run() {
   await seedTable("inverters", "inverters:bulkCreateInverters", "inverters");
   await seedTable("batteries", "batteries:bulkCreateBatteries", "batteries");
   await seedTable("structures", "structures:bulkCreateStructures", "structures");
-  await seedTable("cables", "cables:bulkCreateCables", "cables");
+  await seedTable("wiring", "wiring:bulkCreateWiring", "wiring");
   await seedTable("protections", "protections:bulkCreateProtections", "protections");
 }
 

@@ -12,10 +12,10 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import {
   Battery,
-  Cable as CableIcon,
   Hammer,
   ShieldCheck,
   Sun,
+  Cable as WiringIcon,
   Zap,
 } from "lucide-react-native";
 import { useState } from "react";
@@ -30,14 +30,14 @@ export interface KitComponentCardProps {
   subtotalOverride?: number;
   power?: number; // for inverters
   capacity?: number; // for batteries
-  name?: string; // for structures, cables, etc.
+  name?: string; // for structures, wiring, etc.
   imageUrl?: string;
   // Component IDs for navigation
   solarModuleId?: string;
   inverterId?: string;
   batteryId?: string;
   structureId?: string;
-  cableId?: string;
+  wiringId?: string;
   protectionId?: string;
   componentId?: Id<"kit_components">;
   onRemove?: (componentId: Id<"kit_components">) => void;
@@ -59,11 +59,12 @@ export function KitComponentCard({
   inverterId,
   batteryId,
   structureId,
-  cableId,
+  wiringId,
   protectionId,
 }: KitComponentCardProps) {
   const router = useRouter();
   const [isPressed, setIsPressed] = useState(false);
+  const quantityLabel = type === "wiring" ? `${quantity} m` : `x${quantity}`;
 
   const canViewDetails =
     (type === "solar_module" && solarModuleId) ||
@@ -113,8 +114,8 @@ export function KitComponentCard({
         return <Battery size={18} color="#22C55E" />;
       case "structure":
         return <Hammer size={18} color="#64748B" />;
-      case "cable":
-        return <CableIcon size={18} color="#F97316" />;
+      case "wiring":
+        return <WiringIcon size={18} color="#F97316" />;
       case "protection":
         return <ShieldCheck size={18} color="#EF4444" />;
       default:
@@ -132,8 +133,8 @@ export function KitComponentCard({
         return "Batería";
       case "structure":
         return "Estructura";
-      case "cable":
-        return "Cables";
+      case "wiring":
+        return "Cableado";
       case "protection":
         return "Protecciones";
       default:
@@ -167,6 +168,7 @@ export function KitComponentCard({
                 style={{ width: "100%", height: "100%" }}
                 contentFit="contain"
                 transition={200}
+                className="w-full h-full"
               />
             ) : (
               <Box className="rounded-full bg-white p-3 shadow-sm">
@@ -196,7 +198,7 @@ export function KitComponentCard({
               </VStack>
               <Box className="rounded-md bg-primary-50 px-2 py-1">
                 <Text size="xs" className="font-bold text-primary-600">
-                  x{quantity}
+                  {quantityLabel}
                 </Text>
               </Box>
             </HStack>

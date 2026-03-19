@@ -58,7 +58,7 @@ npx convex dev
 
 Located in `convex/` directory:
 
-- `schema.ts` - Database schema defining tables: users, kits, solar_modules, inverters, batteries, structures, cables, protections, kit_components
+- `schema.ts` - Database schema defining tables: users, kits, solar_modules, inverters, batteries, structures, wiring, protections, kit_components
 - `auth.config.ts` - Clerk integration configuration
 - `users.ts` - User CRUD operations
 - `kits.ts` - Kit (solar installation) management
@@ -66,7 +66,7 @@ Located in `convex/` directory:
 - `inverters.ts` - Inverter operations
 - `batteries.ts` - Battery operations
 - `structures.ts` - Mounting structure operations
-- `cables.ts` - Cable operations
+- `wiring.ts` - Wiring operations
 - `protections.ts` - Protection device operations
 - `kit_components.ts` - Kit-component relationships
 - `sizing.ts` - Solar system sizing calculations
@@ -116,7 +116,7 @@ Key Convex tables:
 - **inverters**: Inverter specifications (type, power, efficiency)
 - **batteries**: Battery specifications (capacity, voltage, type)
 - **structures**: Mounting structures (roof, ground, carport)
-- **cables**: Electrical cables (DC/AC types)
+- **wiring**: Electrical wiring (DC/AC types)
 - **protections**: Protection devices (breakers, surge protectors)
 - **kit_components**: Junction table linking kits to components with quantities
 

@@ -118,8 +118,9 @@ export const Structure = {
   imageUrl: v.optional(v.string()),
 };
 
-export const Cable = {
+export const Wiring = {
   name: v.string(),
+  brand: v.optional(v.string()),
   type: v.string(), // e.g. "DC 4mm", "AC 3x2.5"
   pricePerMeter: v.number(),
   imageUrl: v.optional(v.string()),
@@ -127,7 +128,19 @@ export const Cable = {
 
 export const Protection = {
   name: v.string(),
-  type: v.string(), // e.g. "DC Breaker", "AC Surge Protector"
+  category: v.union(
+    v.literal("Protección para Corriente Directa"),
+    v.literal("Proteccion para Corriente Alterna"),
+  ),
+  subcategory: v.union(
+    v.literal("Fusibles"),
+    v.literal("Interruptores Termomagnéticos"),
+    v.literal("Cajas combinadoras"),
+    v.literal("Supresores de picos"),
+    v.literal("Puesta a tierra"),
+    v.literal("Interruptores automáticos"),
+    v.literal("Interruptores de falla por arco"),
+  ),
   rating: v.string(),
   price: v.number(),
   imageUrl: v.optional(v.string()),
@@ -144,7 +157,7 @@ export default defineSchema({
   inverters: defineTable(Inverter),
   batteries: defineTable(Battery),
   structures: defineTable(Structure),
-  cables: defineTable(Cable),
+  wiring: defineTable(Wiring),
   protections: defineTable(Protection),
   kit_components: defineTable({
     kitId: v.id("kits"),
@@ -153,14 +166,14 @@ export default defineSchema({
       v.literal("inverter"),
       v.literal("battery"),
       v.literal("structure"),
-      v.literal("cable"),
+      v.literal("wiring"),
       v.literal("protection"),
     ),
     solarModuleId: v.optional(v.id("solar_modules")),
     inverterId: v.optional(v.id("inverters")),
     batteryId: v.optional(v.id("batteries")),
     structureId: v.optional(v.id("structures")),
-    cableId: v.optional(v.id("cables")),
+    wiringId: v.optional(v.id("wiring")),
     protectionId: v.optional(v.id("protections")),
     quantity: v.number(),
   }).index("byKitId", ["kitId"]),

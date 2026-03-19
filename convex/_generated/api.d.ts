@@ -10,9 +10,6 @@
 
 import type * as actions from "../actions.js";
 import type * as batteries from "../batteries.js";
-import type * as cables from "../cables.js";
-import type * as debug_kits from "../debug_kits.js";
-import type * as debug_voltages from "../debug_voltages.js";
 import type * as http from "../http.js";
 import type * as inverters from "../inverters.js";
 import type * as kit_components from "../kit_components.js";
@@ -22,6 +19,7 @@ import type * as protections from "../protections.js";
 import type * as sizing from "../sizing.js";
 import type * as structures from "../structures.js";
 import type * as users from "../users.js";
+import type * as wiring from "../wiring.js";
 
 import type {
   ApiFromModules,
@@ -32,9 +30,6 @@ import type {
 declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   batteries: typeof batteries;
-  cables: typeof cables;
-  debug_kits: typeof debug_kits;
-  debug_voltages: typeof debug_voltages;
   http: typeof http;
   inverters: typeof inverters;
   kit_components: typeof kit_components;
@@ -44,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   sizing: typeof sizing;
   structures: typeof structures;
   users: typeof users;
+  wiring: typeof wiring;
 }>;
 
 /**

@@ -11,12 +11,14 @@ import { Image } from "expo-image";
 import { Link } from "expo-router";
 import {
   Battery,
+  Cable,
   CalendarDays,
   CheckCircle2,
   CircleDollarSign,
   Edit,
   FileText,
   Hammer as HammerIcon,
+  Shield,
   Sun,
   Trash,
   Zap,
@@ -93,6 +95,8 @@ interface KitCardProps {
   onAddInverter: (id: Id<"kits">) => void;
   onAddBattery: (id: Id<"kits">) => void;
   onAddStructure: (id: Id<"kits">) => void;
+  onAddWiring: (id: Id<"kits">) => void;
+  onAddProtection: (id: Id<"kits">) => void;
   onRemoveComponent: (componentId: Id<"kit_components">) => void;
 }
 
@@ -105,6 +109,8 @@ export const KitCard = ({
   onAddInverter,
   onAddBattery,
   onAddStructure,
+  onAddWiring,
+  onAddProtection,
   onRemoveComponent,
 }: KitCardProps) => {
   const hasSolarModule = components
@@ -119,6 +125,12 @@ export const KitCard = ({
   const hasStructure = components
     ? components.some((comp) => comp.type === "structure")
     : false;
+  const hasWiring = components
+    ? components.some((comp) => comp.type === "wiring")
+    : false;
+  const hasProtection = components
+    ? components.some((comp) => comp.type === "protection")
+    : false;
 
   // Determine which step should pulse
   const isStep0Next =
@@ -126,6 +138,8 @@ export const KitCard = ({
   const isStep1Next = hasSolarModule && !hasInverter;
   const isStep2Next = hasInverter && !hasBattery;
   const isStep3Next = hasSolarModule && !hasStructure;
+  const isStep4Next = hasSolarModule && !hasWiring;
+  const isStep5Next = hasSolarModule && hasWiring && !hasProtection;
 
   const totalInvestment = useMemo(() => {
     if (!components) return 0;
@@ -141,21 +155,28 @@ export const KitCard = ({
     }, 0);
   }, [components]);
 
-  const { displayComponents, structureSummary } = useMemo(() => {
+  const { displayComponents, structureSummary, wiringSummary, protectionSummary } = useMemo(() => {
     if (!components) {
-      return { displayComponents: [], structureSummary: null };
+      return { displayComponents: [], structureSummary: null, wiringSummary: null, protectionSummary: null };
     }
 
-    const nonStructure = components.filter((comp) => comp.type !== "structure");
+    const nonStructureWiringOrProtection = components.filter(
+      (comp) => comp.type !== "structure" && comp.type !== "wiring" && comp.type !== "protection",
+    );
     const structureComponents = components.filter(
       (comp) => comp.type === "structure",
     );
+    const wiringComponents = components.filter(
+      (comp) => comp.type === "wiring",
+    );
+    const protectionComponents = components.filter(
+      (comp) => comp.type === "protection",
+    );
 
-    if (structureComponents.length === 0) {
-      return { displayComponents: nonStructure, structureSummary: null };
-    }
-
-    const summary = structureComponents.reduce(
+    const structureSummary =
+      structureComponents.length === 0
+        ? null
+        : structureComponents.reduce(
       (acc, comp) => {
         const details = comp.details as any;
         if (!details) return acc;
@@ -165,14 +186,64 @@ export const KitCard = ({
 
         acc.quantity += quantity;
         acc.subtotal += unitPrice * quantity;
+        // Optionally use the first available image
+        if (!acc.imageUrl) {
+          acc.imageUrl = details.imageUrl || details.image || details.imageURL;
+        }
         return acc;
       },
-      { quantity: 0, subtotal: 0 },
+      { quantity: 0, subtotal: 0, imageUrl: undefined as string | undefined },
+    );
+
+    const wiringSummary =
+      wiringComponents.length === 0
+        ? null
+        : wiringComponents.reduce(
+      (acc, comp) => {
+        const details = comp.details as any;
+        if (!details) return acc;
+
+        const unitPrice = details.pricePerMeter ?? 0;
+        const quantity = comp.quantity ?? 0;
+
+        acc.quantity += quantity;
+        acc.subtotal += unitPrice * quantity;
+        // Optionally use the first available image
+        if (!acc.imageUrl) {
+          acc.imageUrl = details.imageUrl || details.image || details.imageURL;
+        }
+        return acc;
+      },
+      { quantity: 0, subtotal: 0, imageUrl: undefined as string | undefined },
+    );
+
+    const protectionSummary =
+      protectionComponents.length === 0
+        ? null
+        : protectionComponents.reduce(
+      (acc, comp) => {
+        const details = comp.details as any;
+        if (!details) return acc;
+
+        const unitPrice = details.price ?? 0;
+        const quantity = comp.quantity ?? 0;
+
+        acc.quantity += quantity;
+        acc.subtotal += unitPrice * quantity;
+        // Optionally use the first available image
+        if (!acc.imageUrl) {
+          acc.imageUrl = details.imageUrl || details.image || details.imageURL;
+        }
+        return acc;
+      },
+      { quantity: 0, subtotal: 0, imageUrl: undefined as string | undefined },
     );
 
     return {
-      displayComponents: nonStructure,
-      structureSummary: summary,
+      displayComponents: nonStructureWiringOrProtection,
+      structureSummary,
+      wiringSummary,
+      protectionSummary,
     };
   }, [components]);
 
@@ -252,12 +323,12 @@ export const KitCard = ({
               price={component.details?.price ?? component.details?.pricePerUnit ?? component.details?.pricePerMeter}
               power={component.details?.power}
               capacity={component.details?.capacity}
-              imageUrl={component.details?.imageUrl}
+              imageUrl={component.details?.imageUrl || component.details?.image || component.details?.imageURL || (component as any).imageUrl}
               solarModuleId={component.solarModuleId}
               inverterId={component.inverterId}
               batteryId={component.batteryId}
               structureId={component.structureId}
-              cableId={component.cableId}
+              wiringId={component.wiringId}
               protectionId={component.protectionId}
               componentId={component._id}
               onRemove={onRemoveComponent}
@@ -271,7 +342,32 @@ export const KitCard = ({
               name="Estructura (varios)"
               quantity={structureSummary.quantity}
               subtotalOverride={structureSummary.subtotal}
-              componentId={item._id}
+              imageUrl={structureSummary.imageUrl}
+              componentId={item._id as any}
+            />
+          </Box>
+        )}
+        {wiringSummary && (
+          <Box className="mt-2">
+            <KitComponentCard
+              type="wiring"
+              name="Cableado (varios)"
+              quantity={wiringSummary.quantity}
+              subtotalOverride={wiringSummary.subtotal}
+              imageUrl={wiringSummary.imageUrl}
+              componentId={item._id as any}
+            />
+          </Box>
+        )}
+        {protectionSummary && (
+          <Box className="mt-2">
+            <KitComponentCard
+              type="protection"
+              name="Protecciones (varios)"
+              quantity={protectionSummary.quantity}
+              subtotalOverride={protectionSummary.subtotal}
+              imageUrl={protectionSummary.imageUrl}
+              componentId={item._id as any}
             />
           </Box>
         )}
@@ -445,7 +541,76 @@ export const KitCard = ({
             </VStack>
           </PulsingNextStep>
 
-          {/* Step 5: Instalación */}
+          {/* Step 5: Cableado */}
+          <PulsingNextStep
+            active={isStep4Next}
+            onPress={() => onAddWiring(item._id)}
+            disabled={!hasSolarModule}
+            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
+              hasWiring ? "bg-success-50" : "bg-white"
+            } ${!hasSolarModule ? "opacity-50" : ""}`}
+          >
+            <VStack space="xs" className="items-center">
+              <Box
+                className={`rounded-full p-3 ${
+                  hasWiring ? "bg-success-100" : "bg-background-50"
+                }`}
+              >
+                <Cable size={24} color={hasWiring ? "#16a34a" : "#64748b"} />
+              </Box>
+              <Text
+                size="xs"
+                className={`text-center font-bold ${
+                  hasWiring ? "text-success-700" : "text-typography-500"
+                }`}
+              >
+                Cableado
+              </Text>
+              {hasWiring && (
+                <Box className="absolute -top-1 -right-1">
+                  <CheckCircle2 size={16} color="#16a34a" />
+                </Box>
+              )}
+            </VStack>
+          </PulsingNextStep>
+
+          {/* Step 6: Protecciones */}
+          <PulsingNextStep
+            active={isStep5Next}
+            onPress={() => onAddProtection(item._id)}
+            disabled={!hasSolarModule}
+            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
+              hasProtection ? "bg-success-50" : "bg-white"
+            } ${!hasSolarModule ? "opacity-50" : ""}`}
+          >
+            <VStack space="xs" className="items-center">
+              <Box
+                className={`rounded-full p-3 ${
+                  hasProtection ? "bg-success-100" : "bg-background-50"
+                }`}
+              >
+                <Shield
+                  size={24}
+                  color={hasProtection ? "#16a34a" : "#64748b"}
+                />
+              </Box>
+              <Text
+                size="xs"
+                className={`text-center font-bold ${
+                  hasProtection ? "text-success-700" : "text-typography-500"
+                }`}
+              >
+                Protecciones
+              </Text>
+              {hasProtection && (
+                <Box className="absolute -top-1 -right-1">
+                  <CheckCircle2 size={16} color="#16a34a" />
+                </Box>
+              )}
+            </VStack>
+          </PulsingNextStep>
+
+          {/* Step 7: Instalación */}
           <Pressable
             className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl border border-outline-100 bg-white p-4 opacity-50`}
           >
@@ -462,7 +627,7 @@ export const KitCard = ({
             </VStack>
           </Pressable>
 
-          {/* Step 6: Financiación */}
+          {/* Step 8: Financiación */}
           <Pressable
             className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl border border-outline-100 bg-white p-4 opacity-50`}
           >
