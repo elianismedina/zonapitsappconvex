@@ -159,6 +159,18 @@ export const Protection = {
   imageUrl: v.optional(v.string()),
 };
 
+export const Installation = {
+  numInstallers: v.number(),
+  hoursPerInstaller: v.number(),
+  hourlyRate: v.number(),
+  numPanels: v.number(),
+  installationCostPerPanel: v.number(),
+  extraCosts: v.number(),
+  difficulty: v.optional(v.string()),
+  systemType: v.optional(v.string()),
+  totalCost: v.number(),
+};
+
 export default defineSchema({
   users: defineTable(User)
     .index("byClerkId", ["clerkId"])
@@ -172,6 +184,7 @@ export default defineSchema({
   structures: defineTable(Structure),
   wiring: defineTable(Wiring),
   protections: defineTable(Protection),
+  installations: defineTable(Installation),
   kit_components: defineTable({
     kitId: v.id("kits"),
     type: v.union(
@@ -181,6 +194,7 @@ export default defineSchema({
       v.literal("structure"),
       v.literal("wiring"),
       v.literal("protection"),
+      v.literal("installation"),
     ),
     solarModuleId: v.optional(v.id("solar_modules")),
     inverterId: v.optional(v.id("inverters")),
@@ -188,6 +202,7 @@ export default defineSchema({
     structureId: v.optional(v.id("structures")),
     wiringId: v.optional(v.id("wiring")),
     protectionId: v.optional(v.id("protections")),
+    installationId: v.optional(v.id("installations")),
     quantity: v.number(),
   }).index("byKitId", ["kitId"]),
 });

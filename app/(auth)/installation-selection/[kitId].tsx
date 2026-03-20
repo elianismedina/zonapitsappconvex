@@ -30,7 +30,7 @@ import {
 } from "@/utils/installation-calculations";
 import { useMutation, useQuery } from "convex/react";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Briefcase, ChevronDown, Clock, DollarSign, Hammer, Info, Users } from "lucide-react-native";
+import { ChevronDown, DollarSign, Hammer, Users } from "lucide-react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
@@ -41,6 +41,7 @@ export default function InstallationSelectionScreen() {
   const kit = useQuery(api.kits.getKitById, { id: kitId });
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const updateKit = useMutation(api.kits.updateKit);
+  const addInstallation = useMutation(api.kit_components.addInstallation);
 
   const [difficulty, setDifficulty] = useState<InstallationDifficulty>(InstallationDifficulty.RESIDENTIAL_SLOPED);
   const [systemType, setSystemType] = useState<SystemType>(SystemType.ON_GRID);
@@ -68,7 +69,7 @@ export default function InstallationSelectionScreen() {
       setDifficulty(initialDifficulty);
       setSystemType(initialSystemType);
     }
-  }, [kit]);
+  }, [kit, components]);
 
   // Update estimates when difficulty or systemType change
   useEffect(() => {
@@ -103,17 +104,21 @@ export default function InstallationSelectionScreen() {
 
     try {
       setIsSubmitting(true);
+      await addInstallation({
+        kitId: kitId,
+        numInstallers: Number(numInstallers),
+        hoursPerInstaller: Number(hoursPerInstaller),
+        hourlyRate: Number(hourlyRate),
+        numPanels: panelCount,
+        installationCostPerPanel: Number(installationCostPerPanel),
+        extraCosts: Number(extraCosts),
+        difficulty,
+        systemType,
+        totalCost: totalLaborCost,
+      });
+
       await updateKit({
         id: kitId,
-        laborCost: totalLaborCost,
-        laborDetails: {
-          numInstallers: Number(numInstallers),
-          hoursPerInstaller: Number(hoursPerInstaller),
-          hourlyRate: Number(hourlyRate),
-          numPanels: panelCount,
-          installationCostPerPanel: Number(installationCostPerPanel),
-          extraCosts: Number(extraCosts),
-        },
         status: "completed",
       });
 

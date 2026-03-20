@@ -139,6 +139,9 @@ export const KitCard = ({
   const hasProtection = components
     ? components.some((comp) => comp.type === "protection")
     : false;
+  const hasInstallation = components
+    ? components.some((comp) => comp.type === "installation")
+    : false;
 
   // Determine which step should pulse
   const isStep0Next =
@@ -148,7 +151,7 @@ export const KitCard = ({
   const isStep3Next = hasSolarModule && !hasStructure;
   const isStep4Next = hasSolarModule && !hasWiring;
   const isStep5Next = hasSolarModule && hasWiring && !hasProtection;
-  const isInstallationNext = hasSolarModule && hasInverter && hasStructure && hasWiring && hasProtection && !item.laborCost;
+  const isInstallationNext = hasSolarModule && hasInverter && hasStructure && hasWiring && hasProtection && !hasInstallation && !item.laborCost;
 
   const totalInvestment = useMemo(() => {
     if (!components) return item.laborCost || 0;
@@ -162,8 +165,11 @@ export const KitCard = ({
 
       return acc + unitPrice * quantity;
     }, 0);
-    return Math.round(componentTotal + (item.laborCost || 0));
-  }, [components, item.laborCost]);
+    // If we have an installation component, use its value (included in componentTotal).
+    // Otherwise fallback to legacy item.laborCost
+    const legacyLaborCost = hasInstallation ? 0 : (item.laborCost || 0);
+    return Math.round(componentTotal + legacyLaborCost);
+  }, [components, item.laborCost, hasInstallation]);
 
   const { displayComponents, structureSummary, wiringSummary, protectionSummary } = useMemo(() => {
     if (!components) {
@@ -171,7 +177,7 @@ export const KitCard = ({
     }
 
     const nonStructureWiringOrProtection = components.filter(
-      (comp) => comp.type !== "structure" && comp.type !== "wiring" && comp.type !== "protection",
+      (comp) => comp.type !== "structure" && comp.type !== "wiring" && comp.type !== "protection" && comp.type !== "installation",
     );
     const structureComponents = components.filter(
       (comp) => comp.type === "structure",
@@ -385,11 +391,23 @@ export const KitCard = ({
             />
           </Box>
         )}
-        {item.laborCost > 0 && (
+        {components?.find(c => c.type === "installation") && (
           <Box className="mt-2">
             <KitComponentCard
               type="installation"
               name="Mano de Obra / Instalación"
+              quantity={1}
+              subtotalOverride={components.find(c => c.type === "installation")?.details?.price}
+              componentId={components.find(c => c.type === "installation")?._id}
+              onRemove={onRemoveComponent}
+            />
+          </Box>
+        )}
+        {!hasInstallation && item.laborCost > 0 && (
+          <Box className="mt-2">
+            <KitComponentCard
+              type="installation"
+              name="Mano de Obra / Instalación (Legacy)"
               quantity={1}
               subtotalOverride={item.laborCost}
               componentId={item._id as any}
@@ -642,29 +660,29 @@ export const KitCard = ({
             onPress={() => onAddInstallation(item._id)}
             disabled={!hasSolarModule}
             className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
-              item.laborCost ? "bg-success-50" : "bg-white"
+              hasInstallation || item.laborCost ? "bg-success-50" : "bg-white"
             } ${!hasSolarModule ? "opacity-50" : ""}`}
           >
             <VStack space="xs" className="items-center">
               <Box
                 className={`rounded-full p-3 ${
-                  item.laborCost ? "bg-success-100" : "bg-background-50"
+                  hasInstallation || item.laborCost ? "bg-success-100" : "bg-background-50"
                 }`}
               >
                 <CalendarDays
                   size={24}
-                  color={item.laborCost ? "#16a34a" : "#64748b"}
+                  color={hasInstallation || item.laborCost ? "#16a34a" : "#64748b"}
                 />
               </Box>
               <Text
                 size="xs"
                 className={`text-center font-bold ${
-                  item.laborCost ? "text-success-700" : "text-typography-500"
+                  hasInstallation || item.laborCost ? "text-success-700" : "text-typography-500"
                 }`}
               >
                 Instalación
               </Text>
-              {item.laborCost > 0 && (
+              {(hasInstallation || item.laborCost > 0) && (
                 <Box className="absolute -top-1 -right-1">
                   <CheckCircle2 size={16} color="#16a34a" />
                 </Box>

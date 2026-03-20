@@ -92,7 +92,10 @@ export default function GarageScreen() {
   };
   const handleRemoveInstallation = async (id: Id<"kits">) => {
     try {
+      // Clear legacy field
       await updateKit({ id, laborCost: 0 });
+      // Clear new component
+      await removeAllOfType({ kitId: id, type: "installation" });
     } catch (error) {
       console.error("Error resetting labor cost:", error);
       Alert.alert("Error", "No se pudo eliminar la mano de obra.");

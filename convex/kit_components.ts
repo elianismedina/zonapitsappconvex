@@ -10,7 +10,8 @@ export const addComponent = mutation({
       v.literal("battery"),
       v.literal("structure"),
       v.literal("wiring"),
-      v.literal("protection")
+      v.literal("protection"),
+      v.literal("installation")
     ),
     solarModuleId: v.optional(v.id("solar_modules")),
     inverterId: v.optional(v.id("inverters")),
@@ -18,6 +19,7 @@ export const addComponent = mutation({
     structureId: v.optional(v.id("structures")),
     wiringId: v.optional(v.id("wiring")),
     protectionId: v.optional(v.id("protections")),
+    installationId: v.optional(v.id("installations")),
     quantity: v.number(),
   },
   handler: async (ctx, args) => {
@@ -106,7 +108,54 @@ export const addComponent = mutation({
             structureId: args.structureId,
             wiringId: args.wiringId,
             protectionId: args.protectionId,
+            installationId: (args as any).installationId,
         });
+    }
+  },
+});
+
+export const addInstallation = mutation({
+  args: {
+    kitId: v.id("kits"),
+    numInstallers: v.number(),
+    hoursPerInstaller: v.number(),
+    hourlyRate: v.number(),
+    numPanels: v.number(),
+    installationCostPerPanel: v.number(),
+    extraCosts: v.number(),
+    difficulty: v.optional(v.string()),
+    systemType: v.optional(v.string()),
+    totalCost: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+
+    const user = await ctx.db.query("users").withIndex("byClerkId", q => q.eq("clerkId", identity.subject)).unique();
+    if (!user) throw new Error("User not found");
+
+    const kit = await ctx.db.get(args.kitId);
+    if (!kit || kit.userId !== user._id) throw new Error("Unauthorized");
+
+    const existingComponent = await ctx.db
+      .query("kit_components")
+      .withIndex("byKitId", (q) => q.eq("kitId", args.kitId))
+      .filter((q) => q.eq(q.field("type"), "installation"))
+      .unique();
+
+    const { kitId, ...installProps } = args;
+
+    if (existingComponent && existingComponent.installationId) {
+      await ctx.db.patch(existingComponent.installationId, installProps);
+      return existingComponent._id;
+    } else {
+      const installationId = await ctx.db.insert("installations", installProps);
+      return await ctx.db.insert("kit_components", {
+        kitId: args.kitId,
+        type: "installation",
+        quantity: 1,
+        installationId,
+      });
     }
   },
 });
@@ -133,6 +182,9 @@ export const removeComponent = mutation({
             .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
             .unique();
         if (user && kit.userId === user._id) {
+             if (component.type === "installation" && (component as any).installationId) {
+                 await ctx.db.delete((component as any).installationId);
+             }
              await ctx.db.delete(args.id);
         } else {
             throw new Error("Unauthorized");
@@ -176,7 +228,8 @@ export const removeAllComponentsOfType = mutation({
             v.literal("battery"),
             v.literal("structure"),
             v.literal("wiring"),
-            v.literal("protection")
+            v.literal("protection"),
+            v.literal("installation")
         ),
     },
     handler: async (ctx, args) => {
@@ -196,6 +249,9 @@ export const removeAllComponentsOfType = mutation({
             .collect();
 
         for (const component of components) {
+            if (component.type === "installation" && (component as any).installationId) {
+                await ctx.db.delete((component as any).installationId);
+            }
             await ctx.db.delete(component._id);
         }
     }
@@ -219,6 +275,15 @@ export const getKitComponents = query({
         if (comp.type === "structure" && comp.structureId) details = await ctx.db.get(comp.structureId);
         if (comp.type === "wiring" && comp.wiringId) details = await ctx.db.get(comp.wiringId);
         if (comp.type === "protection" && comp.protectionId) details = await ctx.db.get(comp.protectionId);
+        if (comp.type === "installation" && comp.installationId) {
+            const installDetails = await ctx.db.get(comp.installationId);
+            if (installDetails) {
+                details = {
+                    ...installDetails,
+                    price: installDetails.totalCost, // For uniform display
+                };
+            }
+        }
 
         return {
           ...comp,
@@ -274,6 +339,15 @@ export const getAllComponents = query({
         if (comp.type === "structure" && comp.structureId) details = await ctx.db.get(comp.structureId);
         if (comp.type === "wiring" && comp.wiringId) details = await ctx.db.get(comp.wiringId);
         if (comp.type === "protection" && comp.protectionId) details = await ctx.db.get(comp.protectionId);
+        if (comp.type === "installation" && comp.installationId) {
+            const installDetails = await ctx.db.get(comp.installationId);
+            if (installDetails) {
+                details = {
+                    ...installDetails,
+                    price: installDetails.totalCost, // For uniform display
+                };
+            }
+        }
 
         return {
           ...comp,
