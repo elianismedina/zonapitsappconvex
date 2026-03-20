@@ -5,7 +5,7 @@ import React from 'react';
 
 export const Icon = createIcon({
   Root: Svg,
-});
+}) as any;
 
 export const AlertCircleIcon = (props: any) => (
   <Icon

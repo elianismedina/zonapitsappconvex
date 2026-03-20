@@ -16,6 +16,8 @@ export default function GarageScreen() {
   const deleteKit = useMutation(api.kits.deleteKit);
   const updateKit = useMutation(api.kits.updateKit);
   const removeComponent = useMutation(api.kit_components.removeComponent);
+  const updateQuantity = useMutation(api.kit_components.updateQuantity);
+  const removeAllOfType = useMutation(api.kit_components.removeAllComponentsOfType);
 
   // Query all kit components for all of user's kits
   const allKitComponents = useQuery(api.kit_components.getAllComponents);
@@ -68,6 +70,32 @@ export default function GarageScreen() {
     } catch (error) {
       console.error("Error removing kit component:", error);
       Alert.alert("Error", "No se pudo eliminar el componente.");
+    }
+  };
+
+  const handleUpdateQuantity = async (componentId: Id<"kit_components">, quantity: number) => {
+    try {
+      await updateQuantity({ id: componentId, quantity });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      Alert.alert("Error", "No se pudo actualizar la cantidad.");
+    }
+  };
+
+  const handleRemoveAllOfType = async (kitId: Id<"kits">, type: any) => {
+    try {
+      await removeAllOfType({ kitId, type });
+    } catch (error) {
+      console.error("Error removing all components of type:", error);
+      Alert.alert("Error", "No se pudo eliminar el grupo de componentes.");
+    }
+  };
+  const handleRemoveInstallation = async (id: Id<"kits">) => {
+    try {
+      await updateKit({ id, laborCost: 0 });
+    } catch (error) {
+      console.error("Error resetting labor cost:", error);
+      Alert.alert("Error", "No se pudo eliminar la mano de obra.");
     }
   };
 
@@ -163,7 +191,16 @@ export default function GarageScreen() {
                   params: { kitId: id },
                 });
               }}
+              onAddInstallation={(id) => {
+                router.push({
+                  pathname: "/(auth)/installation-selection/[kitId]",
+                  params: { kitId: id },
+                });
+              }}
+              onRemoveInstallation={handleRemoveInstallation}
               onRemoveComponent={handleRemoveComponent}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveAllOfType={handleRemoveAllOfType}
             />
           )}
         />

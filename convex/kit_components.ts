@@ -167,6 +167,40 @@ export const updateQuantity = mutation({
     }
 });
 
+export const removeAllComponentsOfType = mutation({
+    args: {
+        kitId: v.id("kits"),
+        type: v.union(
+            v.literal("solar_module"),
+            v.literal("inverter"),
+            v.literal("battery"),
+            v.literal("structure"),
+            v.literal("wiring"),
+            v.literal("protection")
+        ),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Not authenticated");
+
+        const kit = await ctx.db.get(args.kitId);
+        if (!kit) throw new Error("Kit not found");
+
+        const user = await ctx.db.query("users").withIndex("byClerkId", q => q.eq("clerkId", identity.subject)).unique();
+        if (!user || kit.userId !== user._id) throw new Error("Unauthorized");
+
+        const components = await ctx.db
+            .query("kit_components")
+            .withIndex("byKitId", (q) => q.eq("kitId", args.kitId))
+            .filter((q) => q.eq(q.field("type"), args.type))
+            .collect();
+
+        for (const component of components) {
+            await ctx.db.delete(component._id);
+        }
+    }
+});
+
 export const getKitComponents = query({
   args: { kitId: v.id("kits") },
   handler: async (ctx, args) => {

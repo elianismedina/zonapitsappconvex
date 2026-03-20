@@ -86,7 +86,7 @@ const PulsingNextStep = ({
   );
 };
 
-interface KitCardProps {
+export interface KitCardProps {
   item: any;
   components: any[] | undefined;
   onEdit: (item: any) => void;
@@ -98,6 +98,10 @@ interface KitCardProps {
   onAddWiring: (id: Id<"kits">) => void;
   onAddProtection: (id: Id<"kits">) => void;
   onRemoveComponent: (componentId: Id<"kit_components">) => void;
+  onUpdateQuantity: (componentId: Id<"kit_components">, quantity: number) => void;
+  onRemoveAllOfType: (kitId: Id<"kits">, type: any) => void;
+  onAddInstallation: (id: Id<"kits">) => void;
+  onRemoveInstallation: (id: Id<"kits">) => void;
 }
 
 export const KitCard = ({
@@ -112,6 +116,10 @@ export const KitCard = ({
   onAddWiring,
   onAddProtection,
   onRemoveComponent,
+  onUpdateQuantity,
+  onRemoveAllOfType,
+  onAddInstallation,
+  onRemoveInstallation,
 }: KitCardProps) => {
   const hasSolarModule = components
     ? components.some((comp) => comp.type === "solar_module")
@@ -140,10 +148,11 @@ export const KitCard = ({
   const isStep3Next = hasSolarModule && !hasStructure;
   const isStep4Next = hasSolarModule && !hasWiring;
   const isStep5Next = hasSolarModule && hasWiring && !hasProtection;
+  const isInstallationNext = hasSolarModule && hasInverter && hasStructure && hasWiring && hasProtection && !item.laborCost;
 
   const totalInvestment = useMemo(() => {
-    if (!components) return 0;
-    return components.reduce((acc, comp) => {
+    if (!components) return item.laborCost || 0;
+    const componentTotal = components.reduce((acc, comp) => {
       const details = comp.details as any;
       if (!details) return acc;
 
@@ -153,7 +162,8 @@ export const KitCard = ({
 
       return acc + unitPrice * quantity;
     }, 0);
-  }, [components]);
+    return Math.round(componentTotal + (item.laborCost || 0));
+  }, [components, item.laborCost]);
 
   const { displayComponents, structureSummary, wiringSummary, protectionSummary } = useMemo(() => {
     if (!components) {
@@ -332,6 +342,7 @@ export const KitCard = ({
               protectionId={component.protectionId}
               componentId={component._id}
               onRemove={onRemoveComponent}
+              onUpdateQuantity={onUpdateQuantity}
             />
           </Box>
         ))}
@@ -344,6 +355,7 @@ export const KitCard = ({
               subtotalOverride={structureSummary.subtotal}
               imageUrl={structureSummary.imageUrl}
               componentId={item._id as any}
+              onRemove={() => onRemoveAllOfType(item._id, "structure")}
             />
           </Box>
         )}
@@ -356,6 +368,7 @@ export const KitCard = ({
               subtotalOverride={wiringSummary.subtotal}
               imageUrl={wiringSummary.imageUrl}
               componentId={item._id as any}
+              onRemove={() => onRemoveAllOfType(item._id, "wiring")}
             />
           </Box>
         )}
@@ -368,6 +381,19 @@ export const KitCard = ({
               subtotalOverride={protectionSummary.subtotal}
               imageUrl={protectionSummary.imageUrl}
               componentId={item._id as any}
+              onRemove={() => onRemoveAllOfType(item._id, "protection")}
+            />
+          </Box>
+        )}
+        {item.laborCost > 0 && (
+          <Box className="mt-2">
+            <KitComponentCard
+              type="installation"
+              name="Mano de Obra / Instalación"
+              quantity={1}
+              subtotalOverride={item.laborCost}
+              componentId={item._id as any}
+              onRemove={() => onRemoveInstallation(item._id)}
             />
           </Box>
         )}
@@ -611,21 +637,40 @@ export const KitCard = ({
           </PulsingNextStep>
 
           {/* Step 7: Instalación */}
-          <Pressable
-            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl border border-outline-100 bg-white p-4 opacity-50`}
+          <PulsingNextStep
+            active={isInstallationNext}
+            onPress={() => onAddInstallation(item._id)}
+            disabled={!hasSolarModule}
+            className={`mb-4 aspect-square w-[48%] items-center justify-center rounded-2xl p-4 ${
+              item.laborCost ? "bg-success-50" : "bg-white"
+            } ${!hasSolarModule ? "opacity-50" : ""}`}
           >
             <VStack space="xs" className="items-center">
-              <Box className="rounded-full bg-background-50 p-3">
-                <CalendarDays size={24} color="#64748b" />
+              <Box
+                className={`rounded-full p-3 ${
+                  item.laborCost ? "bg-success-100" : "bg-background-50"
+                }`}
+              >
+                <CalendarDays
+                  size={24}
+                  color={item.laborCost ? "#16a34a" : "#64748b"}
+                />
               </Box>
               <Text
                 size="xs"
-                className="text-center font-bold text-typography-500"
+                className={`text-center font-bold ${
+                  item.laborCost ? "text-success-700" : "text-typography-500"
+                }`}
               >
                 Instalación
               </Text>
+              {item.laborCost > 0 && (
+                <Box className="absolute -top-1 -right-1">
+                  <CheckCircle2 size={16} color="#16a34a" />
+                </Box>
+              )}
             </VStack>
-          </Pressable>
+          </PulsingNextStep>
 
           {/* Step 8: Financiación */}
           <Pressable

@@ -200,12 +200,15 @@ const SelectInput = React.forwardRef<
 });
 
 type ISelectIcon = VariantProps<typeof selectIconStyle> &
-  React.ComponentProps<typeof UISelect.Icon> & { className?: string };
+  React.ComponentProps<typeof UISelect.Icon> & {
+    className?: string;
+    as?: React.ElementType;
+  };
 
 const SelectIcon = React.forwardRef<
   React.ComponentRef<typeof UISelect.Icon>,
   ISelectIcon
->(function SelectIcon({ className, size, ...props }, ref) {
+>(function SelectIcon({ className, size, children, ...props }, ref) {
   const { size: parentSize } = useStyleContext();
   if (typeof size === "number") {
     return (
@@ -214,7 +217,9 @@ const SelectIcon = React.forwardRef<
         {...props}
         className={selectIconStyle({ class: className })}
         size={size}
-      />
+      >
+        {children}
+      </UISelect.Icon>
     );
   } else if (
     //@ts-expect-error : web only
@@ -226,7 +231,9 @@ const SelectIcon = React.forwardRef<
         ref={ref}
         {...props}
         className={selectIconStyle({ class: className })}
-      />
+      >
+        {children}
+      </UISelect.Icon>
     );
   }
   return (
@@ -240,7 +247,9 @@ const SelectIcon = React.forwardRef<
       })}
       ref={ref}
       {...props}
-    />
+    >
+      {children}
+    </UISelect.Icon>
   );
 });
 

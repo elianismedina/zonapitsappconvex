@@ -110,7 +110,7 @@ export default function ProtectionSelectionScreen() {
         [
           {
             text: "OK",
-            onPress: () => router.replace("/(auth)/(tabs)/mykits"),
+            onPress: () => router.replace(`/(auth)/installation-selection/${kitId}`),
           },
         ],
       );

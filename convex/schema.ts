@@ -45,6 +45,19 @@ export const Kit = {
       v.literal("zinc"),
     ),
   ),
+  laborCost: v.optional(v.number()),
+  laborDetails: v.optional(
+    v.object({
+      numInstallers: v.number(),
+      hoursPerInstaller: v.number(),
+      hourlyRate: v.number(),
+      numPanels: v.number(),
+      installationCostPerPanel: v.number(),
+      extraCosts: v.number(),
+      difficulty: v.optional(v.string()),
+      systemType: v.optional(v.string()),
+    }),
+  ),
 };
 
 export const SolarModule = {
