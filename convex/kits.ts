@@ -173,10 +173,18 @@ export const deleteKit = mutation({
       .withIndex("byKitId", (q) => q.eq("kitId", args.id))
       .collect();
 
-    // Delete each component
-    await Promise.all(
-      componentsToDelete.map((comp) => ctx.db.delete(comp._id)),
-    );
+    // Delete each component and its associated data
+    for (const component of componentsToDelete) {
+      if (component.type === "installation" && component.installationId) {
+        await ctx.db.delete(component.installationId);
+      }
+      await ctx.db.delete(component._id);
+    }
+
+    // Delete the bill from storage if it exists
+    if (kit.billStorageId) {
+      await ctx.storage.delete(kit.billStorageId);
+    }
 
     // Finally, delete the kit
     await ctx.db.delete(args.id);

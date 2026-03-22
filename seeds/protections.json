@@ -1,82 +1,74 @@
 [
   {
-    "name": "Fusible DC 1000V 15A con Portafusible",
+    "name": "Portafusible SRD-30",
     "category": "Protección para Corriente Directa",
     "subcategory": "Fusibles",
-    "rating": "1000V 15A",
-    "price": 45000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "rating": "1100V 32A",
+    "price": 12900,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774184936/EfiSolarApp/Portafusible_gdxk2g.png"
   },
   {
-    "name": "Fusible DC 1000V 20A con Portafusible",
-    "category": "Protección para Corriente Directa",
-    "subcategory": "Fusibles",
-    "rating": "1000V 20A",
-    "price": 48000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-  },
-  {
-    "name": "Interruptor Termomagnético DC 2P 1000V 32A",
+    "name": "Breaker DC 1x20A 6kA",
     "category": "Protección para Corriente Directa",
     "subcategory": "Interruptores Termomagnéticos",
-    "rating": "1000V 32A",
-    "price": 120000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "rating": "250V 20A 6kA",
+    "price": 55000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774185153/EfiSolarApp/Breaker_DC_1x20A_6kA_e9ff4w.png"
   },
   {
-    "name": "Interruptor Termomagnético DC 2P 1000V 63A",
+    "name": "Breaker 2x30A Enchufable",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Interruptores automáticos",
+    "rating": "400V 30A 10kA",
+    "price": 50000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774185303/EfiSolarApp/Breaker_2x30A_Enchufable_kfnml3.png"
+  },
+  {
+    "name": "Breaker Bipolar 2x20A",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Interruptores automáticos",
+    "rating": "400V 20A 10kA",
+    "price": 50000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774185784/EfiSolarApp/Breaker_Bipolar_de_20A_Amperios_2_20_dax7ce.png"
+  },
+  {
+    "name": "Interruptor 2X200 caja moldeada DC Suntree",
     "category": "Protección para Corriente Directa",
     "subcategory": "Interruptores Termomagnéticos",
-    "rating": "1000V 63A",
-    "price": 145000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "rating": "1000V 200A 20kA",
+    "price": 450000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774185958/EfiSolarApp/Interruptor_2X200_caja_moldeada_DC_Suntree_v6tseb.png"
   },
   {
-    "name": "Caja Combinadora 4 Strings - 1000V",
-    "category": "Protección para Corriente Directa",
-    "subcategory": "Cajas combinadoras",
-    "rating": "1000V 4 Strings",
-    "price": 950000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-  },
-  {
-    "name": "Supresor de Picos DC Type II 1000V 40kA",
-    "category": "Protección para Corriente Directa",
-    "subcategory": "Supresores de picos",
-    "rating": "1000V 40kA",
-    "price": 185000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-  },
-  {
-    "name": "Kit Puesta a Tierra para Sistemas Solares",
-    "category": "Protección para Corriente Directa",
-    "subcategory": "Puesta a tierra",
-    "rating": "N/A",
-    "price": 250000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-  },
-  {
-    "name": "Interruptor Automático AC 1P 120V 20A",
+    "name": "Breaker 2X50 AC Tipo Riel",
     "category": "Proteccion para Corriente Alterna",
     "subcategory": "Interruptores automáticos",
-    "rating": "120V 20A",
-    "price": 35000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "rating": "400V 50A 10kA",
+    "price": 70000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774186083/EfiSolarApp/Breaker_2X50_AC_Tipo_Riel_quar0v.png"
   },
   {
-    "name": "Interruptor Automático AC 2P 240V 40A",
+    "name": "Breaker de Riel 3x40A AC",
     "category": "Proteccion para Corriente Alterna",
     "subcategory": "Interruptores automáticos",
-    "rating": "240V 40A",
+    "rating": "400V 40A 10kA",
     "price": 75000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774187384/EfiSolarApp/Breaker_de_Riel_3x40A_AC_ayvnua.png"
   },
   {
-    "name": "Interruptor de Falla por Arco (AFCI) 1P 120V 15A",
+    "name": "DPS Suntree 4 Polos 385VAC",
     "category": "Proteccion para Corriente Alterna",
-    "subcategory": "Interruptores de falla por arco",
-    "rating": "120V 15A",
-    "price": 180000,
-    "imageUrl": "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    "subcategory": "Supresores de picos",
+    "rating": "385V 40kA",
+    "price": 250000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774187530/EfiSolarApp/DPS_Suntree_4_Polos_385VAC_ybxb4z.png"
+  },
+  {
+    "name": "DPS 440V AC 4P Projoy",
+    "category": "Proteccion para Corriente Alterna",
+    "subcategory": "Supresores de picos",
+    "rating": "440V 40kA",
+    "price": 520000,
+    "imageUrl": "https://res.cloudinary.com/dxa54qfxx/image/upload/v1774187658/EfiSolarApp/DPS_440V_AC_4P_Projoy_l4agvy.png"
   }
 ]
