@@ -1,0 +1,15 @@
+AGENTS.md          # graphify install files — don't extract your own instructions as knowledge
+CLAUDE.md
+GEMINI.md
+.gemini/
+.opencode/
+.agents/
+.trae/
+.graphify-out/
+.env.local
+.env.development.local
+.env.production.local
+node_modules/
+.expo/
+.idea/
+.vscode/

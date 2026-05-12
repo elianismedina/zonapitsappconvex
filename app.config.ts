@@ -42,25 +42,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         useHermesV1: false,
       },
     ],
+    "@sentry/react-native",
+    "expo-asset",
     "expo-audio",
-    [
-      "expo-font",
-      {
-        fonts: [
-          "./assets/fonts/sora/Sora-Thin.ttf",
-          "./assets/fonts/sora/Sora-ExtraLight.ttf",
-          "./assets/fonts/sora/Sora-Light.ttf",
-          "./assets/fonts/sora/Sora-Regular.ttf",
-          "./assets/fonts/sora/Sora-Medium.ttf",
-          "./assets/fonts/sora/Sora-SemiBold.ttf",
-          "./assets/fonts/sora/Sora-Bold.ttf",
-          "./assets/fonts/sora/Sora-ExtraBold.ttf",
-        ],
-      },
-    ],
-    "expo-image",
+    "expo-font",
     "expo-router",
     "expo-secure-store",
+    "expo-web-browser",
     [
       "expo-splash-screen",
       {
@@ -71,23 +59,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         dark: {
           backgroundColor: "#000000",
         },
-      },
-    ],
-    "expo-web-browser",
-    "expo-asset",
-    [
-      "@sentry/react-native/expo",
-      {
-        url: "https://sentry.io/",
-        project: "efisolar-kit",
-        organization: "eficiencia-solar-del-caribe",
-      },
-    ],
-    [
-      "expo-location",
-      {
-        locationWhenInUsePermission:
-          "Permitir que Efisolar Kit acceda a tu ubicación para facilitar la selección del lugar de instalación.",
       },
     ],
   ],

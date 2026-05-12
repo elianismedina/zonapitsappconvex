@@ -1,0 +1,47 @@
+name: Check Expo Dependencies
+
+on:
+  # Run every Monday at 3 AM UTC
+  schedule:
+    - cron: '0 3 * * 1'
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run expo-doctor
+        run: npx expo-doctor --verbose || true
+
+      - name: Check for Expo updates
+        run: npx expo install --check
+        continue-on-error: true
+
+      - name: Create issue if updates available
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔄 Expo dependencies need updating',
+              body: 'Run `npx expo install --fix` to update Expo SDK dependencies to the latest compatible versions.',
+              labels: ['dependencies', 'expo']
+            })

@@ -1,0 +1,29 @@
+version: 2
+updates:
+  # Check for npm dependency updates
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    # Group updates by type to reduce PR noise
+    groups:
+      expo-sdk:
+        patterns:
+          - "expo*"
+          - "@expo*"
+      react-native:
+        patterns:
+          - "react-native*"
+          - "@react-navigation*"
+      other:
+        patterns:
+          - "*"
+    # Only allow patch updates for stability
+    allow:
+      - dependency-type: "direct"
+    # Ignore minor/major updates for dev dependencies
+    ignore:
+      - dependency-name: "metro*"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]

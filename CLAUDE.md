@@ -52,13 +52,24 @@ npx convex dev
 - `app/(auth)/` - Authenticated routes (protected)
   - `(tabs)/` - Tab navigation (home, location, billupload, mykits, settings)
   - `_layout.tsx` - Layout with authentication check
+  - Component selection flows:
+    - `panel-selection/[kitId].tsx` - Solar panel selection for a kit
+    - `panel-details/[panelId].tsx` - Solar panel detail view
+    - `inverter-selection/[kitId].tsx` - Inverter selection for a kit
+    - `inverter-details/[inverterId].tsx` - Inverter detail view
+    - `battery-selection/[kitId].tsx` - Battery selection for a kit
+    - `battery-details/[batteryId].tsx` - Battery detail view
+    - `structure-selection/[kitId].tsx` - Mounting structure selection for a kit
+    - `wiring-selection/[kitId].tsx` - Electrical wiring selection for a kit
+    - `protection-selection/[kitId].tsx` - Protection device selection for a kit
+    - `installation-selection/[kitId].tsx` - Installation service selection for a kit
 - `app/oauth-native-callback.tsx` - OAuth callback for native authentication
 
 ### Convex Backend
 
 Located in `convex/` directory:
 
-- `schema.ts` - Database schema defining tables: users, kits, solar_modules, inverters, batteries, structures, wiring, protections, kit_components
+- `schema.ts` - Database schema defining tables: users, kits, solar_modules, inverters, batteries, structures, wiring, protections, installations, kit_components
 - `auth.config.ts` - Clerk integration configuration
 - `users.ts` - User CRUD operations
 - `kits.ts` - Kit (solar installation) management
@@ -68,6 +79,7 @@ Located in `convex/` directory:
 - `structures.ts` - Mounting structure operations
 - `wiring.ts` - Wiring operations
 - `protections.ts` - Protection device operations
+- `installations.ts` - Installation service operations and cost calculations
 - `kit_components.ts` - Kit-component relationships
 - `sizing.ts` - Solar system sizing calculations
 - `actions.ts` - Server actions for AI bill processing
@@ -111,14 +123,15 @@ Required in `.env.local`:
 Key Convex tables:
 
 - **users**: clerkId, email, username, profile info
-- **kits**: userId, location (lat/long), capacity, status, bill data
+- **kits**: userId, location (lat/long), capacity, status, bill data, roof type, labor cost
 - **solar_modules**: Solar panel specifications (brand, pmax, efficiency, etc.)
 - **inverters**: Inverter specifications (type, power, efficiency)
 - **batteries**: Battery specifications (capacity, voltage, type)
 - **structures**: Mounting structures (roof, ground, carport)
 - **wiring**: Electrical wiring (DC/AC types)
-- **protections**: Protection devices (breakers, surge protectors)
-- **kit_components**: Junction table linking kits to components with quantities
+- **protections**: Protection devices with categories (DC/AC) and subcategories (fuses, breakers, surge protectors, grounding, arc fault breakers)
+- **installations**: Installation service details (num installers, hours, rates, panel costs, total cost)
+- **kit_components**: Junction table linking kits to components with quantities (includes installation as component type)
 
 ## Notes
 
