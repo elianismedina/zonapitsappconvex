@@ -1,6 +1,4 @@
-import { ConfigContext, ExpoConfig } from "expo/config";
-
-export default ({ config }: ConfigContext): ExpoConfig => ({
+export default ({ config }) => ({
   ...config,
   name: "zonapitsexpoclerk",
   slug: "zonapitsexpoclerk",
@@ -77,6 +75,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   updates: {
     url: "https://u.expo.dev/09f47f99-3276-4c41-910b-bf98371e83d4",
-    enableBsdiffPatchSupport: true,
   },
 });

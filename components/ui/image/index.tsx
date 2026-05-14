@@ -2,11 +2,14 @@ import { createImage } from "@gluestack-ui/core/image/creator";
 import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
 import { tva } from "@gluestack-ui/utils/nativewind-utils";
 import { Image as ExpoImage } from "expo-image";
-import { styled } from "nativewind";
+import { cssInterop } from "nativewind";
 import React from "react";
 import { Platform } from "react-native";
 
-const StyledExpoImage = styled(ExpoImage, { className: "style" });
+// Use cssInterop to make ExpoImage accept className prop
+cssInterop(ExpoImage, { className: "style" });
+
+const StyledExpoImage = ExpoImage;
 
 const imageStyle = tva({
   base: "max-w-full",

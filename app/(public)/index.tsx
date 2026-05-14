@@ -13,6 +13,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect } from "react";
 import { ScrollView } from "react-native";
+import { TestNativeWind } from "@/components/TestNativeWind";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -61,6 +62,9 @@ const LoginScreen = () => {
     }
   }, [googleAuth]);
 
+  // TEMPORARY: Test if NativeWind is working
+  return <TestNativeWind />;
+  
   return (
     <Box className="flex-1">
       <Image
