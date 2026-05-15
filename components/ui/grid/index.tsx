@@ -6,14 +6,14 @@ import React, {
   forwardRef,
 } from 'react';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
-import { View, Dimensions, Platform, ViewProps } from 'react-native';
+import { View, useWindowDimensions, Platform, ViewProps } from 'react-native';
 import { gridStyle, gridItemStyle } from './styles';
 import { cssInterop } from 'nativewind';
 import {
   useBreakpointValue,
   getBreakPointValue,
 } from '@gluestack-ui/utils/hooks';
-const { width: DEVICE_WIDTH } = Dimensions.get('window');
+
 const GridContext = createContext<any>({});
 function arrangeChildrenIntoRows({
   childrenArray,
@@ -109,6 +109,7 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, IGridProps>(
     const [calculatedWidth, setCalculatedWidth] = useState<number | null>(null);
     const gridClass = _extra?.className;
     const obj = generateResponsiveNumColumns({ gridClass });
+    const { width: windowWidth } = useWindowDimensions();
     const responsiveNumColumns: any = useBreakpointValue(obj);
     const itemsPerRow = useMemo(() => {
       // get the colSpan of each child
@@ -116,7 +117,7 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, IGridProps>(
         const gridItemClassName = child?.props?._extra?.className;
         const colSpan2 = getBreakPointValue(
           generateResponsiveColSpans({ gridItemClassName }),
-          DEVICE_WIDTH
+          windowWidth
         );
         const colSpan = colSpan2 ? colSpan2 : 1;
         if (colSpan > responsiveNumColumns) {

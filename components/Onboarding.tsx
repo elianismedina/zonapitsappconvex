@@ -8,12 +8,12 @@ import {
   ScrollView,
   View,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
 const ONBOARDING_KEY = "hasSeenOnboarding";
 
 export const setOnboardingSeen = async () => {
@@ -58,6 +58,7 @@ interface OnboardingProps {
 }
 
 export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -97,7 +98,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         bounces={false}
       >
         {ONBOARDING_DATA.map((item) => (
-          <View key={item.id} style={styles.slide}>
+          <View key={item.id} style={[styles.slide, { width: SCREEN_WIDTH }]}>
             <VStack space="2xl" className="flex-1 justify-center items-center px-8">
               <Text size="4xl" className="font-bold text-center text-typography-900">
                 {item.title}
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   slide: {
-    width: SCREEN_WIDTH,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

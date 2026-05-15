@@ -64,7 +64,7 @@ export const KitCreationForm = ({
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
     return {
-      bottom: keyboardOffset.value,
+      transform: [{ translateY: -keyboardOffset.value }],
     };
   });
 

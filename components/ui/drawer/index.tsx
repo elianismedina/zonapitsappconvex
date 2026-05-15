@@ -4,8 +4,8 @@ import { createModal as createDrawer } from '@gluestack-ui/core/modal/creator';
 import {
   Pressable,
   View,
+  useWindowDimensions,
   ScrollView,
-  Dimensions,
   ViewStyle,
 } from 'react-native';
 import {
@@ -30,8 +30,6 @@ const AnimatedPressable = createMotionAnimatedComponent(
 ) as React.ComponentType<IAnimatedPressableProps>;
 
 const SCOPE = 'MODAL';
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 const sizes: { [key: string]: number } = {
   sm: 0.25,
   md: 0.5,
@@ -233,6 +231,7 @@ const DrawerContent = React.forwardRef<
   IDrawerContentProps
 >(function DrawerContent({ className, ...props }, ref) {
   const { size: parentSize, anchor: parentAnchor, show } = useStyleContext(SCOPE);
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
   const drawerHeight = screenHeight * (sizes[parentSize] || sizes.md);
   const drawerWidth = screenWidth * (sizes[parentSize] || sizes.md);
