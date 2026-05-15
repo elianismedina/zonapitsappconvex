@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@/components/ui";
 import React, { useEffect } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Reanimated, {
   useAnimatedStyle,
   useSharedValue,
@@ -29,7 +29,7 @@ interface KitCreationFormProps {
   selectedLocation: { address: string } | null;
   onConfirm: () => void;
   onCancel: () => void;
-  keyboardOffset: Animated.Value | any;
+  keyboardOffset: Reanimated.SharedValue<number>;
   shakeSignal?: number;
 }
 
@@ -62,8 +62,16 @@ export const KitCreationForm = ({
     };
   });
 
+  const containerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      bottom: keyboardOffset.value,
+    };
+  });
+
   return (
-    <Animated.View style={[styles.formContainer, { bottom: keyboardOffset }]}>
+    <Reanimated.View
+      style={[styles.formContainer, containerAnimatedStyle]}
+    >
       <Box className="rounded-t-3xl bg-white p-4 shadow-lg">
         <Heading size="md" className="mb-4">
           Crear Nuevo Kit Solar {kitType ? `(${kitType})` : ""}
@@ -111,7 +119,7 @@ export const KitCreationForm = ({
           </HStack>
         </VStack>
       </Box>
-    </Animated.View>
+    </Reanimated.View>
   );
 };
 

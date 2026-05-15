@@ -18,6 +18,7 @@ const MappedHeading = memo(
       sub,
       italic,
       highlight,
+      children,
       ...props
     },
     ref
@@ -41,7 +42,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h1>
         );
       case '2xl':
         return (
@@ -59,7 +62,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h2>
         );
       case 'xl':
         return (
@@ -77,7 +82,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h3>
         );
       case 'lg':
         return (
@@ -95,7 +102,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h4>
         );
       case 'md':
         return (
@@ -113,7 +122,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h5>
         );
       case 'sm':
       case 'xs':
@@ -132,7 +143,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h6>
         );
       default:
         return (
@@ -150,7 +163,9 @@ const MappedHeading = memo(
             })}
             {...props}
             ref={ref}
-          />
+          >
+            {children}
+          </h4>
         );
     }
   })
@@ -190,12 +205,16 @@ const Heading = memo(
           })}
           {...props}
           ref={ref}
-        />
+        >
+          {children}
+        </AsComp>
       );
     }
 
     return (
-      <MappedHeading className={className} size={size} ref={ref} {...props} />
+      <MappedHeading className={className} size={size} ref={ref} {...props}>
+        {children}
+      </MappedHeading>
     );
   })
 );

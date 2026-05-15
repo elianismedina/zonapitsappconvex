@@ -1,39 +1,42 @@
-import { useEffect, useRef } from "react";
-import { Animated, Keyboard, Platform, type KeyboardEvent } from "react-native";
-
-const KEYBOARD_SHOW_EVENT = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-const KEYBOARD_HIDE_EVENT = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+import { useEffect } from "react";
+import { Keyboard, Platform, type KeyboardEvent } from "react-native";
+import { useSharedValue, withSpring } from "react-native-reanimated";
 
 export const useKeyboardOffset = () => {
-  const keyboardOffset = useRef(new Animated.Value(0)).current;
+  const keyboardOffset = useSharedValue(0);
 
   useEffect(() => {
     const onShow = (e: KeyboardEvent) => {
-      Animated.spring(keyboardOffset, {
-        toValue: e.endCoordinates.height - (Platform.OS === "ios" ? 80 : 0),
-        useNativeDriver: false,
-      }).start();
+      keyboardOffset.value = withSpring(
+        e.endCoordinates.height - (Platform.OS === "ios" ? 80 : 0),
+        {
+          damping: 20,
+          stiffness: 90,
+        }
+      );
     };
 
-    const eventName = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    Keyboard.addListener(eventName as any, onShow);
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const showSubscription = Keyboard.addListener(showEvent, onShow);
+
     return () => {
-      Keyboard.removeListener(eventName as any, onShow);
+      showSubscription.remove();
     };
   }, [keyboardOffset]);
 
   useEffect(() => {
     const onHide = () => {
-      Animated.spring(keyboardOffset, {
-        toValue: 0,
-        useNativeDriver: false,
-      }).start();
+      keyboardOffset.value = withSpring(0, {
+        damping: 20,
+        stiffness: 90,
+      });
     };
 
-    const eventName = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
-    Keyboard.addListener(eventName as any, onHide);
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const hideSubscription = Keyboard.addListener(hideEvent, onHide);
+
     return () => {
-      Keyboard.removeListener(eventName as any, onHide);
+      hideSubscription.remove();
     };
   }, [keyboardOffset]);
 
