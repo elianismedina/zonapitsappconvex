@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { memo } from 'react';
 import { H1, H2, H3, H4, H5, H6 } from '@expo/html-elements';
 import { headingStyle } from './styles';
 import type { VariantProps } from '@gluestack-ui/utils/nativewind-utils';
@@ -170,6 +170,7 @@ const MappedHeading = memo(
     }
   }
 );
+MappedHeading.displayName = 'MappedHeading';
 
 const Heading = memo(
   ({

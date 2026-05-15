@@ -29,7 +29,7 @@ import {
   XCircle,
   Zap,
 } from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function BatterySelectionScreen() {
@@ -109,15 +109,6 @@ export default function BatterySelectionScreen() {
   const setResultsAndDone = (results: BatteryCompatibilityResult[]) => {
     dispatch({ type: "SET_RESULTS", results });
   };
-
-
-
-
-
-
-
-
-
 
   // Find the inverter in the kit
   const inverterComponent = components?.find((c) => c.type === "inverter");

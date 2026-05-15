@@ -1,5 +1,5 @@
 import { hasSeenOnboarding } from "@/components/Onboarding";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useOAuth, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Path, Svg } from "react-native-svg";
 
@@ -16,6 +16,7 @@ import { ScrollView } from "react-native";
 
 const LoginScreen = () => {
   const { replace } = useRouter();
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     // Check if user has seen onboarding, redirect if not
@@ -24,7 +25,11 @@ const LoginScreen = () => {
         replace("/onboarding");
       }
     });
-  }, [router]);
+
+    if (isSignedIn) {
+      replace("/(auth)/(tabs)/home");
+    }
+  }, [isSignedIn, replace]);
 
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_facebook" });
   const { startOAuthFlow: googleAuth } = useOAuth({ strategy: "oauth_google" });

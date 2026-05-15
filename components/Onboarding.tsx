@@ -73,7 +73,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [currentIndex, SCREEN_WIDTH]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;

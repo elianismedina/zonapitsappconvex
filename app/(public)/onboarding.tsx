@@ -12,7 +12,7 @@ export default function OnboardingScreen() {
         replace("/(public)");
       }
     });
-  }, [router]);
+  }, [replace]);
 
   const handleComplete = () => {
     replace("/(public)");

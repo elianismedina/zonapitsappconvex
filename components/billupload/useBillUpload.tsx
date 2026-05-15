@@ -1,7 +1,7 @@
 import { useAction, useMutation, useQuery } from "convex/react";
 import * as DocumentPicker from "expo-document-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 
 import {
   BillAnalysisResult,
@@ -49,7 +49,7 @@ export const useBillUpload = (options?: { notify?: NotifyFn }) => {
         hasFile?: boolean;
       };
 
-  const [state, dispatch] = React.useReducer(
+  const [state, dispatch] = useReducer(
     (prevState: State, action: Action): State => {
       switch (action.type) {
         case "SET_ACTIVE_TAB":

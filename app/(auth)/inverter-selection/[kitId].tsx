@@ -20,14 +20,8 @@ import {
 import { useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import {
-  AlertCircle,
-  CheckCircle2,
-  Info,
-  XCircle,
-  Zap,
-} from "lucide-react-native";
-import React, { useEffect, useState } from "react";
+import { AlertCircle, CheckCircle2, Info, XCircle, Zap } from "lucide-react-native";
+import React, { useEffect } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function InverterSelectionScreen() {
