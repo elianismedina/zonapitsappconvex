@@ -8,18 +8,22 @@ export const useKeyboardOffset = () => {
     const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
     const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
-    const showSubscription = Keyboard.addListener(showEvent, (e) => {
+    const onShow = (e: any) => {
       Animated.spring(keyboardOffset, {
         toValue: e.endCoordinates.height - (Platform.OS === "ios" ? 80 : 0),
         useNativeDriver: false,
       }).start();
-    });
-    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+    };
+
+    const onHide = () => {
       Animated.spring(keyboardOffset, {
         toValue: 0,
         useNativeDriver: false,
       }).start();
-    });
+    };
+
+    const showSubscription = Keyboard.addListener(showEvent, onShow);
+    const hideSubscription = Keyboard.addListener(hideEvent, onHide);
 
     return () => {
       showSubscription.remove();

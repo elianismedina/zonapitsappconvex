@@ -50,20 +50,30 @@ export default function PanelSelectionScreen() {
   );
 
   useEffect(() => {
+    let isMounted = true;
     async function performSizing() {
       if (!kitId) return;
       try {
         const results = await calculateSizing({ kitId });
-        setSizingResults(results as SizingResults);
+        if (isMounted) {
+          setSizingResults(results as SizingResults);
+        }
       } catch (error: any) {
         console.error("Error calculating sizing:", error);
-        Alert.alert("Error de Cálculo", error.message);
-        router.back();
+        if (isMounted) {
+          Alert.alert("Error de Cálculo", error.message);
+          router.back();
+        }
       } finally {
-        setIsSizing(false);
+        if (isMounted) {
+          setIsSizing(false);
+        }
       }
     }
     performSizing();
+    return () => {
+      isMounted = false;
+    };
   }, [kitId, calculateSizing, router]);
 
   const handleConfirmSelection = async () => {

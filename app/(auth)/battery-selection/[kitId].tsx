@@ -29,7 +29,7 @@ import {
   XCircle,
   Zap,
 } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function BatterySelectionScreen() {
@@ -41,25 +41,82 @@ export default function BatterySelectionScreen() {
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const addComponent = useMutation(api.kit_components.addComponent);
 
-  const [selectedBatteryId, setSelectedBatteryId] =
-    useState<Id<"batteries"> | null>(null);
-  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
-  const [autonomyHours, setAutonomyHours] = useState<number>(12);
-  const [isCalculating, setIsCalculating] = useState(true);
-  const [compatibilityResults, setCompatibilityResults] = useState<
-    BatteryCompatibilityResult[]
-  >([]);
+  const [state, setState] = useState<{
+    selectedBatteryId: Id<"batteries"> | null;
+    selectedQuantity: number;
+    autonomyHours: number;
+    isCalculating: boolean;
+    compatibilityResults: BatteryCompatibilityResult[];
+  }>({
+    selectedBatteryId: null,
+    selectedQuantity: 1,
+    autonomyHours: 12,
+    isCalculating: true,
+    compatibilityResults: [],
+  });
+
+  const {
+    selectedBatteryId,
+    selectedQuantity,
+    autonomyHours,
+    isCalculating,
+    compatibilityResults,
+  } = state;
+
+  const setSelectedBatteryId = (id: Id<"batteries"> | null, quantity?: number) => {
+    setState((prev) => ({
+      ...prev,
+      selectedBatteryId: id,
+      selectedQuantity: quantity ?? prev.selectedQuantity,
+    }));
+  };
+
+  const setSelectedQuantity = (quantity: number) => {
+    setState((prev) => ({ ...prev, selectedQuantity: quantity }));
+  };
+
+  const setAutonomyHours = (hours: number) => {
+    setState((prev) => ({ ...prev, autonomyHours: hours }));
+  };
+
+  const setIsCalculating = (val: boolean) => {
+    setState((prev) => ({ ...prev, isCalculating: val }));
+  };
+
+  const setResultsAndDone = (results: BatteryCompatibilityResult[]) => {
+    setState((prev) => ({
+      ...prev,
+      compatibilityResults: results,
+      isCalculating: false,
+    }));
+  };
+
+
+
+
+
+
+
+
+
 
   // Find the inverter in the kit
   const inverterComponent = components?.find((c) => c.type === "inverter");
   const inverter = inverterComponent?.details as Doc<"inverters"> | undefined;
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     if (batteries && kit && inverter) {
       const runCheck = async () => {
         setIsCalculating(true);
         // Small delay for UI feel
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        await new Promise((resolve) => {
+          timeoutId = setTimeout(resolve, 800);
+        });
+
+        if (!isMounted) return;
 
         const dailyConsumptionKwh = (kit.monthlyConsumptionKwh || 0) / 30;
         const daysOfAutonomy = autonomyHours / 24; // Convert hours to days
@@ -76,14 +133,20 @@ export default function BatterySelectionScreen() {
           dailyConsumptionKwh,
           daysOfAutonomy,
         );
-        setCompatibilityResults(results);
-        setIsCalculating(false);
+        if (isMounted) {
+          setResultsAndDone(results);
+        }
+
       };
 
       runCheck();
     } else if (batteries && !inverter) {
       setIsCalculating(false);
     }
+    return () => {
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [batteries, kit, inverter, autonomyHours]);
 
   const handleConfirmSelection = async () => {

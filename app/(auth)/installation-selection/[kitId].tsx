@@ -43,21 +43,78 @@ export default function InstallationSelectionScreen() {
   const updateKit = useMutation(api.kits.updateKit);
   const addInstallation = useMutation(api.kit_components.addInstallation);
 
-  const [difficulty, setDifficulty] = useState<InstallationDifficulty>(InstallationDifficulty.RESIDENTIAL_SLOPED);
-  const [systemType, setSystemType] = useState<SystemType>(SystemType.ON_GRID);
-  const [numInstallers, setNumInstallers] = useState("2");
-  const [hoursPerInstaller, setHoursPerInstaller] = useState("40");
-  const [hourlyRate, setHourlyRate] = useState("25000");
-  const [installationCostPerPanel, setInstallationCostPerPanel] = useState("50000");
-  const [extraCosts, setExtraCosts] = useState("500000");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [state, setState] = useState({
+    difficulty: InstallationDifficulty.RESIDENTIAL_SLOPED,
+    systemType: SystemType.ON_GRID,
+    numInstallers: "2",
+    hoursPerInstaller: "40",
+    hourlyRate: "25000",
+    installationCostPerPanel: "50000",
+    extraCosts: "500000",
+    isSubmitting: false,
+  });
+
+  const {
+    difficulty,
+    systemType,
+    numInstallers,
+    hoursPerInstaller,
+    hourlyRate,
+    installationCostPerPanel,
+    extraCosts,
+    isSubmitting,
+  } = state;
+
+  const setDifficulty = (val: InstallationDifficulty) => setState(prev => ({ ...prev, difficulty: val }));
+  const setSystemType = (val: SystemType) => setState(prev => ({ ...prev, systemType: val }));
+  const setNumInstallers = (val: string) => setState(prev => ({ ...prev, numInstallers: val }));
+  const setHoursPerInstaller = (val: string) => setState(prev => ({ ...prev, hoursPerInstaller: val }));
+  const setHourlyRate = (val: string) => setState(prev => ({ ...prev, hourlyRate: val }));
+  const setInstallationCostPerPanel = (val: string) => setState(prev => ({ ...prev, installationCostPerPanel: val }));
+  const setExtraCosts = (val: string) => setState(prev => ({ ...prev, extraCosts: val }));
+  const setIsSubmitting = (val: boolean) => setState(prev => ({ ...prev, isSubmitting: val }));
+
+  const setInitialState = (diff: InstallationDifficulty, sys: SystemType, estimates: any) => {
+    setState(prev => ({
+      ...prev,
+      difficulty: diff,
+      systemType: sys,
+      numInstallers: estimates.numInstallers.toString(),
+      hoursPerInstaller: estimates.hoursPerInstaller.toFixed(1),
+      hourlyRate: estimates.hourlyRate.toString(),
+      installationCostPerPanel: estimates.installationCostPerPanel.toString(),
+      extraCosts: estimates.extraCosts.toString(),
+    }));
+  };
+
+  const updateEstimates = (diff: InstallationDifficulty, sys: SystemType, count: number) => {
+    const estimates = estimateLaborParams({
+      difficulty: diff,
+      systemType: sys,
+      numPanels: count,
+    });
+    setState(prev => ({
+      ...prev,
+      difficulty: diff,
+      systemType: sys,
+      numInstallers: estimates.numInstallers.toString(),
+      hoursPerInstaller: estimates.hoursPerInstaller.toFixed(1),
+      hourlyRate: estimates.hourlyRate.toString(),
+      installationCostPerPanel: estimates.installationCostPerPanel.toString(),
+      extraCosts: estimates.extraCosts.toString(),
+    }));
+  };
 
   const solarModuleComponent = components?.find((c) => c.type === "solar_module");
   const panelCount = solarModuleComponent?.quantity || 1; // Default to 1 if not found for calculation
 
-  // Initial estimate based on kit data
+  const hasInitialized = React.useRef(false);
+
   useEffect(() => {
-    if (kit && components) {
+    let isMounted = true;
+    if (!components || !isMounted) return;
+
+    if (kit && !hasInitialized.current) {
       const initialDifficulty = kit.roofType === "thermoacoustic" || kit.roofType === "zinc" 
         ? InstallationDifficulty.INDUSTRIAL 
         : InstallationDifficulty.RESIDENTIAL_SLOPED;
@@ -66,27 +123,20 @@ export default function InstallationSelectionScreen() {
         : kit.type === "hybrid" ? SystemType.HYBRID 
         : SystemType.ON_GRID;
 
-      setDifficulty(initialDifficulty);
-      setSystemType(initialSystemType);
-    }
-  }, [kit, components]);
-
-  // Update estimates when difficulty or systemType change
-  useEffect(() => {
-    if (components) {
       const estimates = estimateLaborParams({
-        difficulty,
-        systemType,
+        difficulty: initialDifficulty,
+        systemType: initialSystemType,
         numPanels: panelCount,
       });
 
-      setNumInstallers(estimates.numInstallers.toString());
-      setHoursPerInstaller(estimates.hoursPerInstaller.toFixed(1));
-      setHourlyRate(estimates.hourlyRate.toString());
-      setInstallationCostPerPanel(estimates.installationCostPerPanel.toString());
-      setExtraCosts(estimates.extraCosts.toString());
+      setInitialState(initialDifficulty, initialSystemType, estimates);
+      hasInitialized.current = true;
+    } else if (hasInitialized.current) {
+      updateEstimates(difficulty, systemType, panelCount);
     }
-  }, [difficulty, systemType, components, panelCount]);
+    
+    return () => { isMounted = false; };
+  }, [kit, components, panelCount, difficulty, systemType]);
 
   const totalLaborCost = useMemo(() => {
     return calculateLaborCost({
