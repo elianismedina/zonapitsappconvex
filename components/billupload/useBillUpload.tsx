@@ -21,19 +21,108 @@ export const useBillUpload = (options?: { notify?: NotifyFn }) => {
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
   const notify = options?.notify ?? noopNotify;
 
-  const [activeTab, setActiveTab] = useState<"bill" | "roof">("bill");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [selectedKitId, setSelectedKitId] = useState<Id<"kits"> | null>(
-    kitId || null,
+  type State = {
+    activeTab: "bill" | "roof";
+    isSubmitting: boolean;
+    isAnalyzing: boolean;
+    selectedKitId: Id<"kits"> | null;
+    selectedFile: SelectedFile | null;
+    analysisResult: BillAnalysisResult | null;
+    generationPercentage: number;
+    selectedRoofType: RoofType | null;
+  };
+
+  type Action =
+    | { type: "SET_ACTIVE_TAB"; tab: "bill" | "roof" }
+    | { type: "SET_SUBMITTING"; val: boolean }
+    | { type: "SET_ANALYZING"; val: boolean }
+    | { type: "SET_SELECTED_KIT"; id: Id<"kits"> | null }
+    | { type: "SET_SELECTED_FILE"; file: SelectedFile | null }
+    | { type: "SET_ANALYSIS_RESULT"; result: BillAnalysisResult | null }
+    | { type: "SET_GENERATION_PERCENTAGE"; val: number }
+    | { type: "SET_ROOF_TYPE"; roofType: RoofType | null }
+    | { type: "RESET_ANALYSIS" }
+    | {
+        type: "LOAD_KIT_DATA";
+        analysis: BillAnalysisResult;
+        percentage?: number;
+        hasFile?: boolean;
+      };
+
+  const [state, dispatch] = React.useReducer(
+    (prevState: State, action: Action): State => {
+      switch (action.type) {
+        case "SET_ACTIVE_TAB":
+          return { ...prevState, activeTab: action.tab };
+        case "SET_SUBMITTING":
+          return { ...prevState, isSubmitting: action.val };
+        case "SET_ANALYZING":
+          return { ...prevState, isAnalyzing: action.val };
+        case "SET_SELECTED_KIT":
+          return { ...prevState, selectedKitId: action.id };
+        case "SET_SELECTED_FILE":
+          return { ...prevState, selectedFile: action.file };
+        case "SET_ANALYSIS_RESULT":
+          return { ...prevState, analysisResult: action.result };
+        case "SET_GENERATION_PERCENTAGE":
+          return { ...prevState, generationPercentage: action.val };
+        case "SET_ROOF_TYPE":
+          return { ...prevState, selectedRoofType: action.roofType };
+        case "RESET_ANALYSIS":
+          return { ...prevState, analysisResult: null, selectedFile: null };
+        case "LOAD_KIT_DATA":
+          return {
+            ...prevState,
+            analysisResult: action.analysis,
+            generationPercentage:
+              action.percentage ?? prevState.generationPercentage,
+            selectedFile: action.hasFile
+              ? { uri: "existing", name: "Factura Guardada" }
+              : prevState.selectedFile,
+          };
+        default:
+          return prevState;
+      }
+    },
+    {
+      activeTab: "bill",
+      isSubmitting: false,
+      isAnalyzing: false,
+      selectedKitId: kitId || null,
+      selectedFile: null,
+      analysisResult: null,
+      generationPercentage: 100,
+      selectedRoofType: null,
+    }
   );
-  const [selectedFile, setSelectedFile] = useState<SelectedFile | null>(null);
-  const [analysisResult, setAnalysisResult] =
-    useState<BillAnalysisResult | null>(null);
-  const [generationPercentage, setGenerationPercentage] = useState(100);
-  const [selectedRoofType, setSelectedRoofType] = useState<RoofType | null>(
-    null,
-  );
+
+  const {
+    activeTab,
+    isSubmitting,
+    isAnalyzing,
+    selectedKitId,
+    selectedFile,
+    analysisResult,
+    generationPercentage,
+    selectedRoofType,
+  } = state;
+
+  const setActiveTab = (tab: "bill" | "roof") =>
+    dispatch({ type: "SET_ACTIVE_TAB", tab });
+  const setIsSubmitting = (val: boolean) =>
+    dispatch({ type: "SET_SUBMITTING", val });
+  const setIsAnalyzing = (val: boolean) =>
+    dispatch({ type: "SET_ANALYZING", val });
+  const setSelectedKitId = (id: Id<"kits"> | null) =>
+    dispatch({ type: "SET_SELECTED_KIT", id });
+  const setSelectedFile = (file: SelectedFile | null) =>
+    dispatch({ type: "SET_SELECTED_FILE", file });
+  const setAnalysisResult = (result: BillAnalysisResult | null) =>
+    dispatch({ type: "SET_ANALYSIS_RESULT", result });
+  const setGenerationPercentage = (val: number) =>
+    dispatch({ type: "SET_GENERATION_PERCENTAGE", val });
+  const setSelectedRoofType = (roofType: RoofType | null) =>
+    dispatch({ type: "SET_ROOF_TYPE", roofType });
 
   const kits = useQuery(api.kits.getKits, {});
   const kit = useQuery(
@@ -60,28 +149,24 @@ export const useBillUpload = (options?: { notify?: NotifyFn }) => {
   }, [safeKits, selectedKitId]);
 
   useEffect(() => {
-    setAnalysisResult(null);
-    setSelectedFile(null);
+    dispatch({ type: "RESET_ANALYSIS" });
   }, [selectedKitId]);
 
   useEffect(() => {
     if (kit && kit.provider && kit.monthlyConsumptionKwh) {
-      setAnalysisResult({
-        provider: kit.provider,
-        billingPeriod: kit.billingPeriod,
-        monthlyConsumptionKwh: kit.monthlyConsumptionKwh,
-        totalAmount: kit.totalAmount,
-        currency: kit.currency,
-        energyRate: kit.energyRate,
+      dispatch({
+        type: "LOAD_KIT_DATA",
+        analysis: {
+          provider: kit.provider,
+          billingPeriod: kit.billingPeriod,
+          monthlyConsumptionKwh: kit.monthlyConsumptionKwh,
+          totalAmount: kit.totalAmount,
+          currency: kit.currency,
+          energyRate: kit.energyRate,
+        },
+        percentage: kit.generationPercentage ?? undefined,
+        hasFile: !!kit.billStorageId,
       });
-
-      if (kit.generationPercentage) {
-        setGenerationPercentage(kit.generationPercentage);
-      }
-
-      if (kit.billStorageId) {
-        setSelectedFile({ uri: "existing", name: "Factura Guardada" });
-      }
     }
   }, [kit]);
 
@@ -229,8 +314,7 @@ export const useBillUpload = (options?: { notify?: NotifyFn }) => {
   };
 
   const resetAnalysis = () => {
-    setAnalysisResult(null);
-    setSelectedFile(null);
+    dispatch({ type: "RESET_ANALYSIS" });
   };
 
   return {

@@ -1,20 +1,28 @@
 import { useEffect, useRef } from "react";
-import { Animated, Keyboard, Platform } from "react-native";
+import { Animated, Keyboard, Platform, type KeyboardEvent } from "react-native";
+
+const KEYBOARD_SHOW_EVENT = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+const KEYBOARD_HIDE_EVENT = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
 
 export const useKeyboardOffset = () => {
   const keyboardOffset = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
-    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
-
-    const onShow = (e: any) => {
+    const onShow = (e: KeyboardEvent) => {
       Animated.spring(keyboardOffset, {
         toValue: e.endCoordinates.height - (Platform.OS === "ios" ? 80 : 0),
         useNativeDriver: false,
       }).start();
     };
 
+    const eventName = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    Keyboard.addListener(eventName as any, onShow);
+    return () => {
+      Keyboard.removeListener(eventName as any, onShow);
+    };
+  }, [keyboardOffset]);
+
+  useEffect(() => {
     const onHide = () => {
       Animated.spring(keyboardOffset, {
         toValue: 0,
@@ -22,16 +30,12 @@ export const useKeyboardOffset = () => {
       }).start();
     };
 
-    const showSubscription = Keyboard.addListener(showEvent, onShow);
-    const hideSubscription = Keyboard.addListener(hideEvent, onHide);
-
-    const cleanup = () => {
-      showSubscription.remove();
-      hideSubscription.remove();
+    const eventName = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    Keyboard.addListener(eventName as any, onHide);
+    return () => {
+      Keyboard.removeListener(eventName as any, onHide);
     };
-
-    return cleanup;
-  }, []);
+  }, [keyboardOffset]);
 
   return keyboardOffset;
 };

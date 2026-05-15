@@ -39,26 +39,45 @@ export default function InverterSelectionScreen() {
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const addComponent = useMutation(api.kit_components.addComponent);
 
-  const [state, setState] = useState<{
-    selectedInverterId: Id<"inverters"> | null;
-    isCalculating: boolean;
-    compatibilityResults: CompatibilityResult[];
-  }>({
-    selectedInverterId: null,
-    isCalculating: true,
-    compatibilityResults: [],
-  });
+  type Action =
+    | { type: "SET_INVERTER"; id: Id<"inverters"> | null }
+    | { type: "SET_CALCULATING"; isCalculating: boolean }
+    | { type: "SET_RESULTS"; results: CompatibilityResult[] };
+
+  const [state, dispatch] = React.useReducer(
+    (prevState: any, action: Action) => {
+      switch (action.type) {
+        case "SET_INVERTER":
+          return { ...prevState, selectedInverterId: action.id };
+        case "SET_CALCULATING":
+          return { ...prevState, isCalculating: action.isCalculating };
+        case "SET_RESULTS":
+          return {
+            ...prevState,
+            compatibilityResults: action.results,
+            isCalculating: false,
+          };
+        default:
+          return prevState;
+      }
+    },
+    {
+      selectedInverterId: null,
+      isCalculating: true,
+      compatibilityResults: [],
+    }
+  );
 
   const { selectedInverterId, isCalculating, compatibilityResults } = state;
 
   const setSelectedInverterId = (id: Id<"inverters"> | null) => {
-    setState(prev => ({ ...prev, selectedInverterId: id }));
+    dispatch({ type: "SET_INVERTER", id });
   };
 
 
 
   const setResultsAndDone = (results: CompatibilityResult[]) => {
-    setState(prev => ({ ...prev, compatibilityResults: results, isCalculating: false }));
+    dispatch({ type: "SET_RESULTS", results });
   };
 
   // Find the solar module and its configuration
@@ -89,8 +108,7 @@ export default function InverterSelectionScreen() {
 
     if (inverters && solarModule && quantity > 0) {
       const runCheck = async () => {
-        // Only set to true if not already calculating
-        setState(prev => prev.isCalculating ? prev : { ...prev, isCalculating: true });
+        dispatch({ type: "SET_CALCULATING", isCalculating: true });
         
         await new Promise((resolve) => {
           timeoutId = setTimeout(resolve, 1500);
@@ -123,7 +141,7 @@ export default function InverterSelectionScreen() {
 
       runCheck();
     } else if (filteredInverters && (!solarModule || quantity === 0)) {
-      setState(prev => !prev.isCalculating ? prev : { ...prev, isCalculating: false });
+      dispatch({ type: "SET_CALCULATING", isCalculating: false });
     }
 
     return () => {

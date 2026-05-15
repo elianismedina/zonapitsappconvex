@@ -1,0 +1,420 @@
+react-doctor v0.1.6
+
+[32m✔[39m Select projects to scan [2m›[22m zonapitsexpoclerk
+[2mScanning c:\zonapitsexpoclerk...[22m
+
+- Detecting framework. Found [36mExpo[39m.
+[32m√[39m Detecting framework. Found [36mExpo[39m.
+- Detecting React version. Found [36mReact 19.1.0[39m.
+[32m√[39m Detecting React version. Found [36mReact 19.1.0[39m.
+- Detecting language. Found [36mTypeScript[39m.
+[32m√[39m Detecting language. Found [36mTypeScript[39m.
+- Detecting React Compiler. Not found.
+[32m√[39m Detecting React Compiler. Not found.
+- Found [36m137[39m source files.
+[32m√[39m Found [36m137[39m source files.
+
+- Running lint checks...
+- Detecting dead code.
+[32m√[39m Detecting dead code.
+- Running lint checks...
+[32m√[39m Running lint checks.
+
+  [33m⚠[39m [33mreact-doctor/no-react19-deprecated-apis        [39m [90m×112[39m
+[90m      forwardRef is no longer needed on React 19+ — refs are regular props on function components; remove forwardRef and pass ref directly[39m
+[90m      → Pass `ref` as a regular prop on function components — `forwardRef` is no longer needed in React 19+. Replace `useContext(X)` with `use(X)` for branch-aware context reads. Only enabled on projects detected as React 19+.[39m
+[90m      components/ui/select/index.tsx:30[39m
+[90m      components/ui/box/index.web.tsx:9[39m
+[90m      components/ui/card/index.tsx:9[39m
+[90m      components/ui/avatar/index.tsx:82[39m
+[90m      components/ui/avatar/index.tsx:99[39m
+[90m      components/ui/avatar/index.tsx:124[39m
+[90m      components/ui/avatar/index.tsx:148[39m
+[90m      components/ui/avatar/index.tsx:172[39m
+[90m      components/ui/checkbox/index.tsx:19[39m
+[90m      components/ui/checkbox/index.tsx:26[39m
+[90m      components/ui/checkbox/index.tsx:33[39m
+[90m      components/ui/checkbox/index.tsx:116[39m
+[90m      components/ui/checkbox/index.tsx:140[39m
+[90m      components/ui/checkbox/index.tsx:164[39m
+[90m      components/ui/checkbox/index.tsx:188[39m
+[90m      components/ui/actionsheet/index.tsx:27[39m
+[90m      components/ui/actionsheet/index.tsx:291[39m
+[90m      components/ui/actionsheet/index.tsx:306[39m
+[90m      components/ui/actionsheet/index.tsx:321[39m
+[90m      components/ui/actionsheet/index.tsx:336[39m
+[90m      components/ui/actionsheet/index.tsx:367[39m
+[90m      components/ui/actionsheet/index.tsx:382[39m
+[90m      components/ui/actionsheet/index.tsx:397[39m
+[90m      components/ui/actionsheet/index.tsx:421[39m
+[90m      components/ui/actionsheet/index.tsx:436[39m
+[90m      components/ui/actionsheet/index.tsx:451[39m
+[90m      components/ui/actionsheet/index.tsx:466[39m
+[90m      components/ui/actionsheet/index.tsx:481[39m
+[90m      components/ui/actionsheet/index.tsx:518[39m
+[90m      components/ui/center/index.web.tsx:9[39m
+[90m      components/ui/center/index.tsx:8[39m
+[90m      components/ui/text/index.web.tsx:7[39m
+[90m      components/ui/card/index.web.tsx:8[39m
+[90m      components/ui/alert-dialog/index.tsx:129[39m
+[90m      components/ui/alert-dialog/index.tsx:144[39m
+[90m      components/ui/alert-dialog/index.tsx:187[39m
+[90m      components/ui/alert-dialog/index.tsx:202[39m
+[90m      components/ui/alert-dialog/index.tsx:217[39m
+[90m      components/ui/alert-dialog/index.tsx:232[39m
+[90m      components/ui/alert-dialog/index.tsx:247[39m
+[90m      components/ui/vstack/index.web.tsx:9[39m
+[90m      components/ui/link/index.tsx:68[39m
+[90m      components/ui/link/index.tsx:83[39m
+[90m      components/ui/heading/index.web.tsx:1[39m
+[90m      components/ui/heading/index.tsx:1[39m
+[90m      components/ui/tooltip/index.tsx:85[39m
+[90m      components/ui/tooltip/index.tsx:98[39m
+[90m      components/ui/tooltip/index.tsx:114[39m
+[90m      components/ui/hstack/index.web.tsx:8[39m
+[90m      components/ui/toast/index.tsx:159[39m
+[90m      components/ui/toast/index.tsx:179[39m
+[90m      components/ui/toast/index.tsx:216[39m
+[90m      components/ui/grid/index.web.tsx:22[39m
+[90m      components/ui/grid/index.web.tsx:46[39m
+[90m      components/ui/textarea/index.tsx:51[39m
+[90m      components/ui/textarea/index.tsx:71[39m
+[90m      components/ui/grid/index.tsx:4[39m
+[90m      components/ui/grid/index.tsx:6[39m
+[90m      components/ui/image/index.tsx:39[39m
+[90m      components/ui/alert/index.tsx:133[39m
+[90m      components/ui/alert/index.tsx:152[39m
+[90m      components/ui/alert/index.tsx:199[39m
+[90m      components/ui/menu/index.tsx:78[39m
+[90m      components/ui/menu/index.tsx:98[39m
+[90m      components/ui/menu/index.tsx:113[39m
+[90m      components/ui/menu/index.tsx:142[39m
+[90m      components/ui/menu/index.tsx:174[39m
+[90m      components/ui/pressable/index.tsx:23[39m
+[90m      components/ui/select/select-actionsheet.tsx:298[39m
+[90m      components/ui/select/select-actionsheet.tsx:313[39m
+[90m      components/ui/select/select-actionsheet.tsx:328[39m
+[90m      components/ui/select/select-actionsheet.tsx:343[39m
+[90m      components/ui/select/select-actionsheet.tsx:366[39m
+[90m      components/ui/select/select-actionsheet.tsx:381[39m
+[90m      components/ui/select/select-actionsheet.tsx:396[39m
+[90m      components/ui/select/select-actionsheet.tsx:420[39m
+[90m      components/ui/select/select-actionsheet.tsx:435[39m
+[90m      components/ui/select/select-actionsheet.tsx:450[39m
+[90m      components/ui/select/select-actionsheet.tsx:465[39m
+[90m      components/ui/select/select-actionsheet.tsx:480[39m
+[90m      components/ui/select/select-actionsheet.tsx:517[39m
+[90m      components/ui/form-control/index.tsx:218[39m
+[90m      components/ui/form-control/index.tsx:264[39m
+[90m      components/ui/form-control/index.tsx:281[39m
+[90m      components/ui/form-control/index.tsx:299[39m
+[90m      components/ui/form-control/index.tsx:325[39m
+[90m      components/ui/form-control/index.tsx:367[39m
+[90m      components/ui/form-control/index.tsx:385[39m
+[90m      components/ui/form-control/index.tsx:409[39m
+[90m      components/ui/form-control/index.tsx:429[39m
+[90m      components/ui/popover/index.tsx:152[39m
+[90m      components/ui/popover/index.tsx:171[39m
+[90m      components/ui/popover/index.tsx:204[39m
+[90m      components/ui/popover/index.tsx:232[39m
+[90m      components/ui/popover/index.tsx:267[39m
+[90m      components/ui/popover/index.tsx:282[39m
+[90m      components/ui/popover/index.tsx:297[39m
+[90m      components/ui/popover/index.tsx:312[39m
+[90m      components/ui/drawer/index.tsx:182[39m
+[90m      components/ui/drawer/index.tsx:198[39m
+[90m      components/ui/drawer/index.tsx:231[39m
+[90m      components/ui/drawer/index.tsx:277[39m
+[90m      components/ui/drawer/index.tsx:292[39m
+[90m      components/ui/drawer/index.tsx:307[39m
+[90m      components/ui/drawer/index.tsx:322[39m
+[90m      components/ui/modal/index.tsx:113[39m
+[90m      components/ui/modal/index.tsx:125[39m
+[90m      components/ui/modal/index.tsx:158[39m
+[90m      components/ui/modal/index.tsx:200[39m
+[90m      components/ui/modal/index.tsx:215[39m
+[90m      components/ui/modal/index.tsx:230[39m
+[90m      components/ui/modal/index.tsx:245[39m
+
+  [33m⚠[39m [33mknip/exports                                   [39m [90m×92[39m
+[90m      Unused export: User[39m
+[90m      convex\schema.ts[39m
+[90m      components\ui\gluestack-ui-provider.tsx[39m
+[90m      components\Onboarding.tsx[39m
+[90m      components\ui\button\index.tsx[39m
+[90m      components\ui\actionsheet\index.tsx[39m
+[90m      components\ui\alert\index.tsx[39m
+[90m      components\ui\alert-dialog\index.tsx[39m
+[90m      components\ui\avatar\index.tsx[39m
+[90m      components\ui\badge\index.tsx[39m
+[90m      components\ui\center\index.tsx[39m
+[90m      components\ui\checkbox\index.tsx[39m
+[90m      components\ui\divider\index.tsx[39m
+[90m      components\ui\drawer\index.tsx[39m
+[90m      components\ui\form-control\index.tsx[39m
+[90m      components\ui\grid\index.tsx[39m
+[90m      components\ui\icon\index.tsx[39m
+[90m      components\ui\input\index.tsx[39m
+[90m      components\ui\link\index.tsx[39m
+[90m      components\ui\menu\index.tsx[39m
+[90m      components\ui\popover\index.tsx[39m
+[90m      components\ui\select\index.tsx[39m
+[90m      components\ui\textarea\index.tsx[39m
+[90m      components\ui\tooltip\index.tsx[39m
+[90m      components\ui\select\select-actionsheet.tsx[39m
+
+  [33m⚠[39m [33mreact-doctor/react-compiler-destructure-method [39m [90m×30[39m
+[90m      Destructure for clarity: `const { replace } = useRouter()` then call `replace(...)` directly — easier for React Compiler to memoize and clearer about which methods this component depends on[39m
+[90m      → Destructure the method up front: `const { push } = useRouter()` then call `push(...)` directly — clearer dependency graph and easier for React Compiler to memoize[39m
+[90m      app/(public)/onboarding.tsx:12[39m
+[90m      app/(public)/onboarding.tsx:18[39m
+[90m      app/(public)/index.tsx:24[39m
+[90m      components/KitComponentCard.tsx:124[39m
+[90m      components/KitComponentCard.tsx:132[39m
+[90m      components/KitComponentCard.tsx:140[39m
+[90m      components/mykits/EmptyKitsView.tsx:18[39m
+[90m      app/(auth)/(tabs)/settings.tsx:14[39m
+[90m      app/(auth)/(tabs)/settings.tsx:23[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:134[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:168[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:174[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:180[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:186[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:192[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:198[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:171[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:504[39m
+[90m      app/(auth)/installation-selection/[kitId].tsx:181[39m
+[90m      app/(auth)/structure-selection/[kitId].tsx:63[39m
+[90m      app/(auth)/protection-selection/[kitId].tsx:113[39m
+[90m      app/(auth)/(tabs)/location.tsx:224[39m
+[90m      app/(auth)/(tabs)/home.tsx:42[39m
+[90m      app/_layout.tsx:127[39m
+[90m      app/_layout.tsx:129[39m
+[90m      app/(auth)/inverter-selection/[kitId].tsx:388[39m
+[90m      app/(auth)/panel-selection/[kitId].tsx:64[39m
+[90m      app/(auth)/panel-selection/[kitId].tsx:94[39m
+[90m      app/(auth)/panel-selection/[kitId].tsx:216[39m
+[90m      app/(auth)/wiring-selection/[kitId].tsx:59[39m
+
+  [33m⚠[39m [33mreact-doctor/design-no-redundant-size-axes     [39m [90m×15[39m
+[90m      w-48 h-48 → use the shorthand size-48 (Tailwind v3.4+)[39m
+[90m      → Collapse `w-N h-N` to `size-N` (Tailwind v3.4+) when both axes match[39m
+[90m      app/(public)/index.tsx:84[39m
+[90m      components/KitComponentCard.tsx:212[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:313[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:390[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:410[39m
+[90m      app/(auth)/structure-selection/[kitId].tsx:154[39m
+[90m      app/(auth)/structure-selection/[kitId].tsx:200[39m
+[90m      app/(auth)/structure-selection/[kitId].tsx:214[39m
+[90m      app/(auth)/protection-selection/[kitId].tsx:198[39m
+[90m      app/(auth)/protection-selection/[kitId].tsx:247[39m
+[90m      app/(auth)/protection-selection/[kitId].tsx:265[39m
+[90m      app/(auth)/wiring-selection/[kitId].tsx:149[39m
+[90m      app/(auth)/wiring-selection/[kitId].tsx:198[39m
+[90m      app/(auth)/wiring-selection/[kitId].tsx:212[39m
+[90m      components/home/KitTypeCard.tsx:41[39m
+
+  [33m⚠[39m [33mknip/files                                     [39m [90m×15[39m
+[90m      Unused file[39m
+[90m      → This file is not imported by any other file in the project.[39m
+[90m      babel.config.js[39m
+[90m      components\ui\collapsible.tsx[39m
+[90m      components\ui\icon-symbol.ios.tsx[39m
+[90m      components\ui\icon-symbol.tsx[39m
+[90m      components\ui\box\index.web.tsx[39m
+[90m      components\ui\card\index.web.tsx[39m
+[90m      components\ui\center\index.web.tsx[39m
+[90m      components\ui\gluestack-ui-provider\index.next15.tsx[39m
+[90m      components\ui\gluestack-ui-provider\index.web.tsx[39m
+[90m      components\ui\gluestack-ui-provider\script.ts[39m
+[90m      components\ui\grid\index.web.tsx[39m
+[90m      components\ui\heading\index.web.tsx[39m
+[90m      components\ui\hstack\index.web.tsx[39m
+[90m      components\ui\text\index.web.tsx[39m
+[90m      components\ui\vstack\index.web.tsx[39m
+
+  [33m⚠[39m [33mreact-doctor/async-await-in-loop               [39m [90m×10[39m
+[90m      await inside a for…of loop runs the calls sequentially — for independent operations, collect them and use `await Promise.all(items.map(...))` to run them concurrently[39m
+[90m      → Collect the items and use `await Promise.all(items.map(...))` to run independent operations concurrently[39m
+[90m      convex/batteries.ts:137[39m
+[90m      convex/kit_components.ts:71[39m
+[90m      convex/kit_components.ts:253[39m
+[90m      convex/kits.ts:179[39m
+[90m      convex/inverters.ts:119[39m
+[90m      convex/wiring.ts:83[39m
+[90m      convex/protections.ts:123[39m
+[90m      convex/modules.ts:104[39m
+[90m      convex/structures.ts:83[39m
+[90m      scripts/reset-project.js:62[39m
+
+  [33m⚠[39m [33mjsx-a11y/heading-has-content                   [39m [90m×7[39m
+[90m      Headings must have content and the content must be accessible by a screen reader.[39m
+[90m      → Provide screen reader accessible content when using heading elements.[39m
+[90m      components/ui/heading/index.web.tsx:30[39m
+[90m      components/ui/heading/index.web.tsx:48[39m
+[90m      components/ui/heading/index.web.tsx:66[39m
+[90m      components/ui/heading/index.web.tsx:84[39m
+[90m      components/ui/heading/index.web.tsx:102[39m
+[90m      components/ui/heading/index.web.tsx:121[39m
+[90m      components/ui/heading/index.web.tsx:139[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-legacy-expo-packages        [39m [90m×5[39m
+[90m      "@expo/vector-icons" is deprecated — use expo-symbols or expo-image (see https://docs.expo.dev/versions/latest/sdk/symbols/)[39m
+[90m      → Migrate to the recommended replacement package — legacy Expo packages are no longer maintained[39m
+[90m      app/(public)/index.tsx:3[39m
+[90m      components/RightIslandMenu.tsx:1[39m
+[90m      app/_layout.tsx:6[39m
+[90m      components/ui/icon-symbol.tsx:3[39m
+[90m      app/(auth)/(tabs)/_layout.tsx:3[39m
+
+  [33m⚠[39m [33mreact-doctor/no-giant-component                [39m [90m×5[39m
+[90m      Component "KitCard" is 607 lines — consider breaking it into smaller focused components[39m
+[90m      → Extract logical sections into focused components: `<UserHeader />`, `<UserActions />`, etc.[39m
+[90m      components/mykits/KitCard.tsx:108[39m
+[90m      components/KitComponentCard.tsx:68[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:35[39m
+[90m      app/(auth)/installation-selection/[kitId].tsx:37[39m
+[90m      app/(auth)/inverter-selection/[kitId].tsx:33[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-dimensions-get              [39m [90m×4[39m
+[90m      Dimensions.get() does not update on screen rotation or resize — use useWindowDimensions() for reactive layout[39m
+[90m      → Use `const { width, height } = useWindowDimensions()` — it updates reactively on rotation and resize[39m
+[90m      components/Onboarding.tsx:16[39m
+[90m      components/ui/grid/index.tsx:16[39m
+[90m      components/ui/drawer/index.tsx:33[39m
+[90m      components/ui/drawer/index.tsx:34[39m
+
+  [33m⚠[39m [33mreact-doctor/no-cascading-set-state            [39m [90m×3[39m
+[90m      3 setState calls in a single useEffect — consider using useReducer or deriving state[39m
+[90m      → Combine into useReducer: `const [state, dispatch] = useReducer(reducer, initialState)`[39m
+[90m      components/billupload/useBillUpload.tsx:67[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:107[39m
+[90m      app/(auth)/inverter-selection/[kitId].tsx:86[39m
+
+  [33m⚠[39m [33mreact-doctor/no-array-index-as-key             [39m [90m×2[39m
+[90m      Array index "index" used as key — causes bugs when list is reordered or filtered[39m
+[90m      → Use a stable unique identifier: `key={item.id}` or `key={item.slug}` — index keys break on reorder/filter[39m
+[90m      components/Onboarding.tsx:117[39m
+[90m      app/(auth)/panel-selection/[kitId].tsx:156[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-legacy-shadow-styles        [39m [90m×2[39m
+[90m      Legacy shadow styles "shadowColor", "shadowOpacity", "shadowRadius", "shadowOffset", "elevation" — use boxShadow for cross-platform shadows on the new architecture[39m
+[90m      → Use `boxShadow` for cross-platform shadows on the new architecture instead of platform-specific shadow properties[39m
+[90m      components/RightIslandMenu.tsx:81[39m
+[90m      components/location/ZoomControls.tsx:41[39m
+
+  [33m⚠[39m [33mreact-doctor/no-effect-event-handler           [39m [90m×2[39m
+[90m      useEffect simulating an event handler — move logic to an actual event handler instead[39m
+[90m      → Move the conditional logic into onClick, onChange, or onSubmit handlers directly[39m
+[90m      components/mykits/EditKitModal.tsx:31[39m
+[90m      app/_layout.tsx:115[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-prefer-pressable               [39m [90m×2[39m
+[90m      TouchableOpacity is legacy — use <Pressable> from react-native (or react-native-gesture-handler) for modern press handling[39m
+[90m      → Use `<Pressable>` from react-native (or react-native-gesture-handler) instead of legacy Touchable* components[39m
+[90m      components/location/ZoomControls.tsx:3[39m
+[90m      app/(auth)/(tabs)/location.tsx:11[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-prefer-reanimated              [39m [90m×2[39m
+[90m      Animated from react-native runs animations on the JS thread — use react-native-reanimated for performant UI-thread animations[39m
+[90m      → Use `import Animated from 'react-native-reanimated'` — animations run on the UI thread instead of the JS thread[39m
+[90m      hooks/use-keyboard-offset.ts:2[39m
+[90m      components/location/KitCreationForm.tsx:16[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-scrollview-mapped-list[39m
+[90m      <ScrollView> rendering items.map(...) — use FlashList, LegendList, or FlatList so only visible rows mount[39m
+[90m      → Use FlashList, LegendList, or FlatList — `<ScrollView>{items.map(...)}</ScrollView>` mounts every row in memory[39m
+[90m      components/Onboarding.tsx:99[39m
+
+  [33m⚠[39m [33mreact-doctor/no-pure-black-background[39m
+[90m      Pure black background (bg-black) looks harsh — use a near-black tinted toward your brand hue (e.g. bg-gray-950)[39m
+[90m      → Tint the background slightly toward your brand hue — e.g. `#0a0a0f` or Tailwind's `bg-gray-950`. Pure black looks harsh on modern displays[39m
+[90m      components/RightIslandMenu.tsx:78[39m
+
+  [33m⚠[39m [33mreact-doctor/rerender-lazy-state-init[39m
+[90m      useState(toString()) calls initializer on every render — use useState(() => toString()) for lazy initialization[39m
+[90m      → Wrap in an arrow function so it only runs once: `useState(() => expensiveComputation())`[39m
+[90m      components/KitComponentCard.tsx:94[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-style-prefer-boxshadow[39m
+[90m      shadowColor is iOS/Android-platform-specific — use the cross-platform CSS `boxShadow` string on RN v7+[39m
+[90m      → Use the cross-platform CSS `boxShadow` string (RN v7+): `boxShadow: "0 2px 8px rgba(0,0,0,0.1)"` instead of platform-specific shadow*/elevation keys[39m
+[90m      components/location/ZoomControls.tsx:45[39m
+
+  [33m⚠[39m [33mreact-doctor/async-defer-await[39m
+[90m      await blocks the function before an early-return that doesn't use the awaited value — move the await after the synchronous guard so the skip path stays fast[39m
+[90m      → Move the `await` after the synchronous early-return guard so the skip path stays fast[39m
+[90m      convex/kits.ts:7[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-inline-flatlist-renderitem[39m
+[90m      Inline renderItem on <FlatList> creates a new function reference every render — extract to a named function or wrap in useCallback[39m
+[90m      → Extract renderItem to a named function or wrap in useCallback to avoid re-creating on every render[39m
+[90m      app/(auth)/(tabs)/mykits.tsx:160[39m
+
+  [33m⚠[39m [33mreact-doctor/no-derived-state-effect[39m
+[90m      State reset in useEffect — use a key prop to reset component state when props change[39m
+[90m      → For derived state, compute inline: `const x = fn(dep)`. For state resets on prop change, use a key prop: `<Component key={prop} />`. See https://react.dev/learn/you-might-not-need-an-effect[39m
+[90m      components/billupload/useBillUpload.tsx:62[39m
+
+  [33m⚠[39m [33mreact-doctor/rerender-functional-setstate[39m
+[90m      setSelectedQuantity(selectedQuantity + ...) — use functional update to avoid stale closures[39m
+[90m      → Use the callback form: `setState(prev => prev + 1)` to always read the latest value[39m
+[90m      app/(auth)/battery-selection/[kitId].tsx:412[39m
+
+  [33m⚠[39m [33mreact-doctor/prefer-useReducer[39m
+[90m      Component "SearchScreen" has 5 useState calls — consider useReducer for related state[39m
+[90m      → Group related state: `const [state, dispatch] = useReducer(reducer, { field1, field2, ... })`[39m
+[90m      app/(auth)/(tabs)/location.tsx:16[39m
+
+  [33m⚠[39m [33mreact-doctor/prefer-use-effect-event[39m
+[90m      "handleAnimationFinish" is read only inside `setTimeout` — wrap it with useEffectEvent and remove it from the dep array so the effect doesn't re-synchronize on every parent render[39m
+[90m      → Wrap the callback with `useEffectEvent(callback)` (React 19+) and call the resulting binding from inside the sub-handler. The Effect Event captures the latest props/state without being a reactive dep, so the effect doesn't re-subscribe on every parent render. See https://react.dev/reference/react/useEffectEvent[39m
+[90m      components/AnimatedSplashScreen.tsx:53[39m
+
+  [33m⚠[39m [33mreact-doctor/no-prop-callback-in-effect[39m
+[90m      useEffect calls prop callback "onReady" with local state in deps — this is the "lift state via callback" anti-pattern; lift state into a shared Provider so both sides read the same source[39m
+[90m      → Lift the shared state into a Provider so both sides read the same source — no useEffect-driven sync needed[39m
+[90m      components/AnimatedSplashScreen.tsx:34[39m
+
+  [33m⚠[39m [33mreact-doctor/no-z-index-9999[39m
+[90m      z-index: 99999 is arbitrarily high — use a deliberate z-index scale (1–50). Extreme values signal a stacking context problem, not a fix[39m
+[90m      → Define a z-index scale in your design tokens (e.g. dropdown: 10, modal: 20, toast: 30). Create a new stacking context with `isolation: isolate` instead of escalating values[39m
+[90m      components/AnimatedSplashScreen.tsx:79[39m
+
+  [33m⚠[39m [33mreact-doctor/async-parallel[39m
+[90m      6 sequential await statements that appear independent — use Promise.all() for parallel execution[39m
+[90m      → Use `const [a, b] = await Promise.all([fetchA(), fetchB()])` to run independent operations concurrently[39m
+[90m      scripts/seed-db.js:47[39m
+
+  [33m⚠[39m [33mreact-doctor/no-barrel-import[39m
+[90m      Import from barrel/index file — import directly from the source module for better tree-shaking[39m
+[90m      → Import from the direct path: `import { Button } from './components/Button'` instead of `./components`[39m
+[90m      components/ui/gluestack-ui-provider.tsx:1[39m
+
+  [33m⚠[39m [33mreact-doctor/rn-no-single-element-style-array[39m
+[90m      Single-element style array on "style" — use style={value} instead of style={[value]} to avoid unnecessary array allocation[39m
+[90m      → Use `style={value}` instead of `style={[value]}` — single-element arrays add unnecessary allocation[39m
+[90m      app/(auth)/(tabs)/_layout.tsx:83[39m
+
+  [33m⚠[39m [33mreact-doctor/design-no-default-tailwind-palette[39m
+[90m      text-gray-500 reads as the Tailwind template default — use zinc (true neutral), neutral (warmer), or stone (warmest)[39m
+[90m      → Replace `indigo-*` / `gray-*` / `slate-*` with project tokens, your brand color, or a less-default neutral (`zinc`, `neutral`, `stone`)[39m
+[90m      components/location/KitCreationForm.tsx:89[39m
+
+  [33m⚠[39m [33mreact/no-danger[39m
+[90m      Do not use `dangerouslySetInnerHTML` prop[39m
+[90m      → `dangerouslySetInnerHTML` is a way to inject HTML into your React component. This is dangerous because it can easily lead to XSS vulnerabilities.[39m
+[90m      components/ui/gluestack-ui-provider/index.web.tsx:91[39m
+
+  [32m┌─────┐[39m  [32m75[39m [2m/ 100[22m [32mGreat[39m
+  [32m│ ◠ ◠ │[39m  [32m██████████████████████████████████████[39m[2m░░░░░░░░░░░░[22m
+  [32m│  ▽  │[39m  React Doctor [2m(www.react.doctor)[22m
+  [32m└─────┘[39m
+
+  [33m325 issues[39m [2macross 109/137 files  in 4.1s[22m
+[90m  Full diagnostics written to C:\Users\temp\AppData\Local\Temp\react-doctor-1b0d621c-e39b-4de4-9bab-d764b6e00d98[39m
+
+  [1m→ Share your results:[22m [36mhttps://www.react.doctor/share?p=zonapitsexpoclerk&s=75&w=325&f=109[39m
+

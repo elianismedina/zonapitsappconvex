@@ -158,9 +158,12 @@ const MappedHeading = memo(
 
 const Heading = memo(
   forwardRef<HTMLHeadingElement, IHeadingProps>(function Heading(
-    { className, size = 'lg', as: AsComp, ...props },
+    { className, size = 'lg', as: AsComp, children, ...props },
     ref
   ) {
+    // If no visible content is provided, render nothing to avoid empty heading elements
+    if (!children) return null;
+    // Extract styling props
     const {
       isTruncated,
       bold,

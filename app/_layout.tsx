@@ -107,7 +107,7 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
-  const router = useRouter();
+  const { replace } = useRouter();
   const rootNavigationState = useRootNavigationState();
   const navigationRef = useNavigationContainerRef();
 
@@ -124,11 +124,11 @@ const InitialLayout = () => {
     const inTabsGroup = segments[0] === "(auth)";
 
     if (isSignedIn && !inTabsGroup) {
-      router.replace("/(auth)/(tabs)/home");
+      replace("/(auth)/(tabs)/home");
     } else if (!isSignedIn && inTabsGroup) {
-      router.replace("/(public)");
+      replace("/(public)");
     }
-  }, [isSignedIn, isLoaded, router, segments, rootNavigationState]);
+  }, [isSignedIn, isLoaded, replace, segments, rootNavigationState]);
 
   if (!isLoaded) {
     return <LoadingAnimation />;

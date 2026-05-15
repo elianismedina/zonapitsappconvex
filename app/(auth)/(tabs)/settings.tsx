@@ -6,12 +6,12 @@ import { useRouter } from "expo-router";
 export default function ProfileScreen() {
   const { user } = useUser();
   const { signOut } = useClerk();
-  const router = useRouter();
+  const { replace } = useRouter();
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.replace("/");
+      replace("/");
     } catch (err) {
       console.error("Error signing out:", err);
     }
@@ -20,7 +20,7 @@ export default function ProfileScreen() {
   const handleResetOnboarding = async () => {
     await resetOnboarding();
     alert("Onboarding has been reset! Please restart the app to see the onboarding flow again.");
-    router.replace("/"); // Optionally redirect to trigger onboarding re-display
+    replace("/"); // Optionally redirect to trigger onboarding re-display
   };
 
   return (

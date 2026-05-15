@@ -1,0 +1,10 @@
+react-doctor v0.1.6
+
+[2mScanning c:\zonapitsexpoclerk\zonapitsexpoclerk...[22m
+
+
+[31mSomething went wrong. Please check the error below for more details.[39m
+[31mIf the problem persists, please open an issue at https://github.com/millionco/react-doctor/issues.[39m
+[31m[39m
+[31mNo package.json found in c:\zonapitsexpoclerk\zonapitsexpoclerk[39m
+

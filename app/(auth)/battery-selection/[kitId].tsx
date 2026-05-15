@@ -41,19 +41,46 @@ export default function BatterySelectionScreen() {
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const addComponent = useMutation(api.kit_components.addComponent);
 
-  const [state, setState] = useState<{
-    selectedBatteryId: Id<"batteries"> | null;
-    selectedQuantity: number;
-    autonomyHours: number;
-    isCalculating: boolean;
-    compatibilityResults: BatteryCompatibilityResult[];
-  }>({
-    selectedBatteryId: null,
-    selectedQuantity: 1,
-    autonomyHours: 12,
-    isCalculating: true,
-    compatibilityResults: [],
-  });
+  type Action =
+    | { type: "SET_BATTERY"; id: Id<"batteries"> | null; quantity?: number }
+    | { type: "SET_QUANTITY"; quantity: number }
+    | { type: "SET_AUTONOMY"; hours: number }
+    | { type: "SET_CALCULATING"; isCalculating: boolean }
+    | { type: "SET_RESULTS"; results: BatteryCompatibilityResult[] };
+
+  const [state, dispatch] = React.useReducer(
+    (prevState: any, action: Action) => {
+      switch (action.type) {
+        case "SET_BATTERY":
+          return {
+            ...prevState,
+            selectedBatteryId: action.id,
+            selectedQuantity: action.quantity ?? prevState.selectedQuantity,
+          };
+        case "SET_QUANTITY":
+          return { ...prevState, selectedQuantity: action.quantity };
+        case "SET_AUTONOMY":
+          return { ...prevState, autonomyHours: action.hours };
+        case "SET_CALCULATING":
+          return { ...prevState, isCalculating: action.isCalculating };
+        case "SET_RESULTS":
+          return {
+            ...prevState,
+            compatibilityResults: action.results,
+            isCalculating: false,
+          };
+        default:
+          return prevState;
+      }
+    },
+    {
+      selectedBatteryId: null,
+      selectedQuantity: 1,
+      autonomyHours: 12,
+      isCalculating: true,
+      compatibilityResults: [],
+    }
+  );
 
   const {
     selectedBatteryId,
@@ -64,31 +91,23 @@ export default function BatterySelectionScreen() {
   } = state;
 
   const setSelectedBatteryId = (id: Id<"batteries"> | null, quantity?: number) => {
-    setState((prev) => ({
-      ...prev,
-      selectedBatteryId: id,
-      selectedQuantity: quantity ?? prev.selectedQuantity,
-    }));
+    dispatch({ type: "SET_BATTERY", id, quantity });
   };
 
   const setSelectedQuantity = (quantity: number) => {
-    setState((prev) => ({ ...prev, selectedQuantity: quantity }));
+    dispatch({ type: "SET_QUANTITY", quantity });
   };
 
   const setAutonomyHours = (hours: number) => {
-    setState((prev) => ({ ...prev, autonomyHours: hours }));
+    dispatch({ type: "SET_AUTONOMY", hours });
   };
 
   const setIsCalculating = (val: boolean) => {
-    setState((prev) => ({ ...prev, isCalculating: val }));
+    dispatch({ type: "SET_CALCULATING", isCalculating: val });
   };
 
   const setResultsAndDone = (results: BatteryCompatibilityResult[]) => {
-    setState((prev) => ({
-      ...prev,
-      compatibilityResults: results,
-      isCalculating: false,
-    }));
+    dispatch({ type: "SET_RESULTS", results });
   };
 
 
