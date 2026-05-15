@@ -1,5 +1,4 @@
 /// <reference types="nativewind/types" />
-/// <reference types="react-native-css/types" />
 
 import "expo-image";
 import "react";

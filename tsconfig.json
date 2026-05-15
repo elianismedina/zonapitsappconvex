@@ -3,9 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "nativewind": ["./nativewind-shim"],
-      "@/*": ["./*"],
-      "tailwind.config": ["./tailwind.config.js"]
+      "@/*": ["./*"]
     },
     "skipLibCheck": true
   },

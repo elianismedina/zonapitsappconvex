@@ -15,8 +15,6 @@ module.exports = function (api) {
 
           alias: {
             "@": "./",
-            "tailwind.config": "./tailwind.config.js",
-            "tailwindcss/resolveConfig": "./tailwind-resolve-config-shim.js",
           },
         },
       ],
