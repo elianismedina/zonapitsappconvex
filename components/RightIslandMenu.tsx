@@ -2,14 +2,17 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, Pressable, View } from "react-native";
 import Animated, {
   FadeInRight,
   FadeOutRight,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  useDerivedValue,
 } from "react-native-reanimated";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface RightMenuOption {
   id: string;
@@ -35,7 +38,7 @@ export default function RightIslandMenu({
   // Base width for the toggle button when closed
   const CLOSED_WIDTH = 28;
 
-  const animatedWidth = useSharedValue(CLOSED_WIDTH);
+  const translateX = useSharedValue(width - CLOSED_WIDTH);
 
   const toggleMenu = () => {
     if (enableHaptics && Platform.OS !== "web") {
@@ -43,7 +46,7 @@ export default function RightIslandMenu({
     }
     const nextState = !expanded;
     setExpanded(nextState);
-    animatedWidth.value = withSpring(nextState ? width : CLOSED_WIDTH, {
+    translateX.value = withSpring(nextState ? 0 : width - CLOSED_WIDTH, {
       damping: 20,
       stiffness: 200,
     });
@@ -53,17 +56,17 @@ export default function RightIslandMenu({
   useFocusEffect(
     useCallback(() => {
       setExpanded(false);
-      animatedWidth.value = withSpring(CLOSED_WIDTH, {
+      translateX.value = withSpring(width - CLOSED_WIDTH, {
         damping: 20,
         stiffness: 200,
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
+    }, [width]),
   );
 
   const menuAnimatedStyle = useAnimatedStyle(() => {
     return {
-      width: animatedWidth.value,
+      transform: [{ translateX: translateX.value }],
     };
   });
 
@@ -79,6 +82,7 @@ export default function RightIslandMenu({
       style={[
         menuAnimatedStyle,
         {
+          width,
           shadowColor: "#000",
           shadowOpacity: 0.3,
           shadowRadius: 10,
@@ -89,17 +93,17 @@ export default function RightIslandMenu({
       ]}
       className="absolute right-0 top-1/3 bg-black rounded-l-2xl overflow-hidden"
     >
-      <TouchableOpacity
-        className="items-center justify-center h-16 w-full"
+      <Pressable
+        className="items-center justify-center h-16"
+        style={{ width: CLOSED_WIDTH }}
         onPress={toggleMenu}
-        activeOpacity={0.7}
       >
         <Ionicons
           name={expanded ? "chevron-forward-outline" : "chevron-back-outline"}
           size={20}
           color="#fff"
         />
-      </TouchableOpacity>
+      </Pressable>
 
       {expanded && (
         <View className="pb-2 border-t border-white/10 mt-1">
@@ -109,10 +113,9 @@ export default function RightIslandMenu({
               exiting={FadeOutRight.duration(200)}
               key={option.id}
             >
-              <TouchableOpacity
+              <Pressable
                 className="flex-row items-center py-3 px-4 active:bg-white/10"
                 onPress={() => handlePress(option)}
-                activeOpacity={0.7}
               >
                 <Ionicons name={option.icon} size={22} color="#fff" />
                 <Text
@@ -121,7 +124,7 @@ export default function RightIslandMenu({
                 >
                   {option.label}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </Animated.View>
           ))}
         </View>

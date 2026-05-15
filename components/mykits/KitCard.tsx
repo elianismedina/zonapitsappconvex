@@ -23,10 +23,11 @@ import {
   Trash,
   Zap,
 } from "lucide-react-native";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withRepeat,
   withSequence,
@@ -46,35 +47,35 @@ const PulsingNextStep = ({
   active: boolean;
   [key: string]: any;
 }) => {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
+  const scale = useDerivedValue(() => {
+    return active
+      ? withRepeat(
+          withSequence(
+            withTiming(1.03, { duration: 800 }),
+            withTiming(1, { duration: 800 }),
+          ),
+          -1,
+          true,
+        )
+      : withTiming(1);
+  }, [active]);
 
-  useEffect(() => {
-    if (active) {
-      scale.value = withRepeat(
-        withSequence(
-          withTiming(1.03, { duration: 800 }),
-          withTiming(1, { duration: 800 }),
-        ),
-        -1,
-        true,
-      );
-      opacity.value = withRepeat(
-        withSequence(
-          withTiming(0.8, { duration: 800 }),
-          withTiming(1, { duration: 800 }),
-        ),
-        -1,
-        true,
-      );
-    } else {
-      scale.value = withTiming(1);
-      opacity.value = withTiming(1);
-    }
-  }, [active, opacity, scale]);
+  const opacity = useDerivedValue(() => {
+    return active
+      ? withRepeat(
+          withSequence(
+            withTiming(0.8, { duration: 800 }),
+            withTiming(1, { duration: 800 }),
+          ),
+          -1,
+          true,
+        )
+      : withTiming(1);
+  }, [active]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
+    opacity: opacity.value,
     borderColor: active ? "#0ea5e9" : "#e5e5e5",
     borderWidth: active ? 2 : 1,
   }));

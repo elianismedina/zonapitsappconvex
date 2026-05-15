@@ -39,12 +39,29 @@ export default function InverterSelectionScreen() {
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const addComponent = useMutation(api.kit_components.addComponent);
 
-  const [selectedInverterId, setSelectedInverterId] =
-    useState<Id<"inverters"> | null>(null);
-  const [isCalculating, setIsCalculating] = useState(true);
-  const [compatibilityResults, setCompatibilityResults] = useState<
-    CompatibilityResult[]
-  >([]);
+  const [state, setState] = useState<{
+    selectedInverterId: Id<"inverters"> | null;
+    isCalculating: boolean;
+    compatibilityResults: CompatibilityResult[];
+  }>({
+    selectedInverterId: null,
+    isCalculating: true,
+    compatibilityResults: [],
+  });
+
+  const { selectedInverterId, isCalculating, compatibilityResults } = state;
+
+  const setSelectedInverterId = (id: Id<"inverters"> | null) => {
+    setState(prev => ({ ...prev, selectedInverterId: id }));
+  };
+
+  const setIsCalculating = (val: boolean) => {
+    setState(prev => ({ ...prev, isCalculating: val }));
+  };
+
+  const setResultsAndDone = (results: CompatibilityResult[]) => {
+    setState(prev => ({ ...prev, compatibilityResults: results, isCalculating: false }));
+  };
 
   // Find the solar module and its configuration
   const solarModuleComponent = components?.find(
@@ -69,12 +86,19 @@ export default function InverterSelectionScreen() {
   }, [inverters, kit]);
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout | null = null;
+
     if (inverters && solarModule && quantity > 0) {
-      // Simulate background calculation as requested
       const runCheck = async () => {
         setIsCalculating(true);
-        // Small delay to show the LoadingAnimation as requested
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        
+        // Use a promise that we can skip if unmounted
+        await new Promise((resolve) => {
+          timeoutId = setTimeout(resolve, 1500);
+        });
+
+        if (!isMounted) return;
 
         const results = checkInverterCompatibility(
           {
@@ -93,14 +117,21 @@ export default function InverterSelectionScreen() {
             maxPvVoltage: inv.maxPvVoltage || 0,
           })),
         );
-        setCompatibilityResults(results);
-        setIsCalculating(false);
+        
+        if (isMounted) {
+          setResultsAndDone(results);
+        }
       };
 
       runCheck();
     } else if (filteredInverters && (!solarModule || quantity === 0)) {
       setIsCalculating(false);
     }
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [filteredInverters, solarModule, quantity, inverters]);
 
   const handleConfirmSelection = async () => {
@@ -138,7 +169,10 @@ export default function InverterSelectionScreen() {
       Alert.alert("¡Éxito!", "Se ha añadido el inversor a tu kit.", [
         {
           text: "OK",
-          onPress: () => router.replace("/(auth)/(tabs)/mykits"),
+          onPress: () => {
+            const { replace } = router;
+            replace("/(auth)/(tabs)/mykits");
+          },
         },
       ]);
     } catch (error) {
@@ -257,7 +291,7 @@ export default function InverterSelectionScreen() {
                       className="mr-4 rounded-lg bg-background-50"
                     />
                   ) : (
-                    <Box className="mr-4 h-20 w-20 items-center justify-center rounded-lg bg-background-50">
+                    <Box className="mr-4 size-20 items-center justify-center rounded-lg bg-background-50">
                       <Zap size={32} color="#3B82F6" />
                     </Box>
                   )}
