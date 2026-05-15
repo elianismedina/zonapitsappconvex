@@ -21,7 +21,7 @@ import { Alert, ScrollView } from "react-native";
 type ProtectionDoc = Doc<"protections">;
 
 export default function ProtectionSelectionScreen() {
-  const router = useRouter();
+  const { replace } = useRouter();
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
@@ -110,7 +110,7 @@ export default function ProtectionSelectionScreen() {
         [
           {
             text: "OK",
-            onPress: () => router.replace(`/(auth)/installation-selection/${kitId}`),
+            onPress: () => replace(`/(auth)/installation-selection/${kitId}`),
           },
         ],
       );

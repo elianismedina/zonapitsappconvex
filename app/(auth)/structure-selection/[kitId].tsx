@@ -19,7 +19,7 @@ import React, { useMemo, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function StructureSelectionScreen() {
-  const router = useRouter();
+  const { replace } = useRouter();
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
@@ -60,7 +60,7 @@ export default function StructureSelectionScreen() {
         [
           {
             text: "OK",
-            onPress: () => router.replace("/(auth)/(tabs)/mykits"),
+            onPress: () => replace("/(auth)/(tabs)/mykits"),
           },
         ],
       );

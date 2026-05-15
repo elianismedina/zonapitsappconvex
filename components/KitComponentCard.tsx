@@ -87,7 +87,7 @@ export function KitComponentCard({
   onRemove,
   onUpdateQuantity,
 }: KitComponentCardProps) {
-  const router = useRouter();
+  const { push } = useRouter();
   const [isPressed, setIsPressed] = useState(false);
   const [showActions, setShowActions] = useState(false);
   const [showQuantityModal, setShowQuantityModal] = useState(false);
@@ -121,7 +121,7 @@ export function KitComponentCard({
     switch (type) {
       case "solar_module":
         if (solarModuleId) {
-          router.push({
+          push({
             pathname: "/(auth)/panel-details/[panelId]",
             params: { panelId: solarModuleId },
           });
@@ -129,7 +129,7 @@ export function KitComponentCard({
         break;
       case "inverter":
         if (inverterId) {
-          router.push({
+          push({
             pathname: "/(auth)/inverter-details/[inverterId]",
             params: { inverterId },
           });
@@ -137,7 +137,7 @@ export function KitComponentCard({
         break;
       case "battery":
         if (batteryId) {
-          router.push({
+          push({
             pathname: "/(auth)/battery-details/[batteryId]",
             params: { batteryId },
           });

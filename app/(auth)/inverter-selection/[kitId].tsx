@@ -31,7 +31,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function InverterSelectionScreen() {
-  const router = useRouter();
+  const { push } = useRouter();
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
@@ -403,7 +403,7 @@ export default function InverterSelectionScreen() {
                       size="sm"
                       className="mt-2 h-auto self-start p-0"
                       onPress={() => {
-                        router.push({
+                        push({
                           pathname: "/(auth)/inverter-details/[inverterId]",
                           params: { inverterId: inverter._id },
                         });

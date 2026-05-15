@@ -15,13 +15,13 @@ import React, { useCallback, useEffect } from "react";
 import { ScrollView } from "react-native";
 
 const LoginScreen = () => {
-  const router = useRouter();
+  const { replace } = useRouter();
 
   useEffect(() => {
     // Check if user has seen onboarding, redirect if not
     hasSeenOnboarding().then((seen) => {
       if (!seen) {
-        router.replace("/onboarding");
+        replace("/onboarding");
       }
     });
   }, [router]);

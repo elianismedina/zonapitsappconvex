@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 
 export const EmptyKitsView = () => {
-  const router = useRouter();
+  const { push } = useRouter();
 
   return (
     <Box className="flex-1 justify-center items-center">
@@ -15,7 +15,7 @@ export const EmptyKitsView = () => {
           <Button
             variant="solid"
             action="primary"
-            onPress={() => router.push("/(auth)/(tabs)/location")}
+            onPress={() => push("/(auth)/(tabs)/location")}
           >
             <ButtonText>Crear kit</ButtonText>
           </Button>

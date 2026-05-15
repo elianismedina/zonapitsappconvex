@@ -35,7 +35,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function InstallationSelectionScreen() {
-  const router = useRouter();
+  const { replace } = useRouter();
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
@@ -178,7 +178,7 @@ export default function InstallationSelectionScreen() {
         [
           {
             text: "Finalizar",
-            onPress: () => router.replace("/(auth)/(tabs)/mykits"),
+            onPress: () => replace("/(auth)/(tabs)/mykits"),
           },
         ],
       );
