@@ -7,13 +7,15 @@ import { boxStyle } from './styles';
 type IBoxProps = ViewProps &
   VariantProps<typeof boxStyle> & { className?: string };
 
-const Box = React.forwardRef<React.ComponentRef<typeof View>, IBoxProps>(
-  function Box({ className, ...props }, ref) {
-    return (
-      <View ref={ref} {...props} className={boxStyle({ class: className })} />
-    );
-  }
-);
+const Box = ({
+  className,
+  ref,
+  ...props
+}: IBoxProps & { ref?: React.Ref<React.ComponentRef<typeof View>> }) => {
+  return (
+    <View ref={ref} {...props} className={boxStyle({ class: className })} />
+  );
+};
 
 Box.displayName = 'Box';
 export { Box };

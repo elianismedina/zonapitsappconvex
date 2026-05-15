@@ -105,8 +105,8 @@ export default function PanelSelectionScreen() {
     return (
       <Box className="flex-1 items-center justify-center bg-background-0">
         <LoadingAnimation size={140} />
-        <Text className="mt-4 text-typography-500">
-          Analizando tu consumo y ubicación...
+        <Text size="sm" className="mt-4 text-center text-typography-500">
+          Calculando opciones óptimas…
         </Text>
       </Box>
     );

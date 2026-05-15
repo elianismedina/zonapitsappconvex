@@ -356,7 +356,6 @@ export function KitComponentCard({
                   value={newQuantity}
                   onChangeText={setNewQuantity}
                   keyboardType="numeric"
-                  autoFocus
                 />
               </Input>
             </VStack>

@@ -134,10 +134,11 @@ cssInterop(PrimitiveIcon, {
 type ISelectProps = VariantProps<typeof selectStyle> &
   React.ComponentProps<typeof UISelect> & { className?: string };
 
-const Select = React.forwardRef<
-  React.ComponentRef<typeof UISelect>,
-  ISelectProps
->(function Select({ className, ...props }, ref) {
+const Select = ({
+  className,
+  ref,
+  ...props
+}: ISelectProps & { ref?: React.Ref<React.ComponentRef<typeof UISelect>> }) => {
   return (
     <UISelect
       className={selectStyle({
@@ -147,18 +148,20 @@ const Select = React.forwardRef<
       {...props}
     />
   );
-});
+};
 
 type ISelectTriggerProps = VariantProps<typeof selectTriggerStyle> &
   React.ComponentProps<typeof UISelect.Trigger> & { className?: string };
 
-const SelectTrigger = React.forwardRef<
-  React.ComponentRef<typeof UISelect.Trigger>,
-  ISelectTriggerProps
->(function SelectTrigger(
-  { className, size = "md", variant = "outline", ...props },
+const SelectTrigger = ({
+  className,
+  size = "md",
+  variant = "outline",
   ref,
-) {
+  ...props
+}: ISelectTriggerProps & {
+  ref?: React.Ref<React.ComponentRef<typeof UISelect.Trigger>>;
+}) => {
   return (
     <UISelect.Trigger
       className={selectTriggerStyle({
@@ -171,7 +174,7 @@ const SelectTrigger = React.forwardRef<
       {...props}
     />
   );
-});
+};
 
 type ISelectInputProps = VariantProps<typeof selectInputStyle> &
   React.ComponentProps<typeof UISelect.Input> & {
@@ -179,10 +182,13 @@ type ISelectInputProps = VariantProps<typeof selectInputStyle> &
     placeholder?: string;
   };
 
-const SelectInput = React.forwardRef<
-  React.ComponentRef<typeof UISelect.Input>,
-  ISelectInputProps
->(function SelectInput({ className, ...props }, ref) {
+const SelectInput = ({
+  className,
+  ref,
+  ...props
+}: ISelectInputProps & {
+  ref?: React.Ref<React.ComponentRef<typeof UISelect.Input>>;
+}) => {
   const { size: parentSize, variant: parentVariant } = useStyleContext();
   return (
     <UISelect.Input
@@ -197,7 +203,7 @@ const SelectInput = React.forwardRef<
       {...props}
     />
   );
-});
+};
 
 type ISelectIcon = VariantProps<typeof selectIconStyle> &
   React.ComponentProps<typeof UISelect.Icon> & {
@@ -205,10 +211,13 @@ type ISelectIcon = VariantProps<typeof selectIconStyle> &
     as?: React.ElementType;
   };
 
-const SelectIcon = React.forwardRef<
-  React.ComponentRef<typeof UISelect.Icon>,
-  ISelectIcon
->(function SelectIcon({ className, size, children, ...props }, ref) {
+const SelectIcon = ({
+  className,
+  size,
+  children,
+  ref,
+  ...props
+}: ISelectIcon & { ref?: React.Ref<React.ComponentRef<typeof UISelect.Icon>> }) => {
   const { size: parentSize } = useStyleContext();
   if (typeof size === "number") {
     return (
@@ -251,7 +260,7 @@ const SelectIcon = React.forwardRef<
       {children}
     </UISelect.Icon>
   );
-});
+};
 
 Select.displayName = "Select";
 SelectTrigger.displayName = "SelectTrigger";

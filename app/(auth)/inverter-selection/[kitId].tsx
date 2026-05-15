@@ -185,8 +185,8 @@ export default function InverterSelectionScreen() {
         <LoadingAnimation size={140} />
         <Text className="mt-4 text-typography-500">
           {isCalculating
-            ? "Verificando compatibilidad técnica..."
-            : "Cargando opciones de inversores..."}
+            ? "Verificando compatibilidad técnica…"
+            : "Cargando opciones de inversores…" }
         </Text>
       </Box>
     );

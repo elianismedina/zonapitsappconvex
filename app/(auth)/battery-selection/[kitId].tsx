@@ -185,8 +185,8 @@ export default function BatterySelectionScreen() {
           size={140}
           text={
             isCalculating
-              ? "Calculando autonomía óptima..."
-              : "Cargando opciones de baterías..."
+              ? "Calculando autonomía óptima…"
+              : "Cargando opciones de baterías…"
           }
         />
       </Box>
