@@ -25,11 +25,13 @@ export const useKeyboardOffset = () => {
     const showSubscription = Keyboard.addListener(showEvent, onShow);
     const hideSubscription = Keyboard.addListener(hideEvent, onHide);
 
-    return () => {
+    const cleanup = () => {
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, [keyboardOffset]);
+
+    return cleanup;
+  }, []);
 
   return keyboardOffset;
 };

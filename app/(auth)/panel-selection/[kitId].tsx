@@ -43,7 +43,6 @@ export default function PanelSelectionScreen() {
   const calculateSizing = useAction(api.sizing.calculateSizing);
   const addComponent = useMutation(api.kit_components.addComponent);
 
-  const [isSizing, setIsSizing] = useState(true);
   const [sizingResults, setSizingResults] = useState<SizingResults>(null);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(
     null,
@@ -63,10 +62,6 @@ export default function PanelSelectionScreen() {
         if (isMounted) {
           Alert.alert("Error de Cálculo", error.message);
           router.back();
-        }
-      } finally {
-        if (isMounted) {
-          setIsSizing(false);
         }
       }
     }
@@ -106,7 +101,7 @@ export default function PanelSelectionScreen() {
     }
   };
 
-  if (isSizing || !kit) {
+  if (!sizingResults || !kit) {
     return (
       <Box className="flex-1 items-center justify-center bg-background-0">
         <LoadingAnimation size={140} />

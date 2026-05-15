@@ -55,9 +55,7 @@ export default function InverterSelectionScreen() {
     setState(prev => ({ ...prev, selectedInverterId: id }));
   };
 
-  const setIsCalculating = (val: boolean) => {
-    setState(prev => ({ ...prev, isCalculating: val }));
-  };
+
 
   const setResultsAndDone = (results: CompatibilityResult[]) => {
     setState(prev => ({ ...prev, compatibilityResults: results, isCalculating: false }));
@@ -91,9 +89,9 @@ export default function InverterSelectionScreen() {
 
     if (inverters && solarModule && quantity > 0) {
       const runCheck = async () => {
-        setIsCalculating(true);
+        // Only set to true if not already calculating
+        setState(prev => prev.isCalculating ? prev : { ...prev, isCalculating: true });
         
-        // Use a promise that we can skip if unmounted
         await new Promise((resolve) => {
           timeoutId = setTimeout(resolve, 1500);
         });
@@ -125,7 +123,7 @@ export default function InverterSelectionScreen() {
 
       runCheck();
     } else if (filteredInverters && (!solarModule || quantity === 0)) {
-      setIsCalculating(false);
+      setState(prev => !prev.isCalculating ? prev : { ...prev, isCalculating: false });
     }
 
     return () => {

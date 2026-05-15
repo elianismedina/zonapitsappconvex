@@ -28,7 +28,7 @@ import { Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
-  useSharedValue,
+
   withRepeat,
   withSequence,
   withTiming,

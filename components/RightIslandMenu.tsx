@@ -9,10 +9,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  useDerivedValue,
 } from "react-native-reanimated";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export interface RightMenuOption {
   id: string;

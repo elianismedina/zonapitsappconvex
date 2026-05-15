@@ -1,0 +1,125 @@
+react-doctor v0.1.6
+
+[32m✔[39m Select projects to scan [2m›[22m zonapitsexpoclerk
+[2mScanning c:\zonapitsexpoclerk...[22m
+
+- Detecting framework. Found [36mExpo[39m.
+[32m√[39m Detecting framework. Found [36mExpo[39m.
+- Detecting React version. Found [36mReact 19.1.0[39m.
+[32m√[39m Detecting React version. Found [36mReact 19.1.0[39m.
+- Detecting language. Found [36mTypeScript[39m.
+[32m√[39m Detecting language. Found [36mTypeScript[39m.
+- Detecting React Compiler. Not found.
+[32m√[39m Detecting React Compiler. Not found.
+- Found [36m152[39m source files.
+[32m√[39m Found [36m152[39m source files.
+
+- Running lint checks...
+- Detecting dead code.
+[32m√[39m Detecting dead code.
+- Running lint checks...
+[32m√[39m Running lint checks.
+
+[1mState & Effects[22m [2m10 issues[22m
+  [31m✗[39m Effect needs cleanup
+[90m    useEffect subscribes via `addListener(...)` but never returns a cleanup — leaks the
+    registration on every re-run and on unmount. Return a cleanup function that calls
+    the matching remove/unsubscribe call[39m
+[90m    Return a cleanup function that releases the subscription / timer: `return () =>
+    target.removeEventListener(name, handler)` for listeners, `return () =>
+    clearInterval(id)` / `clearTimeout(id)` for timers, or `return unsubscribe` if the
+    subscribe call already returned one[39m
+[90m    hooks/use-keyboard-offset.ts:7[39m
+  [33m⚠[39m Cascading set state [90m×3[39m
+[90m    3 setState calls in a single useEffect — consider using useReducer or deriving state[39m
+[90m    Combine into useReducer: `const [state, dispatch] = useReducer(reducer,
+    initialState)`[39m
+[90m    components/billupload/useBillUpload.tsx:67[39m
+  [33m⚠[39m Effect event handler [90m×2[39m
+[90m    useEffect simulating an event handler — move logic to an actual event handler
+    instead[39m
+[90m    Move the conditional logic into onClick, onChange, or onSubmit handlers directly[39m
+[90m    app/_layout.tsx:115[39m
+
+[1mArchitecture[22m [2m187 issues[22m
+  [33m⚠[39m React19 deprecated apis [90m×131[39m
+[90m    useContext is superseded by `use()` on React 19+ — `use()` reads context
+    conditionally inside hooks, branches, and loops; switch to `import { use } from
+    'react'`[39m
+[90m    Pass `ref` as a regular prop on function components — `forwardRef` is no longer
+    needed in React 19+. Replace `useContext(X)` with `use(X)` for branch-aware context
+    reads. Only enabled on projects detected as React 19+.[39m
+[90m    components/ui/grid/index.tsx:4[39m
+  [33m⚠[39m React compiler destructure method [90m×31[39m
+[90m    Destructure for clarity: `const { push } = useRouter()` then call `push(...)`
+    directly — easier for React Compiler to memoize and clearer about which methods
+    this component depends on[39m
+[90m    Destructure the method up front: `const { push } = useRouter()` then call
+    `push(...)` directly — clearer dependency graph and easier for React Compiler to
+    memoize[39m
+[90m    app/(auth)/(tabs)/mykits.tsx:134[39m
+  [33m⚠[39m Design no redundant size axes [90m×15[39m
+[90m    w-20 h-20 → use the shorthand size-20 (Tailwind v3.4+)[39m
+[90m    Collapse `w-N h-N` to `size-N` (Tailwind v3.4+) when both axes match[39m
+[90m    app/(auth)/wiring-selection/[kitId].tsx:149[39m
+
+[1mDead Code[22m [2m121 issues[22m
+  [33m⚠[39m Exports [90m×92[39m
+[90m    Unused export: User[39m
+  [33m⚠[39m Files [90m×29[39m
+[90m    Unused file[39m
+[90m    This file is not imported by any other file in the project.[39m
+
+[1mReact Native[22m [2m20 issues[22m
+  [33m⚠[39m Rn no legacy expo packages [90m×5[39m
+[90m    "@expo/vector-icons" is deprecated — use expo-symbols or expo-image (see
+    https://docs.expo.dev/versions/latest/sdk/symbols/)[39m
+[90m    Migrate to the recommended replacement package — legacy Expo packages are no longer
+    maintained[39m
+[90m    app/(public)/index.tsx:3[39m
+  [33m⚠[39m Rn no dimensions get [90m×4[39m
+[90m    Dimensions.get() does not update on screen rotation or resize — use
+    useWindowDimensions() for reactive layout[39m
+[90m    Use `const { width, height } = useWindowDimensions()` — it updates reactively on
+    rotation and resize[39m
+[90m    components/ui/grid/index.tsx:16[39m
+  [33m⚠[39m Rn prefer pressable [90m×3[39m
+[90m    TouchableWithoutFeedback is legacy — use <Pressable> from react-native (or
+    react-native-gesture-handler) for modern press handling[39m
+[90m    Use `<Pressable>` from react-native (or react-native-gesture-handler) instead of
+    legacy Touchable* components[39m
+[90m    app/(auth)/(tabs)/location.tsx:11[39m
+
+[1mPerformance[22m [2m15 issues[22m
+  [33m⚠[39m Async await in loop [90m×10[39m
+[90m    await inside a for…of loop runs the calls sequentially — for independent
+    operations, collect them and use `await Promise.all(items.map(...))` to run them
+    concurrently[39m
+[90m    Collect the items and use `await Promise.all(items.map(...))` to run independent
+    operations concurrently[39m
+[90m    convex/structures.ts:83[39m
+  [33m⚠[39m Async defer await
+[90m    await blocks the function before an early-return that doesn't use the awaited value
+    — move the await after the synchronous guard so the skip path stays fast[39m
+[90m    Move the `await` after the synchronous early-return guard so the skip path stays
+    fast[39m
+[90m    convex/kits.ts:7[39m
+  [33m⚠[39m Rerender functional setstate
+[90m    setSelectedQuantity(selectedQuantity + ...) — use functional update to avoid stale
+    closures[39m
+[90m    Use the callback form: `setState(prev => prev + 1)` to always read the latest value[39m
+[90m    app/(auth)/battery-selection/[kitId].tsx:412[39m
+
+  [33m⚠[39m [2m38 more warnings[22m
+[90m    Run `npx react-doctor@latest . --verbose` to get all details[39m
+
+  [33m┌─────┐[39m  [33m72[39m [2m/ 100[22m [33mNeeds work[39m
+  [33m│ • • │[39m  [33m████████████████████████████████████[39m[2m░░░░░░░░░░░░░░[22m
+  [33m│  ─  │[39m  React Doctor [2m(www.react.doctor)[22m
+  [33m└─────┘[39m
+
+  [31m366 issues[39m [2macross 133/152 files  in 3.8s[22m
+[90m  Full diagnostics written to C:\Users\temp\AppData\Local\Temp\react-doctor-35ea6b82-8bab-4f3a-8bd9-dd3b94ffabd1[39m
+
+  [1m→ Share your results:[22m [36mhttps://www.react.doctor/share?p=zonapitsexpoclerk&s=72&e=1&w=365&f=133[39m
+
