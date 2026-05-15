@@ -20,6 +20,7 @@ import Reanimated, {
   withRepeat,
   withSequence,
   withTiming,
+  type SharedValue,
 } from "react-native-reanimated";
 
 interface KitCreationFormProps {
@@ -29,7 +30,7 @@ interface KitCreationFormProps {
   selectedLocation: { address: string } | null;
   onConfirm: () => void;
   onCancel: () => void;
-  keyboardOffset: Reanimated.SharedValue<number>;
+  keyboardOffset: SharedValue<number>;
   shakeSignal?: number;
 }
 

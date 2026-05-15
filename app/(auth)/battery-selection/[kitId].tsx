@@ -293,7 +293,7 @@ export default function BatterySelectionScreen() {
 
             {batteries.map((currBattery) => {
               const result = compatibilityResults.find(
-                (r) => r.batteryId === currBattery._id,
+                (r: BatteryCompatibilityResult) => r.batteryId === currBattery._id,
               );
               const isSelected = selectedBatteryId === currBattery._id;
 

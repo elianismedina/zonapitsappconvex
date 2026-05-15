@@ -25,7 +25,7 @@ import React, { useEffect } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function InverterSelectionScreen() {
-  const { push } = useRouter();
+  const { push, replace } = useRouter();
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
@@ -149,7 +149,7 @@ export default function InverterSelectionScreen() {
 
     // Check if selected inverter is incompatible and warn user
     const result = compatibilityResults.find(
-      (r) => r.inverterId === selectedInverterId,
+      (r: CompatibilityResult) => r.inverterId === selectedInverterId,
     );
     if (result && !result.isCompatible) {
       Alert.alert(
@@ -180,7 +180,6 @@ export default function InverterSelectionScreen() {
         {
           text: "OK",
           onPress: () => {
-            const { replace } = router;
             replace("/(auth)/(tabs)/mykits");
           },
         },
@@ -206,7 +205,7 @@ export default function InverterSelectionScreen() {
 
   const getCompatibilityBadge = (inverterId: string) => {
     const result = compatibilityResults.find(
-      (r) => r.inverterId === inverterId,
+      (r: CompatibilityResult) => r.inverterId === inverterId,
     );
     if (!result) return null;
 
@@ -279,7 +278,7 @@ export default function InverterSelectionScreen() {
 
             {filteredInverters.map((inverter) => {
               const result = compatibilityResults.find(
-                (r) => r.inverterId === inverter._id,
+                (r: CompatibilityResult) => r.inverterId === inverter._id,
               );
               const isSelected = selectedInverterId === inverter._id;
 
