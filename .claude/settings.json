@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "if": "Bash(npm install*)",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "python3 -c \"\nimport sys, json, re\ndata = json.load(sys.stdin)\ncmd = data['tool_input']['command']\nnew_cmd = re.sub(r'^npm install', 'pnpm install', cmd)\nnew_cmd = re.sub(r'^npm i ', 'pnpm install ', new_cmd)\nprint(json.dumps({'hookSpecificOutput': {'hookEventName': 'PreToolUse', 'updatedInput': {'command': new_cmd}}}))\n\"",
+            "statusMessage": "Redirecting npm install → pnpm install"
+          }
+        ]
+      }
+    ]
+  }
+}
