@@ -62,6 +62,7 @@ npx convex dev
     - `structure-selection/[kitId].tsx` - Mounting structure selection for a kit
     - `wiring-selection/[kitId].tsx` - Electrical wiring selection for a kit
     - `protection-selection/[kitId].tsx` - Protection device selection for a kit
+    - `protection-details/[protectionId].tsx` - Protection device detail view
     - `installation-selection/[kitId].tsx` - Installation service selection for a kit
 - `app/oauth-native-callback.tsx` - OAuth callback for native authentication
 
@@ -141,3 +142,17 @@ Key Convex tables:
 - Sentry wraps the entire app (`app/_layout.tsx`) with mobile replay and feedback integration
 - Custom splash screen implemented in `components/AnimatedSplashScreen.tsx`
 - AI bill processing via Google AI in `convex/actions.ts` for extracting energy data from uploaded bills
+
+<!-- convex-ai-start -->
+
+This project uses [Convex](https://convex.dev) as its backend.
+
+When working on Convex code, **always read
+`convex/_generated/ai/guidelines.md` first** for important guidelines on
+how to correctly use Convex APIs and patterns. The file contains rules that
+override what you may have learned about Convex from training data.
+
+Convex agent skills for common tasks can be installed by running
+`npx convex ai-files install`.
+
+<!-- convex-ai-end -->

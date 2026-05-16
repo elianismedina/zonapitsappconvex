@@ -60,7 +60,9 @@ export interface KitComponentCardProps {
   structureId?: string;
   wiringId?: string;
   protectionId?: string;
+  installationId?: string;
   componentId?: Id<"kit_components">;
+  onPress?: () => void;
   onRemove?: (componentId: Id<"kit_components">) => void;
   onUpdateQuantity?: (componentId: Id<"kit_components">, quantity: number) => void;
 }
@@ -83,7 +85,9 @@ export function KitComponentCard({
   structureId,
   wiringId,
   protectionId,
+  installationId,
   componentId,
+  onPress,
   onRemove,
   onUpdateQuantity,
 }: KitComponentCardProps) {
@@ -100,7 +104,11 @@ export function KitComponentCard({
     !isSummary &&
     ((type === "solar_module" && solarModuleId) ||
       (type === "inverter" && inverterId) ||
-      (type === "battery" && batteryId));
+      (type === "battery" && batteryId) ||
+      (type === "structure" && structureId) ||
+      (type === "wiring" && wiringId) ||
+      (type === "protection" && protectionId) ||
+      (type === "installation" && installationId));
 
   const handleUpdate = () => {
     if (onUpdateQuantity && componentId) {
@@ -140,6 +148,38 @@ export function KitComponentCard({
           push({
             pathname: "/(auth)/battery-details/[batteryId]",
             params: { batteryId },
+          });
+        }
+        break;
+      case "structure":
+        if (structureId) {
+          push({
+            pathname: "/(auth)/structure-details/[structureId]",
+            params: { structureId },
+          });
+        }
+        break;
+      case "wiring":
+        if (wiringId) {
+          push({
+            pathname: "/(auth)/wiring-details/[wiringId]",
+            params: { wiringId },
+          });
+        }
+        break;
+      case "protection":
+        if (protectionId) {
+          push({
+            pathname: "/(auth)/protection-details/[protectionId]",
+            params: { protectionId },
+          });
+        }
+        break;
+      case "installation":
+        if (installationId) {
+          push({
+            pathname: "/(auth)/installation-details/[installationId]",
+            params: { installationId },
           });
         }
         break;
@@ -191,11 +231,11 @@ export function KitComponentCard({
   return (
     <>
       <Pressable
-        onPress={canViewDetails ? handleViewDetails : undefined}
+        onPress={onPress ?? (canViewDetails ? handleViewDetails : undefined)}
         onLongPress={() => setShowActions(true)}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
-        className={canViewDetails ? "active:opacity-80" : ""}
+        className={(onPress || canViewDetails) ? "active:opacity-80" : ""}
       >
         <Card
           variant="elevated"

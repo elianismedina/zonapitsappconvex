@@ -11,6 +11,7 @@
 import type * as actions from "../actions.js";
 import type * as batteries from "../batteries.js";
 import type * as http from "../http.js";
+import type * as installations from "../installations.js";
 import type * as inverters from "../inverters.js";
 import type * as kit_components from "../kit_components.js";
 import type * as kits from "../kits.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   batteries: typeof batteries;
   http: typeof http;
+  installations: typeof installations;
   inverters: typeof inverters;
   kit_components: typeof kit_components;
   kits: typeof kits;

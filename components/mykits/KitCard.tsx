@@ -8,7 +8,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { Id } from "@/convex/_generated/dataModel";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   Battery,
   Cable,
@@ -122,6 +122,7 @@ export const KitCard = ({
   onAddInstallation,
   onRemoveInstallation,
 }: KitCardProps) => {
+  const { push } = useRouter();
   const hasSolarModule = components
     ? components.some((comp) => comp.type === "solar_module")
     : false;
@@ -362,6 +363,12 @@ export const KitCard = ({
               subtotalOverride={structureSummary.subtotal}
               imageUrl={structureSummary.imageUrl}
               componentId={item._id as any}
+              onPress={() =>
+                push({
+                  pathname: "/(auth)/kit-structures/[kitId]",
+                  params: { kitId: item._id },
+                })
+              }
               onRemove={() => onRemoveAllOfType(item._id, "structure")}
             />
           </Box>
@@ -375,6 +382,12 @@ export const KitCard = ({
               subtotalOverride={wiringSummary.subtotal}
               imageUrl={wiringSummary.imageUrl}
               componentId={item._id as any}
+              onPress={() =>
+                push({
+                  pathname: "/(auth)/kit-wiring/[kitId]",
+                  params: { kitId: item._id },
+                })
+              }
               onRemove={() => onRemoveAllOfType(item._id, "wiring")}
             />
           </Box>
@@ -388,22 +401,37 @@ export const KitCard = ({
               subtotalOverride={protectionSummary.subtotal}
               imageUrl={protectionSummary.imageUrl}
               componentId={item._id as any}
+              onPress={() =>
+                push({
+                  pathname: "/(auth)/kit-protections/[kitId]",
+                  params: { kitId: item._id },
+                })
+              }
               onRemove={() => onRemoveAllOfType(item._id, "protection")}
             />
           </Box>
         )}
-        {components?.find(c => c.type === "installation") && (
-          <Box className="mt-2">
-            <KitComponentCard
-              type="installation"
-              name="Mano de Obra / Instalación"
-              quantity={1}
-              subtotalOverride={components.find(c => c.type === "installation")?.details?.price}
-              componentId={components.find(c => c.type === "installation")?._id}
-              onRemove={onRemoveComponent}
-            />
-          </Box>
-        )}
+        {components?.find(c => c.type === "installation") && (() => {
+          const installComp = components.find(c => c.type === "installation");
+          return (
+            <Box className="mt-2">
+              <KitComponentCard
+                type="installation"
+                name="Mano de Obra / Instalación"
+                quantity={1}
+                subtotalOverride={installComp?.details?.price}
+                componentId={installComp?._id}
+                onPress={installComp?.installationId ? () =>
+                  push({
+                    pathname: "/(auth)/installation-details/[installationId]",
+                    params: { installationId: installComp.installationId as string },
+                  })
+                : undefined}
+                onRemove={onRemoveComponent}
+              />
+            </Box>
+          );
+        })()}
         {!hasInstallation && item.laborCost > 0 && (
           <Box className="mt-2">
             <KitComponentCard
