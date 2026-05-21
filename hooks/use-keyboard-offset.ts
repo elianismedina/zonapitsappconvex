@@ -27,7 +27,8 @@ export const useKeyboardOffset = () => {
       showSubscription.remove();
       hideSubscription.remove();
     };
-  }, [keyboardOffset]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return keyboardOffset;
 };

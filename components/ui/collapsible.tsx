@@ -1,11 +1,12 @@
 import { PropsWithChildren, useState } from 'react';
-import { StyleSheet, Pressable, View, useColorScheme } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Text } from '@/components/ui';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const colorScheme = useColorScheme() ?? 'light';
+  const { colorScheme } = useColorScheme();
 
   return (
     <View>

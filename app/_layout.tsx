@@ -19,7 +19,9 @@ import {
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -153,9 +155,8 @@ const RootLayoutNav = () => {
   });
   // Splash screen state
   const [isSplashFinished, setIsSplashFinished] = useState(false);
-  // Color mode state
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+  // Color mode state dynamically detected from system
+  const { colorScheme } = useColorScheme();
 
   // Handle font loading
   useEffect(() => {
@@ -185,24 +186,26 @@ const RootLayoutNav = () => {
   return (
     <SafeAreaProvider>
       <KeyboardProvider>
-        <GluestackUIProvider mode={colorMode}>
-          <StatusBar style="auto" />
-          <ClerkProvider
-            publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-            tokenCache={tokenCache}
-          >
-            <ClerkLoaded>
-              <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-                <InitialLayout />
-              </ConvexProviderWithClerk>
-              {!isSplashFinished && (
-                <AnimatedSplashScreen
-                  onReady={onSplashReady}
-                  onAnimationFinish={onSplashFinish}
-                />
-              )}
-            </ClerkLoaded>
-          </ClerkProvider>
+        <GluestackUIProvider mode="system">
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <StatusBar style="auto" />
+            <ClerkProvider
+              publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+              tokenCache={tokenCache}
+            >
+              <ClerkLoaded>
+                <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+                  <InitialLayout />
+                </ConvexProviderWithClerk>
+                {!isSplashFinished && (
+                  <AnimatedSplashScreen
+                    onReady={onSplashReady}
+                    onAnimationFinish={onSplashFinish}
+                  />
+                )}
+              </ClerkLoaded>
+            </ClerkProvider>
+          </ThemeProvider>
         </GluestackUIProvider>
       </KeyboardProvider>
     </SafeAreaProvider>

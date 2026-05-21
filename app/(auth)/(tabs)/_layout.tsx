@@ -1,5 +1,5 @@
 import RightIslandMenu from "@/components/RightIslandMenu";
-import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React, { useEffect } from "react";
@@ -37,8 +37,8 @@ const CreateTabIcon = ({
 
   return (
     <Animated.View
-      className="rounded-lg p-1.5"
-      style={[{ backgroundColor: Colors.itemBackground }, animatedStyle]}
+      className="rounded-lg p-1.5 bg-primary/20"
+      style={[animatedStyle]}
     >
       <Ionicons name="receipt" size={size} color={color} />
     </Animated.View>
@@ -87,6 +87,7 @@ const TabIcon = ({
 };
 
 const Layout = () => {
+  const { colorScheme } = useColorScheme();
   const handleOptionPress = (option: any) => {
     Alert.alert(option.label, `Selected: ${option.id}`);
   };
@@ -96,7 +97,7 @@ const Layout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
-          tabBarActiveTintColor: "#000",
+          tabBarActiveTintColor: colorScheme === "dark" ? "#f0d117" : "#000",
           headerTitle: "EfiKit Solar",
         }}
       >
