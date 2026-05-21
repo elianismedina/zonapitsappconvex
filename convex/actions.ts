@@ -44,7 +44,7 @@ export const analyzeBill = action({
         "monthlyConsumptionKwh": número (consumo mensual en kWh),
         "energyRate": número (valor por kWh),
         "totalAmount": número (valor total a pagar),
-        "currency": string (ej. "COP", "USD"),
+        "currency": string (ej. "COP"), // Colombian pesos
         "billingPeriod": string (ej. "Enero 2024"),
         "provider": string (nombre de la empresa de energía)
       }

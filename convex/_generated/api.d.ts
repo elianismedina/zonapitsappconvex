@@ -18,6 +18,7 @@ import type * as kits from "../kits.js";
 import type * as modules from "../modules.js";
 import type * as protections from "../protections.js";
 import type * as sizing from "../sizing.js";
+import type * as sizing_retie from "../sizing_retie.js";
 import type * as structures from "../structures.js";
 import type * as users from "../users.js";
 import type * as wiring from "../wiring.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   modules: typeof modules;
   protections: typeof protections;
   sizing: typeof sizing;
+  sizing_retie: typeof sizing_retie;
   structures: typeof structures;
   users: typeof users;
   wiring: typeof wiring;

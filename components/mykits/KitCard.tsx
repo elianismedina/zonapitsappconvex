@@ -1,4 +1,5 @@
 import { KitComponentCard } from "@/components/KitComponentCard";
+import { ComplianceStatus, RetieComplianceBadge } from "@/components/RetieComplianceBadge";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,28 +11,29 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import {
-  Battery,
-  Cable,
-  CalendarDays,
-  CheckCircle2,
-  CircleDollarSign,
-  Edit,
-  FileText,
-  Hammer as HammerIcon,
-  Shield,
-  Sun,
-  Trash,
-  Zap,
+    AlertTriangle,
+    Battery,
+    Cable,
+    CalendarDays,
+    CheckCircle2,
+    CircleDollarSign,
+    Edit,
+    FileText,
+    Hammer as HammerIcon,
+    Shield,
+    Sun,
+    Trash,
+    Zap,
 } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Pressable } from "react-native";
 import Animated, {
-  useAnimatedStyle,
-  useDerivedValue,
+    useAnimatedStyle,
+    useDerivedValue,
 
-  withRepeat,
-  withSequence,
-  withTiming,
+    withRepeat,
+    withSequence,
+    withTiming,
 } from "react-native-reanimated";
 
 const kitImage = require("@/assets/images/kitImage.webp");
@@ -90,6 +92,11 @@ const PulsingNextStep = ({
 export interface KitCardProps {
   item: any;
   components: any[] | undefined;
+  retieCompliance?: {
+    status: ComplianceStatus;
+    issues?: string[];
+    complianceCost?: number;
+  };
   onEdit: (item: any) => void;
   onDelete: (id: Id<"kits">) => void;
   onSizing: (item: any) => void;
@@ -108,6 +115,7 @@ export interface KitCardProps {
 export const KitCard = ({
   item,
   components,
+  retieCompliance,
   onEdit,
   onDelete,
   onSizing,
@@ -265,6 +273,9 @@ export const KitCard = ({
     };
   }, [components]);
 
+  const formatCOP = (value: number) =>
+    `$ ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
   return (
     <Card size="md" variant="elevated" className="mb-4 overflow-hidden p-0">
       <Box className="relative">
@@ -326,35 +337,62 @@ export const KitCard = ({
               </Text>
             </HStack>
           )}
-        </VStack>
 
-        {/* Display kit components */}
-        {displayComponents.map((component: any) => (
-          <Box key={component._id} className="mt-2">
-            <KitComponentCard
-              type={component.type}
-              brand={component.details?.brand}
-              model={component.details?.model}
-              name={component.details?.name}
-              quantity={component.quantity}
-              pmax={component.details?.pmax}
-              price={component.details?.price ?? component.details?.pricePerUnit ?? component.details?.pricePerMeter}
-              power={component.details?.power}
-              capacity={component.details?.capacity}
-              imageUrl={component.details?.imageUrl || component.details?.image || component.details?.imageURL || (component as any).imageUrl}
-              solarModuleId={component.solarModuleId}
-              inverterId={component.inverterId}
-              batteryId={component.batteryId}
-              structureId={component.structureId}
-              wiringId={component.wiringId}
-              protectionId={component.protectionId}
-              componentId={component._id}
-              onRemove={onRemoveComponent}
-              onUpdateQuantity={onUpdateQuantity}
-            />
+        {retieCompliance ? (
+          <Box className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+            <HStack space="xs" className="items-center justify-between flex-wrap">
+              <RetieComplianceBadge
+                status={retieCompliance.status}
+                count={retieCompliance.issues?.length}
+                size="sm"
+                detailed
+              />
+              {retieCompliance.complianceCost != null && (
+                <Text size="xs" className="text-typography-500 flex-shrink">
+                  + {formatCOP(retieCompliance.complianceCost)} COP para cumplimiento RETIE
+                </Text>
+              )}
+            </HStack>
           </Box>
-        ))}
-        {structureSummary && (
+        ) : item.monthlyConsumptionKwh ? (
+          <Box className="rounded-2xl border border-yellow-100 bg-yellow-50 p-3">
+            <HStack space="xs" className="items-center">
+              <AlertTriangle size={16} color="#d97706" />
+              <Text size="xs" className="text-yellow-900">
+                Resultados RETIE disponibles después de dimensionar el sistema.
+              </Text>
+            </HStack>
+          </Box>
+        ) : null}
+      </VStack>
+
+      {/* Display kit components */}
+      {displayComponents.map((component: any) => (
+        <Box key={component._id} className="mt-2">
+          <KitComponentCard
+            type={component.type}
+            brand={component.details?.brand}
+            model={component.details?.model}
+            name={component.details?.name}
+            quantity={component.quantity}
+            pmax={component.details?.pmax}
+            price={component.details?.price ?? component.details?.pricePerUnit ?? component.details?.pricePerMeter}
+            power={component.details?.power}
+            capacity={component.details?.capacity}
+            imageUrl={component.details?.imageUrl || component.details?.image || component.details?.imageURL || (component as any).imageUrl}
+            solarModuleId={component.solarModuleId}
+            inverterId={component.inverterId}
+            batteryId={component.batteryId}
+            structureId={component.structureId}
+            wiringId={component.wiringId}
+            protectionId={component.protectionId}
+            componentId={component._id}
+            onRemove={onRemoveComponent}
+            onUpdateQuantity={onUpdateQuantity}
+          />
+        </Box>
+      ))}
+      {structureSummary && (
           <Box className="mt-2">
             <KitComponentCard
               type="structure"

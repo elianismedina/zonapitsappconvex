@@ -83,7 +83,7 @@ function getRgbColor(varName: string): string {
  * Get the CSS variable reference
  */
 function getVarReference(key: ColorKey, shade: ColorShade = '500'): string {
-  if (shade === '500' || shade === 'DEFAULT') {
+  if (shade === '500') {
     return `--color-${key}`;
   }
   return `--color-${key}-${shade}`;

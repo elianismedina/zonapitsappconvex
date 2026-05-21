@@ -5,10 +5,88 @@ import { KitCard } from "@/components/mykits/KitCard";
 import { Box, Heading } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Alert, FlatList } from "react-native";
+
+function KitCardWithRetie({
+  item,
+  components,
+  onEdit,
+  onDelete,
+  onSizing,
+  onAddInverter,
+  onAddBattery,
+  onAddStructure,
+  onAddWiring,
+  onAddProtection,
+  onRemoveComponent,
+  onUpdateQuantity,
+  onRemoveAllOfType,
+  onAddInstallation,
+  onRemoveInstallation,
+}: React.ComponentProps<typeof KitCard>) {
+  const calculateSizing = useAction(api.sizing_retie.calculateSizingWithRetie);
+  const [sizing, setSizing] = useState<any>();
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchSizing() {
+      if (!item?._id) return;
+      try {
+        const result = await calculateSizing({ kitId: item._id });
+        if (isMounted) {
+          setSizing(result);
+        }
+      } catch (error) {
+        console.error("Error fetching RETIE sizing:", error);
+      }
+    }
+
+    fetchSizing();
+    return () => {
+      isMounted = false;
+    };
+  }, [item._id, calculateSizing]);
+
+  const retieCompliance = React.useMemo(() => {
+    if (!sizing) return undefined;
+    const warnings = sizing.retieCompliantOptions?.flatMap((option: any) => option.warnings || []) ?? [];
+    const status = sizing.retieCompliantOptions?.some((option: any) => option.retieCompliant)
+      ? "compliant"
+      : warnings.length > 0
+      ? "warnings"
+      : "pending";
+
+    return {
+      status,
+      issues: warnings,
+      complianceCost: sizing.retieCompliance?.estimatedComplianceCost,
+    };
+  }, [sizing]);
+
+  return (
+    <KitCard
+      item={item}
+      components={components}
+      retieCompliance={retieCompliance}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onSizing={onSizing}
+      onAddInverter={onAddInverter}
+      onAddBattery={onAddBattery}
+      onAddStructure={onAddStructure}
+      onAddWiring={onAddWiring}
+      onAddProtection={onAddProtection}
+      onRemoveComponent={onRemoveComponent}
+      onUpdateQuantity={onUpdateQuantity}
+      onRemoveAllOfType={onRemoveAllOfType}
+      onAddInstallation={onAddInstallation}
+      onRemoveInstallation={onRemoveInstallation}
+    />
+  );
+}
 
 export default function GarageScreen() {
   const router = useRouter();
@@ -132,7 +210,7 @@ export default function GarageScreen() {
       return;
     }
     router.push({
-      pathname: "/(auth)/panel-selection/[kitId]",
+      pathname: "/(auth)/sizing-results",
       params: { kitId: kit._id },
     });
   };
@@ -158,7 +236,7 @@ export default function GarageScreen() {
           data={kits}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <KitCard
+            <KitCardWithRetie
               item={item}
               components={kitComponentsMap.get(String(item._id))}
               onEdit={handleEdit}
