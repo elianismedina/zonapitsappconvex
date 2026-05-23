@@ -96,6 +96,7 @@ export interface KitCardProps {
     status: ComplianceStatus;
     issues?: string[];
     complianceCost?: number;
+    applied?: boolean;
   };
   onEdit: (item: any) => void;
   onDelete: (id: Id<"kits">) => void;
@@ -339,15 +340,24 @@ export const KitCard = ({
           )}
 
         {retieCompliance ? (
-          <Box className="rounded-2xl border border-blue-100 bg-blue-50 p-3">
+          <Box className="rounded-2xl border p-3">
             <HStack space="xs" className="items-center justify-between flex-wrap">
-              <RetieComplianceBadge
-                status={retieCompliance.status}
-                count={retieCompliance.issues?.length}
-                size="sm"
-                detailed
-              />
-              {retieCompliance.complianceCost != null && (
+              {retieCompliance.applied ? (
+                <HStack space="xs" className="items-center bg-green-100 px-2 py-1 rounded-full">
+                  <CheckCircle2 size={14} color="#16a34a" />
+                  <Text size="xs" className="font-bold text-green-700">
+                    RETIE Aplicado
+                  </Text>
+                </HStack>
+              ) : (
+                <RetieComplianceBadge
+                  status={retieCompliance.status}
+                  count={retieCompliance.issues?.length}
+                  size="sm"
+                  detailed
+                />
+              )}
+              {!retieCompliance.applied && retieCompliance.complianceCost != null && (
                 <Text size="xs" className="text-typography-500 flex-shrink">
                   + {formatCOP(retieCompliance.complianceCost)} COP para cumplimiento RETIE
                 </Text>

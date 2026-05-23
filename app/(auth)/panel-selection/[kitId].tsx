@@ -14,15 +14,22 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Info } from "lucide-react-native";
+import { CheckCircle2, Info, Star } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export type SizingResults = {
   peakSunHours: number;
   dailyDemandKwh: number;
-  version?: number;
-  sizingOptions: {
+  version: number;
+  retieEnvironmentalFactors?: {
+    ambientTemperature: number;
+    soilingFactor: number;
+    tropicalDerating: number;
+    panelDerating: number;
+    totalDerating: number;
+  };
+  originalSizingOptions: {
     moduleId: Id<"solar_modules">;
     brand: string;
     model: string;
@@ -33,6 +40,30 @@ export type SizingResults = {
     totalPrice: number;
     imageUrl?: string;
   }[];
+  retieCompliantOptions: {
+    moduleId: Id<"solar_modules">;
+    brand: string;
+    model: string;
+    pmax: number;
+    price: number;
+    panelsNeeded: number;
+    strings: number;
+    panelsPerString: number;
+    dcBreaker: { breakerSize: number; standard: string };
+    stringFuses: { fuseSize: number; type: string; voltageRating: number }[];
+    dcWireGauge: { wireGauge: string; mm2: number; maxCurrent: number };
+    totalCapacityKw: number;
+    totalPrice: number;
+    retieCompliant: boolean;
+    warnings: string[];
+  }[];
+  retieCompliance: {
+    region: string;
+    standardsApplied: string[];
+    documentationRequired: string[];
+    inspectionRequired: boolean;
+    estimatedComplianceCost: number;
+  };
 } | null;
 
 export default function PanelSelectionScreen() {
@@ -40,7 +71,7 @@ export default function PanelSelectionScreen() {
   const { kitId } = useLocalSearchParams<{ kitId: Id<"kits"> }>();
 
   const kit = useQuery(api.kits.getKitById, { id: kitId });
-  const calculateSizing = useAction(api.sizing.calculateSizing);
+  const calculateSizing = useAction(api.sizing_retie.calculateSizingWithRetie);
   const addComponent = useMutation(api.kit_components.addComponent);
 
   const [sizingResults, setSizingResults] = useState<SizingResults>(null);
@@ -58,7 +89,7 @@ export default function PanelSelectionScreen() {
           setSizingResults(results as SizingResults);
         }
       } catch (error: any) {
-        console.error("Error calculating sizing:", error);
+        console.error("Error al calcular el dimensionamiento:", error);
         if (isMounted) {
           Alert.alert("Error de Cálculo", error.message);
           router.back();
@@ -74,7 +105,7 @@ export default function PanelSelectionScreen() {
   const handleConfirmSelection = async () => {
     if (!sizingResults || selectedOptionIndex === null) return;
 
-    const selectedOption = sizingResults.sizingOptions[selectedOptionIndex];
+    const selectedOption = sizingResults.retieCompliantOptions[selectedOptionIndex];
     const moduleId = selectedOption.moduleId;
 
     try {
@@ -96,7 +127,7 @@ export default function PanelSelectionScreen() {
         ],
       );
     } catch (error) {
-      console.error("Error adding component:", error);
+      console.error("Error al añadir componente:", error);
       Alert.alert("Error", "No se pudo añadir el módulo al kit.");
     }
   };
@@ -112,6 +143,10 @@ export default function PanelSelectionScreen() {
     );
   }
 
+  const displayOptions = sizingResults.retieCompliantOptions.length > 0
+    ? sizingResults.retieCompliantOptions
+    : sizingResults.originalSizingOptions;
+
   return (
     <Box className="flex-1 bg-background-0">
       <Stack.Screen
@@ -122,36 +157,43 @@ export default function PanelSelectionScreen() {
       />
       <ScrollView contentContainerStyle={{ padding: 16 }}>
         <VStack space="xl">
-          <Box className="rounded-xl border border-primary-100 bg-primary-50 p-4">
-            <Heading size="md" className="mb-2 text-primary-900">
-              Resumen para {kit.name}
-            </Heading>
-            <HStack className="mb-1 justify-between">
-              <Text size="sm" className="text-primary-700">
-                Horas Pico Solar (HSP):
-              </Text>
-              <Text size="sm" className="font-bold text-primary-900">
-                {sizingResults?.peakSunHours} h
-              </Text>
+          <Box className="rounded-xl border border-green-200 bg-green-50 p-4">
+            <HStack gap={2} alignItems="center" className="mb-2">
+              <CheckCircle2 size={20} color="#16a34a" />
+              <Heading size="md" className="text-green-900">
+                Configuración RETIE
+              </Heading>
             </HStack>
-            <HStack className="justify-between">
-              <Text size="sm" className="text-primary-700">
-                Demanda Diaria:
-              </Text>
-              <Text size="sm" className="font-bold text-primary-900">
-                {sizingResults?.dailyDemandKwh} kWh
-              </Text>
-            </HStack>
+            <Text size="sm" className="text-green-700 mb-3">
+              Las opciones mostradas cumplen con los estándares RETIE colombianos,
+              incluyendo protecciones y dimensionamiento apropiado para condiciones tropicales.
+            </Text>
+            {sizingResults.retieEnvironmentalFactors && (
+              <VStack space="xs" className="mt-2">
+                <HStack justifyContent="space-between">
+                  <Text size="xs" className="text-green-600">Factor de seguridad tropical:</Text>
+                  <Text size="xs" className="font-bold text-green-700">
+                    {(sizingResults.retieEnvironmentalFactors.totalDerating * 100).toFixed(0)}%
+                  </Text>
+                </HStack>
+                <HStack justifyContent="space-between">
+                  <Text size="xs" className="text-green-600">Demanda diaria ajustada:</Text>
+                  <Text size="xs" className="font-bold text-green-700">
+                    {sizingResults.dailyDemandKwh} kWh
+                  </Text>
+                </HStack>
+              </VStack>
+            )}
           </Box>
 
           <VStack space="md">
             <Heading size="lg">Opciones Recomendadas</Heading>
             <Text size="sm" className="-mt-2 text-typography-500">
-              Selecciona el panel que mejor se ajuste a tu presupuesto y espacio
-              disponible.
+              Selecciona el panel que mejor se adapte a tus necesidades.
+              Todas las opciones incluyen protecciones RETIE.
             </Text>
 
-            {sizingResults?.sizingOptions.map((option, index) => (
+            {displayOptions.map((option, index) => (
               <Pressable
                 key={index}
                 onPress={() => setSelectedOptionIndex(index)}
@@ -161,18 +203,18 @@ export default function PanelSelectionScreen() {
                     : "border-outline-100"
                 }`}
               >
-                {option.imageUrl && (
-                  <Image
-                    source={{ uri: option.imageUrl }}
-                    style={{ width: 80, height: 80 }}
-                    contentFit="contain"
-                    className="mr-4 rounded-lg bg-background-50"
-                  />
-                )}
                 <VStack className="flex-1">
                   <HStack className="items-start justify-between">
                     <VStack className="flex-1">
-                      <Text className="text-lg font-bold text-typography-900">
+                      <HStack gap={2} alignItems="center">
+                        <HStack gap={1} className="bg-green-100 px-2 py-0.5 rounded-full">
+                          <Star size={12} color="#16a34a" fill="#16a34a" />
+                          <Text size="xs" className="font-bold text-green-700">
+                            RETIE
+                          </Text>
+                        </HStack>
+                      </HStack>
+                      <Text className="text-lg font-bold text-typography-900 mt-1">
                         {option.brand}
                       </Text>
                       <Text size="sm" className="text-typography-500">
@@ -207,6 +249,15 @@ export default function PanelSelectionScreen() {
                       </Text>
                     </VStack>
                   </HStack>
+
+                  {'dcBreaker' in option && (
+                    <Box className="mt-2 rounded bg-gray-50 p-2">
+                      <Text size="xs" className="font-bold text-gray-600">Protecciones DC:</Text>
+                      <Text size="xs" className="text-gray-500">
+                        Breaker: {option.dcBreaker.breakerSize}A • String: {option.strings}x{option.panelsPerString}
+                      </Text>
+                    </Box>
+                  )}
 
                   <Button
                     variant="link"

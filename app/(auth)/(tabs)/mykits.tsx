@@ -30,10 +30,28 @@ function KitCardWithRetie({
   const calculateSizing = useAction(api.sizing_retie.calculateSizingWithRetie);
   const [sizing, setSizing] = useState<any>();
 
+  // Check if RETIE has been applied
+  const isRetieApplied = item.status === "retie_pending" || item.status === "retie_compliant";
+
+  // Determine RETIE label based on status
+  const retieStatusLabel = React.useMemo(() => {
+    if (item.status === "retie_compliant") {
+      return { text: "RETIE Compliant", color: "#16a34a", bg: "#dcfce7" };
+    }
+    if (item.status === "retie_pending") {
+      return { text: "RETIE Aplicado", color: "#2563eb", bg: "#dbeafe" };
+    }
+    return null;
+  }, [item.status]);
+
   useEffect(() => {
     let isMounted = true;
     async function fetchSizing() {
       if (!item?._id) return;
+      // Skip sizing fetch if RETIE has been applied (show as compliant)
+      if (isRetieApplied) {
+        return;
+      }
       try {
         const result = await calculateSizing({ kitId: item._id });
         if (isMounted) {
@@ -48,9 +66,19 @@ function KitCardWithRetie({
     return () => {
       isMounted = false;
     };
-  }, [item._id, calculateSizing]);
+  }, [item._id, calculateSizing, isRetieApplied]);
 
   const retieCompliance = React.useMemo(() => {
+    // If RETIE has been applied, show as compliant
+    if (isRetieApplied) {
+      return {
+        status: "compliant",
+        issues: [],
+        complianceCost: 0,
+        applied: true,
+      };
+    }
+
     if (!sizing) return undefined;
     const warnings = sizing.retieCompliantOptions?.flatMap((option: any) => option.warnings || []) ?? [];
     const status = sizing.retieCompliantOptions?.some((option: any) => option.retieCompliant)
@@ -64,7 +92,7 @@ function KitCardWithRetie({
       issues: warnings,
       complianceCost: sizing.retieCompliance?.estimatedComplianceCost,
     };
-  }, [sizing]);
+  }, [sizing, isRetieApplied]);
 
   return (
     <KitCard

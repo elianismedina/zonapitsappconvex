@@ -290,3 +290,57 @@ export const getBillUrl = query({
     return await ctx.storage.getUrl(args.storageId);
   },
 });
+
+export const applyRetieRecommendations = mutation({
+  args: {
+    kitId: v.id("kits"),
+    retieCapacityKw: v.number(),
+    retiePanelsNeeded: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("byClerkId", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const kit = await ctx.db.get(args.kitId);
+    if (!kit) {
+      throw new Error("Kit not found");
+    }
+
+    if (kit.userId !== user._id) {
+      throw new Error("Unauthorized");
+    }
+
+    // Check if kit already has solar modules selected
+    const existingModules = await ctx.db
+      .query("kit_components")
+      .withIndex("byKitId", (q) => q.eq("kitId", args.kitId))
+      .filter((q) => q.eq(q.field("type"), "solar_module"))
+      .collect();
+
+    // If modules already exist, mark as compliant; otherwise pending selection
+    const newStatus = existingModules.length > 0 ? "retie_compliant" : "retie_pending";
+
+    await ctx.db.patch(args.kitId, {
+      capacity: args.retieCapacityKw,
+      status: newStatus,
+    });
+
+    return {
+      success: true,
+      newCapacity: args.retieCapacityKw,
+      newPanelsNeeded: args.retiePanelsNeeded,
+      status: newStatus,
+    };
+  },
+});

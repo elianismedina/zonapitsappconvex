@@ -1,8 +1,8 @@
 /**
- * RETIE Info Card Component
- * 
- * Displays environmental and compliance information specific to Colombian systems
- * Shows tropical climate factors, derating, and why RETIE adjustments matter
+ * Componente Tarjeta Info RETIE
+ *
+ * Muestra información ambiental y de cumplimiento específica para sistemas colombianos
+ * Muestra factores tropicales, derating y por qué importan los ajustes RETIE
  */
 
 import { Box } from '@/components/ui/box';
@@ -60,11 +60,11 @@ export function RetieInfoCard({
           <Info size={16} color="#3b82f6" />
           <VStack className="flex-1 gap-1">
             <Text className="text-xs font-semibold text-blue-900">
-              Colombian Tropical Climate Adjustment
+              Ajuste Tropical Colombiano
             </Text>
             <Text className="text-xs text-blue-700">
-              Your system is {totalDeratingPercent}% larger to account for temperature 
-              and soiling—this ensures consistent performance year-round.
+              Tu sistema es {totalDeratingPercent}% más grande para compensar temperatura
+              y suciedad—esto asegura rendimiento constante todo el año.
             </Text>
           </VStack>
         </HStack>
@@ -78,28 +78,28 @@ export function RetieInfoCard({
         {/* Header */}
         <HStack gap={2} alignItems="center">
           <Sun size={20} color="#ea580c" />
-          <Heading size="md">Colombian Climate Considerations</Heading>
+          <Heading size="md">Consideraciones Climáticas de Colombia</Heading>
         </HStack>
 
         {/* Environmental Conditions */}
         <Box className="bg-orange-50 rounded-lg p-3">
           <Text className="text-xs font-semibold text-orange-900 mb-2">
-            ENVIRONMENTAL CONDITIONS
+            CONDICIONES AMBIENTALES
           </Text>
-          
+
           <VStack gap={2}>
             {/* Temperature */}
             <HStack gap={2} alignItems="flex-start">
               <Thermometer size={16} color="#f97316" className="mt-0.5" />
               <VStack gap={0.5} flex={1}>
                 <Text className="text-xs font-medium text-gray-700">
-                  Ambient Temperature
+                  Temperatura Ambiente
                 </Text>
                 <Text className="text-sm text-gray-900">
-                  {factors.ambientTemperature}°C peak
+                  {factors.ambientTemperature}°C máxima
                 </Text>
                 <Text className="text-xs text-gray-600">
-                  Typical for Colombian highlands; reduces panel efficiency by ~{panelDeratingPercent}%
+                  Típico para altiplanos colombianos; reduce eficiencia del panel en ~{panelDeratingPercent}%
                 </Text>
               </VStack>
             </HStack>
@@ -109,13 +109,13 @@ export function RetieInfoCard({
               <Droplets size={16} color="#f97316" className="mt-0.5" />
               <VStack gap={0.5} flex={1}>
                 <Text className="text-xs font-medium text-gray-700">
-                  Relative Humidity
+                  Humedad Relativa
                 </Text>
                 <Text className="text-sm text-gray-900">
-                  {Math.round(factors.relativeHumidity * 100)}% average
+                  {Math.round(factors.relativeHumidity * 100)}% promedio
                 </Text>
                 <Text className="text-xs text-gray-600">
-                  High humidity increases soiling and corrosion risk
+                  Alta humedad aumenta suciedad y riesgo de corrosión
                 </Text>
               </VStack>
             </HStack>
@@ -125,13 +125,13 @@ export function RetieInfoCard({
               <CloudRain size={16} color="#f97316" className="mt-0.5" />
               <VStack gap={0.5} flex={1}>
                 <Text className="text-xs font-medium text-gray-700">
-                  Tropical Soiling Factor
+                  Factor de Suciedad Tropical
                 </Text>
                 <Text className="text-sm text-gray-900">
-                  {Math.round((1 - factors.soilingFactor) * 100)}% energy loss/year
+                  {Math.round((1 - factors.soilingFactor) * 100)}% pérdida de energía/año
                 </Text>
                 <Text className="text-xs text-gray-600">
-                  Dust, pollen, and moisture accumulation in tropics
+                  Acumulación de polvo, polen y humedad en trópicos
                 </Text>
               </VStack>
             </HStack>
@@ -142,26 +142,26 @@ export function RetieInfoCard({
         {showTechnicalDetails && (
           <Box className="bg-blue-50 rounded-lg p-3">
             <Text className="text-xs font-semibold text-blue-900 mb-2">
-              SYSTEM DERATING APPLIED
+              DERATING APLICADO AL SISTEMA
             </Text>
-            
+
             <VStack gap={2}>
               <HStack justify-content="space-between">
-                <Text className="text-sm text-gray-700">Soiling loss:</Text>
+                <Text className="text-sm text-gray-700">Pérdida por suciedad:</Text>
                 <Text className="text-sm font-medium text-gray-900">
                   -{Math.round((1 - factors.soilingFactor) * 100)}%
                 </Text>
               </HStack>
 
               <HStack justify-content="space-between">
-                <Text className="text-sm text-gray-700">Temperature derating (panels):</Text>
+                <Text className="text-sm text-gray-700">Derating por temperatura (paneles):</Text>
                 <Text className="text-sm font-medium text-gray-900">
                   -{panelDeratingPercent}%
                 </Text>
               </HStack>
 
               <HStack justify-content="space-between">
-                <Text className="text-sm text-gray-700">Battery @ 40°C:</Text>
+                <Text className="text-sm text-gray-700">Batería @ 40°C:</Text>
                 <Text className="text-sm font-medium text-gray-900">
                   -{Math.round((1 - factors.batteryDerating) * 100)}%
                 </Text>
@@ -170,7 +170,7 @@ export function RetieInfoCard({
               <Box className="border-t border-blue-200 pt-2 mt-1">
                 <HStack justify-content="space-between">
                   <Text className="text-sm font-semibold text-blue-900">
-                    Total System Derating:
+                    Derating Total del Sistema:
                   </Text>
                   <Text className="text-sm font-semibold text-orange-600">
                     -{totalDeratingPercent}%
@@ -187,13 +187,13 @@ export function RetieInfoCard({
             <AlertTriangle size={16} color="#16a34a" className="mt-0.5" />
             <VStack gap={1} flex={1}>
               <Text className="text-xs font-semibold text-green-900">
-                WHY THIS MATTERS
+                POR QUÉ IMPORTANTE
               </Text>
               <Text className="text-xs text-green-800">
-                These adjustments ensure your system is properly sized to meet your 
-                energy needs even in worst-case conditions. A system designed only for 
-                perfect conditions would underperform during peak heat, dry seasons, or 
-                high dust periods.
+                Estos ajustes aseguran que tu sistema esté dimensionado correctamente para
+                cumplir tus necesidades energéticas incluso en condiciones extremas. Un sistema
+                diseñado solo para condiciones ideales tendría bajo rendimiento durante calor
+                extremo, temporadas secas o períodos de alto polvo.
               </Text>
             </VStack>
           </HStack>
@@ -202,13 +202,13 @@ export function RetieInfoCard({
         {/* RETIE Standard Note */}
         <Box className="bg-gray-50 rounded-lg p-3 border border-gray-300">
           <Text className="text-xs font-semibold text-gray-700 mb-1">
-            RETIE COMPLIANCE
+            CUMPLIMIENTO RETIE
           </Text>
           <Text className="text-xs text-gray-600">
-            These calculations follow RETIE (Reglamento Técnico de Instalaciones 
-            Eléctricas) Article 42 and incorporate Colombian environmental standards. 
-            This ensures your system meets technical requirements for inspection approval 
-            and warranty validation.
+            Estos cálculos siguen el RETIE (Reglamento Técnico de Instalaciones
+            Eléctricas) Artículo 42 e incorporan estándares ambientales colombianos.
+            Esto asegura que tu sistema cumpla requisitos técnicos para aprobación de
+            inspección y validación de garantía.
           </Text>
         </Box>
       </VStack>
