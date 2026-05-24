@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "seed": "node ./scripts/seed-db.js",
+    "seed-wiring": "node ./scripts/seed-wiring.js",
     "analyze:android": "npx expo export:embed --platform android --dev false --bundle-output android.bundle --sourcemap-output android.bundle.map && npx source-map-explorer android.bundle android.bundle.map --no-border-checks --html report.html",
     "check-deps": "npx expo-doctor && npx expo install --check",
     "update-deps": "npx expo install --fix && npm install",

@@ -11,11 +11,11 @@ import {
 } from "@/components/ui";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Cable, Minus, Plus } from "lucide-react-native";
-import React, { useMemo, useState } from "react";
+import { AlertCircle, Cable, Check, Minus, Plus } from "lucide-react-native";
+import React, { useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 
 export default function WiringSelectionScreen() {
@@ -26,13 +26,62 @@ export default function WiringSelectionScreen() {
   const wiringOptions = useQuery(api.wiring.getWiring);
   const components = useQuery(api.kit_components.getKitComponents, { kitId });
   const addComponent = useMutation(api.kit_components.addComponent);
+  const calculateWiring = useAction(api.wiring.calculateWiringRequirements);
+
+  const solarModuleComponent = components?.find((c) => c.type === "solar_module");
+  const panelCount = solarModuleComponent?.quantity || 0;
 
   const [selectedMeters, setSelectedMeters] = useState<Record<string, number>>(
     {},
   );
+  const [wiringPlan, setWiringPlan] = useState<any>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [autoCalculated, setAutoCalculated] = useState(false);
 
-  const solarModuleComponent = components?.find((c) => c.type === "solar_module");
-  const panelCount = solarModuleComponent?.quantity || 0;
+  // Auto-calculate wiring requirements when component mounts or kit changes
+  useEffect(() => {
+    if (!kitId || panelCount === 0) return;
+
+    const autoCalculateWiring = async () => {
+      try {
+        setIsCalculating(true);
+        const plan = await calculateWiring({ kitId });
+        setWiringPlan(plan);
+        
+        // Auto-populate wiring selections based on the calculated plan
+        // Look for DC cabling (type contains "DC" or "6mm")
+        if (wiringOptions) {
+          const newSelections: Record<string, number> = {};
+          
+          // Find and set DC cable
+          const dcWiring = wiringOptions.find(
+            (w) => w.type.includes("DC") || w.type.includes("6mm")
+          );
+          if (dcWiring && plan.dcTotalMeters > 0) {
+            newSelections[dcWiring._id] = plan.dcTotalMeters;
+          }
+          
+          // Find and set AC cable
+          const acWiring = wiringOptions.find(
+            (w) => w.type.includes("AC") || w.type.includes("2x")
+          );
+          if (acWiring && plan.acTotalMeters > 0) {
+            newSelections[acWiring._id] = plan.acTotalMeters;
+          }
+          
+          setSelectedMeters(newSelections);
+          setAutoCalculated(true);
+        }
+      } catch (error) {
+        console.warn("Could not auto-calculate wiring:", error);
+        // Silently fail - user can manually enter values
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+
+    autoCalculateWiring();
+  }, [kitId, panelCount, wiringOptions, calculateWiring]);
 
   const handleConfirmSelection = async () => {
     if (!kitId) return;
@@ -116,6 +165,51 @@ export default function WiringSelectionScreen() {
               Paneles instalados: {panelCount > 0 ? panelCount : "Ninguno"}
             </Text>
           </Box>
+
+          {/* Auto-calculated wiring plan */}
+          {autoCalculated && wiringPlan && (
+            <Box className="rounded-xl border-2 border-success-200 bg-success-50 p-4">
+              <HStack space="md" className="items-start">
+                <Check size={24} color="#10b981" className="mt-0.5" />
+                <VStack className="flex-1">
+                  <Text className="font-bold text-success-900">
+                    Cálculo Automático Completado
+                  </Text>
+                  <Text size="sm" className="mt-1 text-success-800">
+                    {wiringPlan.summary}
+                  </Text>
+                  <VStack space="xs" className="mt-2">
+                    {wiringPlan.wiringPlan.dc && (
+                      <Text size="xs" className="text-success-700">
+                        • {wiringPlan.wiringPlan.dc.description}
+                      </Text>
+                    )}
+                    {wiringPlan.wiringPlan.ac && (
+                      <Text size="xs" className="text-success-700">
+                        • {wiringPlan.wiringPlan.ac.description}
+                      </Text>
+                    )}
+                    {wiringPlan.wiringPlan.battery && (
+                      <Text size="xs" className="text-success-700">
+                        • {wiringPlan.wiringPlan.battery.description}
+                      </Text>
+                    )}
+                  </VStack>
+                </VStack>
+              </HStack>
+            </Box>
+          )}
+
+          {isCalculating && (
+            <Box className="rounded-xl border-2 border-warning-200 bg-warning-50 p-4">
+              <HStack space="md" className="items-center">
+                <AlertCircle size={24} color="#f59e0b" />
+                <Text className="text-warning-900">
+                  Calculando cableado necesario...
+                </Text>
+              </HStack>
+            </Box>
+          )}
 
           <VStack space="md">
             <Heading size="lg">Opciones de Cableado</Heading>
@@ -214,16 +308,18 @@ export default function WiringSelectionScreen() {
                         >
                           <Plus size={16} color="#64748b" />
                         </Button>
-
-                        <VStack className="ml-auto items-end">
-                          <Text size="xs" className="text-typography-400">
-                            Total: ${" "}
-                            {(meters * wiring.pricePerMeter)
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                          </Text>
-                        </VStack>
                       </HStack>
+
+                      <VStack className="mt-3 items-end">
+                        <Text
+                          size="sm"
+                          className="text-typography-400 text-right"
+                        >
+                          Total: {(meters * wiring.pricePerMeter)
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                        </Text>
+                      </VStack>
                     </VStack>
                   </VStack>
                 </Pressable>
@@ -234,14 +330,18 @@ export default function WiringSelectionScreen() {
       </ScrollView>
 
       <Box className="border-t border-outline-100 bg-white p-4 pb-8">
-        <HStack className="mb-3 items-center justify-between">
-          <Text size="sm" className="text-typography-500">
-            Metros seleccionados: {totals.totalMeters}
-          </Text>
-          <Text size="sm" className="font-semibold text-typography-900">
-            Total: ${" "}
-            {totals.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-          </Text>
+        <HStack className="mb-3 flex-wrap items-center justify-between">
+          <Box className="min-w-0">
+            <Text size="sm" className="text-typography-500">
+              Metros seleccionados: {totals.totalMeters}
+            </Text>
+          </Box>
+          <Box className="min-w-0">
+            <Text size="sm" className="font-semibold text-typography-900 text-right">
+              Total: ${" "}
+              {totals.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            </Text>
+          </Box>
         </HStack>
         <Button
           size="lg"

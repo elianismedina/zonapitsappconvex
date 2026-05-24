@@ -10,12 +10,13 @@
 
 import { v } from "convex/values";
 import {
-  generateRetieComplianceReport,
-  RETIE_ENVIRONMENTAL_CONDITIONS,
+    DEFAULT_PANEL_PARAMETERS,
+    generateRetieComplianceReport,
+    RETIE_ENVIRONMENTAL_CONDITIONS,
 } from "../utils/retie-compliance";
 import {
-  createRetieSizingResult,
-  RetieSystemType
+    createRetieSizingResult,
+    RetieSystemType
 } from "../utils/retie-integration";
 import { api } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
@@ -139,7 +140,8 @@ export const calculateSizingWithRetie = action({
     const totalDeratingFactor = tropicalSoilingFactor * panelDeratingFactor;
     
     const effectivePeakSunHours = averagePeakSunHours * totalDeratingFactor;
-    const adjustedDailyDemand = baseDailyDemandKwh / totalDeratingFactor; // Account for derating
+    // Effective demand for RETIE sizing (accounts for system performance derating)
+    const effectiveDemandForSizingKwh = baseDailyDemandKwh / totalDeratingFactor;
     
     // Original performance ratio (without derating)
     const originalPerformanceRatio = 0.85;
@@ -172,7 +174,7 @@ export const calculateSizingWithRetie = action({
       // Recalculate with RETIE derating
       const panelDailyProduction =
         (module.pmax / 1000) * effectivePeakSunHours * retiePerformanceRatio;
-      const panelsNeeded = Math.ceil(adjustedDailyDemand / panelDailyProduction);
+      const panelsNeeded = Math.ceil(effectiveDemandForSizingKwh / panelDailyProduction);
 
       // Use existing function to add RETIE protections and configuration
       return createRetieSizingResult(
@@ -188,8 +190,8 @@ export const calculateSizingWithRetie = action({
           ),
           totalPrice: parseFloat((panelsNeeded * module.price).toFixed(2)),
         },
-        module.voc || 37.3,  // Default VOC for typical panel
-        module.isc || 11.8,  // Default ISC for typical panel
+        module.voc || DEFAULT_PANEL_PARAMETERS.voc,
+        module.isc || DEFAULT_PANEL_PARAMETERS.isc,
         panelsNeeded
       );
     });
@@ -199,7 +201,7 @@ export const calculateSizingWithRetie = action({
 
     return {
       peakSunHours: parseFloat(averagePeakSunHours.toFixed(2)),
-      dailyDemandKwh: parseFloat(adjustedDailyDemand.toFixed(2)),
+      dailyDemandKwh: parseFloat(effectiveDemandForSizingKwh.toFixed(2)),
       version: 3, // Updated version with RETIE
       retieEnvironmentalFactors: {
         ambientTemperature: RETIE_ENVIRONMENTAL_CONDITIONS.tropicalRegion.ambientTemperature,

@@ -182,6 +182,10 @@ export function addRetieComplianceToBattery(
   const temperatureDerate = RETIE_ENVIRONMENTAL_CONDITIONS.componentDerating.battery;
   const warnings: string[] = [];
   
+  // Safe access to optional discharge current with fallback
+  const dischargeCurrentForRating =
+    compatibilityResult.constraints.dischargeCurrent?.requiredByInverter || 50; // 50A default if not available
+  
   const dcBatteryWireGauge = calculateRetieWireGauge(
     compatibilityResult.optimalConfig?.daysOfAutonomy || 100,
     compatibilityResult.constraints.voltage.batteryVoltage,
@@ -203,7 +207,7 @@ export function addRetieComplianceToBattery(
     ...compatibilityResult,
     retieCompliance: {
       dcBatteryDisconnect: {
-        rating: Math.ceil((compatibilityResult.constraints.dischargeCurrent.requiredByInverter * 1.25)),
+        rating: Math.ceil(dischargeCurrentForRating * 1.25),
         voltageRating: compatibilityResult.constraints.voltage.batteryVoltage,
       },
       dcBatteryWireGauge,

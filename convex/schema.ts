@@ -135,6 +135,7 @@ export const Wiring = {
   name: v.string(),
   brand: v.optional(v.string()),
   type: v.string(), // e.g. "DC 4mm", "AC 3x2.5"
+  color: v.optional(v.string()),
   pricePerMeter: v.number(),
   imageUrl: v.optional(v.string()),
 };

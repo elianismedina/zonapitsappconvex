@@ -228,6 +228,12 @@ export const RETIE_DOCUMENTATION = {
  * RETIE Environmental Conditions (Colombian specifics)
  * Artículo 42.1.1 - Climate derating factors
  */
+// Default panel electrical parameters (typical crystalline Si panel)
+export const DEFAULT_PANEL_PARAMETERS = {
+  voc: 37.3,  // Volts open circuit
+  isc: 11.8,  // Amps short circuit
+};
+
 export const RETIE_ENVIRONMENTAL_CONDITIONS = {
   tropicalRegion: {
     ambientTemperature: 40,      // °C - Colombian highlands
@@ -414,9 +420,10 @@ export function generateRetieComplianceReport(systemConfig: {
     ],
   };
   
-  // Check voltage drop compliance
-  if (recommendations.dcWireGauge.voltageDropPercent > RETIE_VOLTAGE_DROP.dcArrayToInverter * 100) {
-    issues.push(`DC voltage drop (${recommendations.dcWireGauge.voltageDropPercent.toFixed(2)}%) exceeds RETIE limit (3%)`);
+  // Check voltage drop compliance (voltageDropPercent is already in % format)
+  const maxAllowedDropPercent = RETIE_VOLTAGE_DROP.dcArrayToInverter * 100;
+  if (recommendations.dcWireGauge.voltageDropPercent > maxAllowedDropPercent) {
+    issues.push(`DC voltage drop (${recommendations.dcWireGauge.voltageDropPercent.toFixed(2)}%) exceeds RETIE limit (${maxAllowedDropPercent}%)`);
   }
   
   const compliant = issues.length === 0;
